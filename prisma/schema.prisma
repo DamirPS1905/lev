@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model catalog_brands {
+  id               Int                @id(map: "catalog_brands_pk") @default(autoincrement())
+  catalog          Int
+  title            String             @db.VarChar
+  description      String?
+  image            String?            @db.VarChar
+  catalogs         catalogs           @relation(fields: [catalog], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "catalog_brands_catalogs_fk")
+  catalog_products catalog_products[]
+
+  @@unique([catalog, title], map: "catalog_brands_catalog_title_uind")
+}
+
+model catalog_product_offers {
+  id                    BigInt                  @id(map: "catalog_product_offers_pk") @default(autoincrement())
+  product               BigInt
+  catalog               Int
+  article               String                  @db.VarChar
+  created               DateTime                @db.Timestamptz(6)
+  catalog_products      catalog_products        @relation(fields: [product], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "catalog_product_offers_catalog_products_fk")
+  catalogs              catalogs                @relation(fields: [catalog], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "catalog_product_offers_catalogs_fk")
+  offer_property_values offer_property_values[]
+
+  @@unique([catalog, article], map: "catalog_product_offers_catalog_article_uind")
+}
+
+model catalog_products {
+  id                      BigInt                    @id(map: "catalog_products_pk") @default(autoincrement())
+  catalog                 Int
+  type                    Int
+  brand                   Int
+  title                   String                    @db.VarChar
+  created                 DateTime                  @db.Timestamptz(6)
+  catalog_product_offers  catalog_product_offers[]
+  catalog_brands          catalog_brands            @relation(fields: [brand], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "catalog_products_catalog_brands_fk")
+  catalog_types           catalog_types             @relation(fields: [type], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "catalog_products_catalog_types_fk")
+  catalogs                catalogs                  @relation(fields: [catalog], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "catalog_products_catalogs_fk")
+  product_property_values product_property_values[]
+
+  @@unique([catalog, title], map: "catalog_products_catalog_title_uind")
+}
+
+model catalog_properties {
+  id                      Int                       @id(map: "catalog_properties_pk") @default(autoincrement())
+  catalog                 Int
+  title                   String                    @db.VarChar
+  type                    Int
+  multiple                Boolean                   @default(false)
+  options                 Boolean                   @default(false)
+  property_types          property_types            @relation(fields: [type], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "catalog_properties_property_types_fk")
+  offer_property_values   offer_property_values[]
+  options_property_values options_property_values[]
+  product_property_values product_property_values[]
+
+  @@unique([catalog, title], map: "catalog_properties_catalog_title_uind")
+}
+
+model catalog_types {
+  id                                                                 Int                      @id(map: "catalog_types_pk") @default(autoincrement())
+  catalog                                                            Int
+  title                                                              String                   @db.VarChar
+  parent                                                             Int?
+  root                                                               Boolean
+  level                                                              Int                      @db.SmallInt
+  catalog_products                                                   catalog_products[]
+  catalogs                                                           catalogs                 @relation(fields: [catalog], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "catalog_types_catalogs_fk")
+  catalog_types                                                      catalog_types?           @relation("catalog_typesTocatalog_types", fields: [parent], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "catalog_types_parent_id_req_fk")
+  other_catalog_types                                                catalog_types[]          @relation("catalog_typesTocatalog_types")
+  catalog_types_overload_catalog_types_overload_childTocatalog_types catalog_types_overload[] @relation("catalog_types_overload_childTocatalog_types")
+  catalog_types_overload_catalog_types_overload_prentTocatalog_types catalog_types_overload[] @relation("catalog_types_overload_prentTocatalog_types")
+
+  @@unique([parent, title], map: "catalog_types_parent_title")
+}
+
+model catalog_types_overload {
+  prent                                                     Int
+  child                                                     Int
+  delta                                                     Int           @db.SmallInt
+  catalog_types_catalog_types_overload_childTocatalog_types catalog_types @relation("catalog_types_overload_childTocatalog_types", fields: [child], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "catalog_types_overload_catalog_types_child_id_fk")
+  catalog_types_catalog_types_overload_prentTocatalog_types catalog_types @relation("catalog_types_overload_prentTocatalog_types", fields: [prent], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "catalog_types_overload_catalog_types_parent_id_fk")
+
+  @@id([prent, child], map: "catalog_types_overload_pk")
+}
+
+model catalogs {
+  id                     Int                      @id(map: "catalogs_pk") @default(autoincrement())
+  title                  String                   @db.VarChar
+  company                Int
+  catalog_brands         catalog_brands[]
+  catalog_product_offers catalog_product_offers[]
+  catalog_products       catalog_products[]
+  catalog_types          catalog_types[]
+  property_types         property_types[]
+
+  @@unique([company, title], map: "catalogs_company_title_uind")
+}
+
+model offer_property_values {
+  offer                  BigInt
+  property               Int
+  value                  Json
+  catalog_product_offers catalog_product_offers @relation(fields: [offer], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "offer_property_values_catalog_product_offers_fk_fk")
+  catalog_properties     catalog_properties     @relation(fields: [property], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "offer_property_values_catalog_properties_fk")
+
+  @@id([offer, property], map: "offer_property_values_pk")
+}
+
+model options_property_values {
+  id                 Int                @id(map: "options_property_values_pk") @default(autoincrement())
+  property           Int
+  value              Json
+  hash               String?            @db.VarChar(48)
+  catalog_properties catalog_properties @relation(fields: [property], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "options_property_values_catalog_properties_fk")
+
+  @@unique([property, hash], map: "options_property_values_property_hash_uind")
+}
+
+model product_property_values {
+  product            BigInt
+  property           Int
+  value              Json
+  catalog_products   catalog_products   @relation(fields: [product], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "product_property_values_catalog_products_fk_fk")
+  catalog_properties catalog_properties @relation(fields: [property], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "product_property_values_catalog_properties_fk")
+
+  @@id([product, property], map: "product_property_values_pk")
+}
+
+model property_types {
+  id                 Int                  @id(map: "property_types_pk") @default(autoincrement())
+  title              String               @db.VarChar
+  scheme             Json                 @db.Json
+  catalog            Int?
+  catalog_properties catalog_properties[]
+  catalogs           catalogs?            @relation(fields: [catalog], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "property_types_catalogs_fk")
+}
