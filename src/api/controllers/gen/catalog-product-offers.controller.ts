@@ -1,0 +1,120 @@
+import { AuthInfo } from './../../../decorators/auth.decorator'
+import { ApiKeys } from './../../../entities/ApiKeys'
+import { CreateCatalogProductOfferDto } from './../../dtos/create-catalog-product-offer.dto'
+import { UpdateCatalogProductOfferDto } from './../../dtos/update-catalog-product-offer.dto'
+import { CatalogProductOffersService } from './../../services/catalog-product-offers.service'
+import { CatalogProductsService } from './../../services/catalog-products.service'
+import { CatalogsService } from './../../services/catalogs.service'
+import { EntityManager } from '@mikro-orm/postgresql'
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
+import { ApiExcludeEndpoint, ApiHeader, ApiTags } from '@nestjs/swagger'
+
+@ApiHeader({ name: 'X-API-KEY', required: true })
+@UseGuards(AuthGuard('api-key'))
+@ApiTags('Catalog product offers')
+@Controller('catalog/:catalog/product/:product/offer')
+export class GenCatalogProductOffersController {
+	constructor(
+		protected readonly catalogProductOffersService: CatalogProductOffersService,
+		protected readonly catalogProductsService: CatalogProductsService,
+		protected readonly catalogsService: CatalogsService,
+	) { }
+	
+	@Get(':id')
+	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('id') id: bigint) {
+		const catalogIns0 = await this.catalogsService.findById(catalog);
+		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		const productIns1 = await this.catalogProductsService.findById(product);
+		if(productIns1===null || !(productIns1.catalog.id===catalog)){
+			throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+		}
+		const entity = await this.catalogProductOffersService.findById(id);
+		if(entity===null || entity.catalog.id!==catalog){
+			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
+		}
+		this.validateRead(entity, apiKey, catalog, product, id);
+		return entity;
+	}
+	
+	@ApiExcludeEndpoint() validateRead(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint) { }
+	
+	@Post()
+	async create(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Body() createDto: CreateCatalogProductOfferDto) {
+		createDto.product = product;
+		createDto.catalog = catalog;
+		const catalogIns0 = await this.catalogsService.findById(catalog);
+		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		const productIns1 = await this.catalogProductsService.findById(product);
+		if(productIns1===null || !(productIns1.catalog.id===catalog)){
+			throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+		}
+		return await this.catalogProductOffersService.transactional(async (em) => {
+			const existed0 = await this.catalogProductOffersService.findByCatalogAndArticle(createDto.catalog, createDto.article, em);
+			if(existed0!==null){
+				throw new HttpException('Duplicate (catalog, article)', HttpStatus.CONFLICT);
+			}
+			this.validateCreate(apiKey, catalog, product, createDto, em);
+			return await this.catalogProductOffersService.create(createDto, em);
+		});
+	}
+	
+	@ApiExcludeEndpoint() validateCreate(apiKey: ApiKeys, catalog: number, product: bigint, createDto: CreateCatalogProductOfferDto, em: EntityManager) { }
+	
+	@Patch(':id')
+	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('id') id: bigint, @Body() updateDto: UpdateCatalogProductOfferDto) {
+		updateDto.product = product;
+		updateDto.catalog = catalog;
+		const catalogIns0 = await this.catalogsService.findById(catalog);
+		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		const productIns1 = await this.catalogProductsService.findById(product);
+		if(productIns1===null || !(productIns1.catalog.id===catalog)){
+			throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+		}
+		return await this.catalogProductOffersService.transactional(async (em) => {
+			const entity = await this.catalogProductOffersService.findById(id, em);
+			if(entity===null || entity.catalog.id!==catalog){
+				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
+			}
+			if((updateDto.catalog!==undefined && updateDto.catalog!==entity.catalog.id) || (updateDto.article!==undefined && updateDto.article!==entity.article)){
+				const existed0 = await this.catalogProductOffersService.findByCatalogAndArticle(updateDto.catalog, updateDto.article, em);
+				if(existed0!==null && (entity.id !== existed0.id)){
+					throw new HttpException('Duplicate (catalog, article)', HttpStatus.CONFLICT);
+				}
+			}
+			this.validateUpdate(entity, apiKey, catalog, product, id, updateDto, em);
+			return await this.catalogProductOffersService.update(entity, updateDto, em);
+		});
+	}
+	
+	@ApiExcludeEndpoint() validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint, updateDto: UpdateCatalogProductOfferDto, em: EntityManager) { }
+	
+	@Delete(':id')
+	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('id') id: bigint) {
+		const catalogIns0 = await this.catalogsService.findById(catalog);
+		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		const productIns1 = await this.catalogProductsService.findById(product);
+		if(productIns1===null || !(productIns1.catalog.id===catalog)){
+			throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+		}
+		return await this.catalogProductOffersService.transactional(async (em) => {
+			const entity = await this.catalogProductOffersService.findById(id, em);
+			if(entity===null || entity.catalog.id!==catalog){
+				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
+			}
+			this.validateDelete(entity, apiKey, catalog, product, id, em);
+			return await this.catalogProductOffersService.remove(entity, em);
+		});
+	}
+	
+	@ApiExcludeEndpoint() validateDelete(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint, em: EntityManager) { }
+	
+}

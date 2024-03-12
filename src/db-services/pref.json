@@ -1,0 +1,496 @@
+{
+    "singleModule": true,
+    "singleModulePath": "api\/exchange-api.module",
+    "singleModuleClass": "ExchangeApi",
+    "dbServicesGenPath": "api\/services\/gen\/[a-a:multiName].service",
+    "dtosGenPath": "api\/dtos\/gen\/[a-a:type]-[a-a:singleName].dto",
+    "controllersGenPath": "api\/controllers\/gen\/[a-a:multiName].controller",
+    "modulesGenPath": "api\/modules\/gen\/[a-a:multiName].module",
+    "dbServicesPath": "api\/services\/[a-a:multiName].service",
+    "dtosPath": "api\/dtos\/[a-a:type]-[a-a:singleName].dto",
+    "controllersPath": "api\/controllers\/[a-a:multiName].controller",
+    "modulesPath": "api\/modules\/[a-a:multiName].module",
+    "entitiesPath": "entities\/[AA:multiName]",
+    "dbServicesClass": "[AA:multiName]Service",
+    "dtosClass": "[AA:type][AA:singleName]Dto",
+    "controllersClass": "[AA:multiName]Controller",
+    "modulesClass": "[AA:multiName]Module",
+    "entitiesClass": "[AA:multiName]",
+    "authDecoratorClassPath": "decorators\/auth.decorator",
+    "authDecoratorClass": "AuthInfo",
+    "authDecoratorVar": "apiKey",
+    "authDecoratorVarClass": "ApiKeys",
+    "authDecoratorVarClassPath": "entities\/ApiKeys",
+    "fieldsDefaults": {
+        "def": {
+            "dto": true,
+            "dtoRequired": false,
+            "dtoMin": false,
+            "dtoMax": false,
+            "dtoTrim": true,
+            "dtoDisallow": false
+        },
+        "title": {
+            "dto": true,
+            "dtoRequired": "create",
+            "dtoMin": 1,
+            "dtoMax": 255
+        },
+        "catalog": {
+            "dto": true,
+            "dtoRequired": false,
+            "dtoMin": false,
+            "dtoMax": false,
+            "dtoTrim": true,
+            "dtoDisallow": true,
+            "apiDescription": "Current catalog",
+            "fillDtoFrom": "catalog",
+            "readValidate": "!==catalog",
+            "readForWriteValidate": "!==catalog"
+        },
+        "pk": {
+            "dto": true,
+            "dtoRequired": false,
+            "dtoMin": false,
+            "dtoMax": false,
+            "dtoTrim": true,
+            "dtoDisallow": true
+        },
+        "id": {
+            "dto": false,
+            "dtoRequired": false,
+            "dtoMin": false,
+            "dtoMax": false,
+            "dtoTrim": true,
+            "dtoDisallow": false
+        }
+    },
+    "entitiesDefaults": {
+        "def": {
+            "controller": true,
+            "multiName": false,
+            "singleName": false,
+            "apiPathName": "[a-a:singleName]",
+            "create": true,
+            "update": true,
+            "delete": true,
+            "getOne": true,
+            "list": true,
+            "paginateByMax": 1000,
+            "apiPrefix": "catalog\/:catalog"
+        },
+        "catDef": {
+            "controller": true,
+            "multiName": false,
+            "singleName": false,
+            "apiPathName": "[a-a:singleName]",
+            "create": true,
+            "update": true,
+            "delete": true,
+            "getOne": true,
+            "list": true,
+            "paginateByMax": 1000,
+            "apiPrefix": "catalog\/:catalog",
+            "extraRouteParams": [
+                {
+                    "key": "catalog",
+                    "type": "number",
+                    "var": "catalog",
+                    "load":{
+	                    "as": "catalogs",
+	                    "validate": "@@.company.id===apiKey.company.id",
+	                    "eCode": "NOT_FOUND",
+	                    "eMessage": "Catalog not found"
+                    }
+                }
+            ]
+        }
+    },
+    "entities": {
+        "catalogs": {
+            "def": "def",
+            "controller": false,
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "title": {
+                    "def": "def"
+                },
+                "company": {
+                    "def": "def"
+                }
+            }
+        },
+        "catalog_types": {
+            "def": "catDef",
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "catalog": {
+                    "def": "catalog"
+                },
+                "title": {
+                    "def": "title"
+                },
+                "parent": {
+                    "def": "def",
+                    "load":{
+	                    "as": "catalog_types",
+	                    "validate": "@@.catalog.id===catalog",
+	                    "eCode": "CONFLICT",
+	                    "eMessage": "Parent type not found"
+                    }
+                },
+                "root": {
+                    "def": "def",
+                    "dto": false
+                },
+                "level": {
+                    "def": "def",
+                    "dto": false
+                }
+            }
+        },
+        "catalog_brands": {
+            "def": "catDef",
+            "apiPathName": "brand",
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "catalog": {
+                    "def": "catalog"
+                },
+                "title": {
+                    "def": "title",
+                    "apiDescription": "\u041d\u0430\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u0438\u0435 \u0431\u0440\u0435\u043d\u0434\u0430"
+                },
+                "description": {
+                    "def": "def",
+                    "apiDescription": "\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u0431\u0440\u0435\u043d\u0434\u0430"
+                },
+                "logo": {
+                    "def": "def",
+                    "apiDescription": "\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 \u0431\u0440\u0435\u043d\u0434\u0430"
+                }
+            }
+        },
+        "catalog_products": {
+            "def": "catDef",
+            "apiPathName": "products",
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "catalog": {
+                    "def": "catalog"
+                },
+                "type": {
+                    "def": "def",
+                    "dtoRequired": "create",
+                    "load":{
+	                    "as": "catalog_types",
+	                    "validate": "@@.catalog.id===catalog",
+	                    "eCode": "CONFLICT",
+	                    "eMessage": "Type not found"
+                    }
+                },
+                "brand": {
+                    "def": "def",
+                    "dtoRequired": "create",
+                    "load":{
+	                    "as": "catalog_brands",
+	                    "validate": "@@.catalog.id===catalog",
+	                    "eCode": "CONFLICT",
+	                    "eMessage": "Brand not found"
+                    }
+                },
+                "title": {
+                    "def": "title"
+                },
+                "created": {
+                    "def": "def",
+                    "dto": false
+                }
+            }
+        },
+        "catalog_product_offers": {
+            "def": "catDef",
+            "apiPathName": "offer",
+            "apiPrefix": "catalog\/:catalog\/product\/:product",
+            "extraRouteParams": [
+                {
+                    "key": "catalog",
+                    "type": "number",
+                    "var": "catalog",
+                    "load":{
+	                    "as": "catalogs",
+	                    "validate": "@@.company.id===apiKey.company.id",
+	                    "eCode": "NOT_FOUND",
+	                    "eMessage": "Catalog not found"
+                    }
+                },
+                {
+                    "key": "product",
+                    "type": "bigint",
+                    "var": "product",
+                    "load":{
+	                    "as": "catalog_products",
+	                    "validate": "@@.catalog.id===catalog",
+	                    "eCode": "NOT_FOUND",
+	                    "eMessage": "Product not found"
+                    }
+                }
+
+            ],
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "product": {
+                    "def": "def",
+                    "fillDtoFrom": "product"
+                },
+                "catalog": {
+                    "def": "catalog"
+                },
+                "article": {
+                    "def": "title"
+                },
+                "created": {
+                    "def": "def",
+                    "dto": false
+                }
+            }
+        },
+        "property_types": {
+            "def": "catDef",
+            "apiPathName": "types",
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "title": {
+                    "def": "title"
+                },
+                "scheme": {
+                    "def": "def"
+                },
+                "catalog": {
+                    "def": "catalog"
+                }
+            }
+        },
+        "catalog_types_overload": {
+            "def": "def",
+            "controller": false,
+            "fields": {
+                "parent": {
+                    "def": "def"
+                },
+                "child": {
+                    "def": "def"
+                },
+                "delta": {
+                    "def": "def"
+                }
+            }
+        },
+        "offer_property_values": {
+            "def": "def",
+            "fields": {
+                "offer": {
+                    "def": "pk"
+                },
+                "property": {
+                    "def": "pk"
+                },
+                "value": {
+                    "def": "def",
+                    "dtoRequired": true
+                }
+            }
+        },
+        "catalog_properties": {
+            "def": "catDef",
+            "apiPathName": "properties",
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "catalog": {
+                    "def": "catalog"
+                },
+                "title": {
+                    "def": "title"
+                },
+                "type": {
+                    "def": "def",
+                    "dtoRequired": "create"
+                },
+                "multiple": {
+                    "def": "def"
+                },
+                "options": {
+                    "def": "def"
+                }
+            }
+        },
+        "options_property_values": {
+            "def": "catDef",
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "property": {
+                    "def": "def",
+                    "load":{
+	                    "as": "catalog_properties",
+	                    "validate": "@@.catalog.id===catalog",
+	                    "eCode": "CONFLICT",
+	                    "eMessage": "Property not found"
+                    }
+                },
+                "value": {
+                    "def": "def",
+                    "dtoRequired": true
+                },
+                "hash": {
+                    "def": "def",
+                    "dtoDisallow": false
+                }
+            }
+        },
+        "product_property_values": {
+            "def": "def",
+            "create": false,
+            "apiPathName": "product-property-value",
+            "apiPrefix": "catalog\/:catalog\/",
+            "extraRouteParams": [
+                {
+                    "key": "catalog",
+                    "type": "number",
+                    "var": "catalog",
+                    "load":{
+	                    "as": "catalogs",
+	                    "validate": "@@.company.id===apiKey.company.id",
+	                    "eCode": "NOT_FOUND",
+	                    "eMessage": "Catalog not found"
+                    }
+                }
+            ],
+            "fields": {
+                "product": {
+                    "def": "pk",
+                    "fillDtoFrom": "product",
+                    "load":{
+	                    "as": "catalog_products",
+	                    "validate": "@@.catalog.id===catalog",
+	                    "eCode": "NOT_FOUND",
+	                    "eMessage": "Product not found"
+                    }
+                },
+                "property": {
+                    "def": "pk",
+                    "fillDtoFrom": "property"
+                },
+                "value": {
+                    "def": "def",
+                    "dtoRequired": true
+                }
+            }
+        },
+        "actor_types": {
+            "def": "def",
+            "controller": false,
+            "fields": {
+                "id": {
+                    "def": "def"
+                },
+                "title": {
+                    "def": "def"
+                }
+            }
+        },
+        "actors": {
+            "def": "def",
+            "controller": false,
+            "fields": {
+                "id": {
+                    "def": "def"
+                },
+                "type": {
+                    "def": "def"
+                },
+                "key": {
+                    "def": "def"
+                }
+            }
+        },
+        "api_keys": {
+            "def": "def",
+            "controller": false,
+            "fields": {
+                "id": {
+                    "def": "def"
+                },
+                "key": {
+                    "def": "def"
+                },
+                "company": {
+                    "def": "def"
+                },
+                "disposed": {
+                    "def": "def"
+                },
+                "created_at": {
+                    "def": "def"
+                },
+                "disposed_at": {
+                    "def": "def"
+                },
+                "actor": {
+                    "def": "def"
+                }
+            }
+        },
+        "users": {
+            "def": "def",
+            "controller": false,
+            "fields": {
+                "id": {
+                    "def": "def"
+                },
+                "login": {
+                    "def": "def"
+                },
+                "pwd_hash": {
+                    "def": "def"
+                },
+                "actor": {
+                    "def": "def"
+                },
+                "created": {
+                    "def": "def"
+                },
+                "company": {
+                    "def": "def"
+                }
+            }
+        },
+        "companies": {
+            "def": "def",
+            "controller": false,
+            "fields": {
+                "id": {
+                    "def": "def"
+                },
+                "title": {
+                    "def": "def"
+                }
+            }
+        }
+    }
+}
