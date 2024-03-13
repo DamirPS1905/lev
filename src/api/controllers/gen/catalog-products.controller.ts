@@ -1,3 +1,11 @@
+/*
+ * This code was generated automatically
+ * and should not be modifiyed manyally,
+ * becouse it can be overwritten in any
+ * moment. All modifications are allowed
+ * in api/controllers/catalog-products.controller
+ * in a proper way.
+ */
 import { AuthInfo } from './../../../decorators/auth.decorator'
 import { ApiKeys } from './../../../entities/ApiKeys'
 import { CreateCatalogProductDto } from './../../dtos/create-catalog-product.dto'
@@ -9,7 +17,7 @@ import { CatalogsService } from './../../services/catalogs.service'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { ApiExcludeEndpoint, ApiHeader, ApiTags } from '@nestjs/swagger'
+import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))
@@ -37,7 +45,7 @@ export class GenCatalogProductsController {
 		return entity;
 	}
 	
-	@ApiExcludeEndpoint() validateRead(entity, apiKey: ApiKeys, catalog: number, id: bigint) { }
+	validateRead(entity, apiKey: ApiKeys, catalog: number, id: bigint) { }
 	
 	@Post()
 	async create(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Body() createDto: CreateCatalogProductDto) {
@@ -64,7 +72,7 @@ export class GenCatalogProductsController {
 		});
 	}
 	
-	@ApiExcludeEndpoint() validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreateCatalogProductDto, em: EntityManager) { }
+	validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreateCatalogProductDto, em: EntityManager) { }
 	
 	@Patch(':id')
 	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id') id: bigint, @Body() updateDto: UpdateCatalogProductDto) {
@@ -101,7 +109,7 @@ export class GenCatalogProductsController {
 		});
 	}
 	
-	@ApiExcludeEndpoint() validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: bigint, updateDto: UpdateCatalogProductDto, em: EntityManager) { }
+	validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: bigint, updateDto: UpdateCatalogProductDto, em: EntityManager) { }
 	
 	@Delete(':id')
 	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id') id: bigint) {
@@ -119,6 +127,6 @@ export class GenCatalogProductsController {
 		});
 	}
 	
-	@ApiExcludeEndpoint() validateDelete(entity, apiKey: ApiKeys, catalog: number, id: bigint, em: EntityManager) { }
+	validateDelete(entity, apiKey: ApiKeys, catalog: number, id: bigint, em: EntityManager) { }
 	
 }

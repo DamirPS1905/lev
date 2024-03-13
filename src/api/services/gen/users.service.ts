@@ -1,3 +1,11 @@
+/*
+ * This code was generated automatically
+ * and should not be modifiyed manyally,
+ * becouse it can be overwritten in any
+ * moment. All modifications are allowed
+ * in api/services/users.service
+ * in a proper way.
+ */
 import { Users } from './../../../entities/Users'
 import { CreateUserDto } from './../../dtos/create-user.dto'
 import { UpdateUserDto } from './../../dtos/update-user.dto'
@@ -12,22 +20,26 @@ export class GenUsersService {
 		protected readonly em: EntityManager,
 	){}
 	
+	getEm(emt: EntityManager = null) {
+		return emt || this.em.fork();
+	}
+	
 	async create(createDto: CreateUserDto, emt: EntityManager = null) {
-		const em = emt || this.em.fork(),
+		const em = this.getEm(emt),
 		      instance = em.create(Users, createDto);
 		await em.persist(instance).flush();
 		return instance;
 	}
 	
 	async update(instance: Users, updateDto: UpdateUserDto, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		wrap(instance).assign(updateDto);
 		await em.persist(instance).flush();
 		return instance;
 	}
 	
 	remove(instance: Users, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
 	
@@ -35,14 +47,14 @@ export class GenUsersService {
 	
 	
 	findByLogin(login: string, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.findOne(Users, {
 			login: login
 		});
 	}
 	
 	findById(id: number, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.findOne(Users, {
 			id: id
 		});

@@ -1,3 +1,11 @@
+/*
+ * This code was generated automatically
+ * and should not be modifiyed manyally,
+ * becouse it can be overwritten in any
+ * moment. All modifications are allowed
+ * in api/services/offer-property-values.service
+ * in a proper way.
+ */
 import { OfferPropertyValues } from './../../../entities/OfferPropertyValues'
 import { CreateOfferPropertyValueDto } from './../../dtos/create-offer-property-value.dto'
 import { UpdateOfferPropertyValueDto } from './../../dtos/update-offer-property-value.dto'
@@ -12,22 +20,26 @@ export class GenOfferPropertyValuesService {
 		protected readonly em: EntityManager,
 	){}
 	
+	getEm(emt: EntityManager = null) {
+		return emt || this.em.fork();
+	}
+	
 	async create(createDto: CreateOfferPropertyValueDto, emt: EntityManager = null) {
-		const em = emt || this.em.fork(),
+		const em = this.getEm(emt),
 		      instance = em.create(OfferPropertyValues, createDto);
 		await em.persist(instance).flush();
 		return instance;
 	}
 	
 	async update(instance: OfferPropertyValues, updateDto: UpdateOfferPropertyValueDto, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		wrap(instance).assign(updateDto);
 		await em.persist(instance).flush();
 		return instance;
 	}
 	
 	remove(instance: OfferPropertyValues, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
 	
@@ -35,7 +47,7 @@ export class GenOfferPropertyValuesService {
 	
 	
 	findByOfferAndProperty(offer: bigint, property: number, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.findOne(OfferPropertyValues, {
 			offer: offer, property: property
 		});

@@ -46,7 +46,8 @@
             "apiDescription": "Current catalog",
             "fillDtoFrom": "catalog",
             "readValidate": "!==catalog",
-            "readForWriteValidate": "!==catalog"
+            "readForWriteValidate": "!==catalog",
+            "ignoreFk": true
         },
         "pk": {
             "dto": true,
@@ -124,6 +125,8 @@
         },
         "catalog_types": {
             "def": "catDef",
+            "apiPathName": "type",
+            "extraServices": "catalog_types_overload",
             "fields": {
                 "id": {
                     "def": "id"
@@ -300,12 +303,54 @@
         },
         "offer_property_values": {
             "def": "def",
+            "create": false,
+            "apiPathName": "offer\/:offer",
+            "apiPrefix": "catalog\/:catalog\/product\/:product",
+            "methodPath": "property/:property",
+            "extraRouteParams": [
+                {
+                    "key": "catalog",
+                    "type": "number",
+                    "var": "catalog",
+                    "load":{
+	                    "as": "catalogs",
+	                    "validate": "@@.company.id===apiKey.company.id",
+	                    "eCode": "NOT_FOUND",
+	                    "eMessage": "Catalog not found"
+                    }
+                },
+                {
+                    "key": "product",
+                    "type": "bigint",
+                    "var": "product",
+                    "load":{
+	                    "as": "catalog_products",
+	                    "validate": "@@.catalog.id===catalog",
+	                    "eCode": "NOT_FOUND",
+	                    "eMessage": "Product not found"
+                    }
+                }
+            ],
             "fields": {
                 "offer": {
-                    "def": "pk"
+                    "def": "pk",
+                    "fillDtoFrom": "offer",
+                    "load":{
+	                    "as": "catalog_product_offers",
+	                    "validate": "@@.product.id===product",
+	                    "eCode": "NOT_FOUND",
+	                    "eMessage": "Offer not found"
+                    }
                 },
                 "property": {
-                    "def": "pk"
+                    "def": "pk",
+                    "fillDtoFrom": "property",
+                    "load":{
+	                    "as": "catalog_properties",
+	                    "validate": "@@.catalog.id===catalog",
+	                    "eCode": "NOT_FOUND",
+	                    "eMessage": "Property not found"
+                    }
                 },
                 "value": {
                     "def": "def",
@@ -366,8 +411,9 @@
         "product_property_values": {
             "def": "def",
             "create": false,
-            "apiPathName": "product-property-value",
-            "apiPrefix": "catalog\/:catalog\/",
+            "apiPathName": "product\/:product",
+            "apiPrefix": "catalog\/:catalog",
+            "methodPath": "property/:property",
             "extraRouteParams": [
                 {
                     "key": "catalog",
@@ -394,7 +440,13 @@
                 },
                 "property": {
                     "def": "pk",
-                    "fillDtoFrom": "property"
+                    "fillDtoFrom": "property",
+                    "load":{
+	                    "as": "catalog_properties",
+	                    "validate": "@@.catalog.id===catalog",
+	                    "eCode": "NOT_FOUND",
+	                    "eMessage": "Property not found"
+                    }
                 },
                 "value": {
                     "def": "def",

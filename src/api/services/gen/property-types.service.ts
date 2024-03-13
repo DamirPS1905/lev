@@ -1,3 +1,11 @@
+/*
+ * This code was generated automatically
+ * and should not be modifiyed manyally,
+ * becouse it can be overwritten in any
+ * moment. All modifications are allowed
+ * in api/services/property-types.service
+ * in a proper way.
+ */
 import { PropertyTypes } from './../../../entities/PropertyTypes'
 import { CreatePropertyTypeDto } from './../../dtos/create-property-type.dto'
 import { UpdatePropertyTypeDto } from './../../dtos/update-property-type.dto'
@@ -12,22 +20,26 @@ export class GenPropertyTypesService {
 		protected readonly em: EntityManager,
 	){}
 	
+	getEm(emt: EntityManager = null) {
+		return emt || this.em.fork();
+	}
+	
 	async create(createDto: CreatePropertyTypeDto, emt: EntityManager = null) {
-		const em = emt || this.em.fork(),
+		const em = this.getEm(emt),
 		      instance = em.create(PropertyTypes, createDto);
 		await em.persist(instance).flush();
 		return instance;
 	}
 	
 	async update(instance: PropertyTypes, updateDto: UpdatePropertyTypeDto, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		wrap(instance).assign(updateDto);
 		await em.persist(instance).flush();
 		return instance;
 	}
 	
 	remove(instance: PropertyTypes, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
 	
@@ -35,7 +47,7 @@ export class GenPropertyTypesService {
 	
 	
 	findById(id: number, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.findOne(PropertyTypes, {
 			id: id
 		});

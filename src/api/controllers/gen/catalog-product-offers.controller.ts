@@ -1,3 +1,11 @@
+/*
+ * This code was generated automatically
+ * and should not be modifiyed manyally,
+ * becouse it can be overwritten in any
+ * moment. All modifications are allowed
+ * in api/controllers/catalog-product-offers.controller
+ * in a proper way.
+ */
 import { AuthInfo } from './../../../decorators/auth.decorator'
 import { ApiKeys } from './../../../entities/ApiKeys'
 import { CreateCatalogProductOfferDto } from './../../dtos/create-catalog-product-offer.dto'
@@ -8,7 +16,7 @@ import { CatalogsService } from './../../services/catalogs.service'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { ApiExcludeEndpoint, ApiHeader, ApiTags } from '@nestjs/swagger'
+import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))
@@ -39,7 +47,7 @@ export class GenCatalogProductOffersController {
 		return entity;
 	}
 	
-	@ApiExcludeEndpoint() validateRead(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint) { }
+	validateRead(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint) { }
 	
 	@Post()
 	async create(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Body() createDto: CreateCatalogProductOfferDto) {
@@ -58,12 +66,16 @@ export class GenCatalogProductOffersController {
 			if(existed0!==null){
 				throw new HttpException('Duplicate (catalog, article)', HttpStatus.CONFLICT);
 			}
+			const tmp2 = await this.catalogProductsService.findById(createDto.product, em);
+			if(tmp2===null){
+				throw new HttpException('Not found contrainst (product)', HttpStatus.CONFLICT);
+			}
 			this.validateCreate(apiKey, catalog, product, createDto, em);
 			return await this.catalogProductOffersService.create(createDto, em);
 		});
 	}
 	
-	@ApiExcludeEndpoint() validateCreate(apiKey: ApiKeys, catalog: number, product: bigint, createDto: CreateCatalogProductOfferDto, em: EntityManager) { }
+	validateCreate(apiKey: ApiKeys, catalog: number, product: bigint, createDto: CreateCatalogProductOfferDto, em: EntityManager) { }
 	
 	@Patch(':id')
 	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('id') id: bigint, @Body() updateDto: UpdateCatalogProductOfferDto) {
@@ -79,6 +91,12 @@ export class GenCatalogProductOffersController {
 		}
 		return await this.catalogProductOffersService.transactional(async (em) => {
 			const entity = await this.catalogProductOffersService.findById(id, em);
+			if((updateDto.product!==undefined && updateDto.product!==entity.product.id)){
+				const tmp3 = await this.catalogProductsService.findById(updateDto.product, em);
+				if(tmp3===null){
+					throw new HttpException('Not found contrainst (product)', HttpStatus.CONFLICT);
+				}
+			}
 			if(entity===null || entity.catalog.id!==catalog){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
@@ -93,7 +111,7 @@ export class GenCatalogProductOffersController {
 		});
 	}
 	
-	@ApiExcludeEndpoint() validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint, updateDto: UpdateCatalogProductOfferDto, em: EntityManager) { }
+	validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint, updateDto: UpdateCatalogProductOfferDto, em: EntityManager) { }
 	
 	@Delete(':id')
 	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('id') id: bigint) {
@@ -115,6 +133,6 @@ export class GenCatalogProductOffersController {
 		});
 	}
 	
-	@ApiExcludeEndpoint() validateDelete(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint, em: EntityManager) { }
+	validateDelete(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint, em: EntityManager) { }
 	
 }

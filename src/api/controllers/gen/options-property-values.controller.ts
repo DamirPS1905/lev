@@ -1,3 +1,11 @@
+/*
+ * This code was generated automatically
+ * and should not be modifiyed manyally,
+ * becouse it can be overwritten in any
+ * moment. All modifications are allowed
+ * in api/controllers/options-property-values.controller
+ * in a proper way.
+ */
 import { AuthInfo } from './../../../decorators/auth.decorator'
 import { ApiKeys } from './../../../entities/ApiKeys'
 import { CreateOptionsPropertyValueDto } from './../../dtos/create-options-property-value.dto'
@@ -8,7 +16,7 @@ import { OptionsPropertyValuesService } from './../../services/options-property-
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { ApiExcludeEndpoint, ApiHeader, ApiTags } from '@nestjs/swagger'
+import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))
@@ -35,7 +43,7 @@ export class GenOptionsPropertyValuesController {
 		return entity;
 	}
 	
-	@ApiExcludeEndpoint() validateRead(entity, apiKey: ApiKeys, catalog: number, id: number) { }
+	validateRead(entity, apiKey: ApiKeys, catalog: number, id: number) { }
 	
 	@Post()
 	async create(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Body() createDto: CreateOptionsPropertyValueDto) {
@@ -57,7 +65,7 @@ export class GenOptionsPropertyValuesController {
 		});
 	}
 	
-	@ApiExcludeEndpoint() validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreateOptionsPropertyValueDto, em: EntityManager) { }
+	validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreateOptionsPropertyValueDto, em: EntityManager) { }
 	
 	@Patch(':id')
 	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateOptionsPropertyValueDto) {
@@ -87,7 +95,7 @@ export class GenOptionsPropertyValuesController {
 		});
 	}
 	
-	@ApiExcludeEndpoint() validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdateOptionsPropertyValueDto, em: EntityManager) { }
+	validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdateOptionsPropertyValueDto, em: EntityManager) { }
 	
 	@Delete(':id')
 	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
@@ -105,6 +113,6 @@ export class GenOptionsPropertyValuesController {
 		});
 	}
 	
-	@ApiExcludeEndpoint() validateDelete(entity, apiKey: ApiKeys, catalog: number, id: number, em: EntityManager) { }
+	validateDelete(entity, apiKey: ApiKeys, catalog: number, id: number, em: EntityManager) { }
 	
 }

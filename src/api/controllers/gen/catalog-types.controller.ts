@@ -1,20 +1,30 @@
+/*
+ * This code was generated automatically
+ * and should not be modifiyed manyally,
+ * becouse it can be overwritten in any
+ * moment. All modifications are allowed
+ * in api/controllers/catalog-types.controller
+ * in a proper way.
+ */
 import { AuthInfo } from './../../../decorators/auth.decorator'
 import { ApiKeys } from './../../../entities/ApiKeys'
 import { CreateCatalogTypeDto } from './../../dtos/create-catalog-type.dto'
 import { UpdateCatalogTypeDto } from './../../dtos/update-catalog-type.dto'
+import { CatalogTypesOverloadService } from './../../services/catalog-types-overload.service'
 import { CatalogTypesService } from './../../services/catalog-types.service'
 import { CatalogsService } from './../../services/catalogs.service'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { ApiExcludeEndpoint, ApiHeader, ApiTags } from '@nestjs/swagger'
+import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Catalog types')
-@Controller('catalog/:catalog/catalog-type')
+@Controller('catalog/:catalog/type')
 export class GenCatalogTypesController {
 	constructor(
+		protected readonly catalogTypesOverloadService: CatalogTypesOverloadService,
 		protected readonly catalogTypesService: CatalogTypesService,
 		protected readonly catalogsService: CatalogsService,
 	) { }
@@ -33,7 +43,7 @@ export class GenCatalogTypesController {
 		return entity;
 	}
 	
-	@ApiExcludeEndpoint() validateRead(entity, apiKey: ApiKeys, catalog: number, id: number) { }
+	validateRead(entity, apiKey: ApiKeys, catalog: number, id: number) { }
 	
 	@Post()
 	async create(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Body() createDto: CreateCatalogTypeDto) {
@@ -56,7 +66,7 @@ export class GenCatalogTypesController {
 		});
 	}
 	
-	@ApiExcludeEndpoint() validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreateCatalogTypeDto, em: EntityManager) { }
+	validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreateCatalogTypeDto, em: EntityManager) { }
 	
 	@Patch(':id')
 	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateCatalogTypeDto) {
@@ -87,7 +97,7 @@ export class GenCatalogTypesController {
 		});
 	}
 	
-	@ApiExcludeEndpoint() validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdateCatalogTypeDto, em: EntityManager) { }
+	validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdateCatalogTypeDto, em: EntityManager) { }
 	
 	@Delete(':id')
 	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
@@ -105,6 +115,6 @@ export class GenCatalogTypesController {
 		});
 	}
 	
-	@ApiExcludeEndpoint() validateDelete(entity, apiKey: ApiKeys, catalog: number, id: number, em: EntityManager) { }
+	validateDelete(entity, apiKey: ApiKeys, catalog: number, id: number, em: EntityManager) { }
 	
 }

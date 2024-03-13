@@ -1,3 +1,11 @@
+/*
+ * This code was generated automatically
+ * and should not be modifiyed manyally,
+ * becouse it can be overwritten in any
+ * moment. All modifications are allowed
+ * in nested class file
+ * in a proper way.
+ */
 import { CatalogBrandsController } from './controllers/catalog-brands.controller'
 import { CatalogProductOffersController } from './controllers/catalog-product-offers.controller'
 import { CatalogProductsController } from './controllers/catalog-products.controller'

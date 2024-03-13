@@ -1,3 +1,11 @@
+/*
+ * This code was generated automatically
+ * and should not be modifiyed manyally,
+ * becouse it can be overwritten in any
+ * moment. All modifications are allowed
+ * in api/services/catalog-products.service
+ * in a proper way.
+ */
 import { CatalogProducts } from './../../../entities/CatalogProducts'
 import { CreateCatalogProductDto } from './../../dtos/create-catalog-product.dto'
 import { UpdateCatalogProductDto } from './../../dtos/update-catalog-product.dto'
@@ -12,22 +20,26 @@ export class GenCatalogProductsService {
 		protected readonly em: EntityManager,
 	){}
 	
+	getEm(emt: EntityManager = null) {
+		return emt || this.em.fork();
+	}
+	
 	async create(createDto: CreateCatalogProductDto, emt: EntityManager = null) {
-		const em = emt || this.em.fork(),
+		const em = this.getEm(emt),
 		      instance = em.create(CatalogProducts, createDto);
 		await em.persist(instance).flush();
 		return instance;
 	}
 	
 	async update(instance: CatalogProducts, updateDto: UpdateCatalogProductDto, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		wrap(instance).assign(updateDto);
 		await em.persist(instance).flush();
 		return instance;
 	}
 	
 	remove(instance: CatalogProducts, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
 	
@@ -35,14 +47,14 @@ export class GenCatalogProductsService {
 	
 	
 	findByCatalogAndTitle(catalog: number, title: string, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.findOne(CatalogProducts, {
 			catalog: catalog, title: title
 		});
 	}
 	
 	findById(id: bigint, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.findOne(CatalogProducts, {
 			id: id
 		});

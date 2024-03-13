@@ -1,3 +1,11 @@
+/*
+ * This code was generated automatically
+ * and should not be modifiyed manyally,
+ * becouse it can be overwritten in any
+ * moment. All modifications are allowed
+ * in api/services/catalogs.service
+ * in a proper way.
+ */
 import { Catalogs } from './../../../entities/Catalogs'
 import { CreateCatalogDto } from './../../dtos/create-catalog.dto'
 import { UpdateCatalogDto } from './../../dtos/update-catalog.dto'
@@ -12,22 +20,26 @@ export class GenCatalogsService {
 		protected readonly em: EntityManager,
 	){}
 	
+	getEm(emt: EntityManager = null) {
+		return emt || this.em.fork();
+	}
+	
 	async create(createDto: CreateCatalogDto, emt: EntityManager = null) {
-		const em = emt || this.em.fork(),
+		const em = this.getEm(emt),
 		      instance = em.create(Catalogs, createDto);
 		await em.persist(instance).flush();
 		return instance;
 	}
 	
 	async update(instance: Catalogs, updateDto: UpdateCatalogDto, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		wrap(instance).assign(updateDto);
 		await em.persist(instance).flush();
 		return instance;
 	}
 	
 	remove(instance: Catalogs, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
 	
@@ -35,14 +47,14 @@ export class GenCatalogsService {
 	
 	
 	findByTitleAndCompany(title: string, company: number, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.findOne(Catalogs, {
 			title: title, company: company
 		});
 	}
 	
 	findById(id: number, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.findOne(Catalogs, {
 			id: id
 		});

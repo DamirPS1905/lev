@@ -1,3 +1,11 @@
+/*
+ * This code was generated automatically
+ * and should not be modifiyed manyally,
+ * becouse it can be overwritten in any
+ * moment. All modifications are allowed
+ * in api/services/actors.service
+ * in a proper way.
+ */
 import { Actors } from './../../../entities/Actors'
 import { CreateActorDto } from './../../dtos/create-actor.dto'
 import { UpdateActorDto } from './../../dtos/update-actor.dto'
@@ -12,22 +20,26 @@ export class GenActorsService {
 		protected readonly em: EntityManager,
 	){}
 	
+	getEm(emt: EntityManager = null) {
+		return emt || this.em.fork();
+	}
+	
 	async create(createDto: CreateActorDto, emt: EntityManager = null) {
-		const em = emt || this.em.fork(),
+		const em = this.getEm(emt),
 		      instance = em.create(Actors, createDto);
 		await em.persist(instance).flush();
 		return instance;
 	}
 	
 	async update(instance: Actors, updateDto: UpdateActorDto, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		wrap(instance).assign(updateDto);
 		await em.persist(instance).flush();
 		return instance;
 	}
 	
 	remove(instance: Actors, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
 	
@@ -35,14 +47,14 @@ export class GenActorsService {
 	
 	
 	findByTypeAndKey(type: number, key: number, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.findOne(Actors, {
 			type: type, key: key
 		});
 	}
 	
 	findById(id: number, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
+		const em = this.getEm(emt);
 		return em.findOne(Actors, {
 			id: id
 		});
