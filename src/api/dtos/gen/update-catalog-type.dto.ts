@@ -27,4 +27,8 @@ export class GenUpdateCatalogTypeDto {
 	@IsInt()
 	parent:number;
 	
+	root:boolean;
+	
+	level:number;
+	
 }

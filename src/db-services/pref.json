@@ -148,11 +148,11 @@
                 },
                 "root": {
                     "def": "def",
-                    "dto": false
+                    "dtoDisallow": true
                 },
                 "level": {
                     "def": "def",
-                    "dto": false
+                    "dtoDisallow": true
                 }
             }
         },

@@ -27,4 +27,8 @@ export class GenCreateCatalogTypeDto {
 	@IsInt()
 	parent:number;
 	
+	root:boolean;
+	
+	level:number;
+	
 }

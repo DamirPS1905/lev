@@ -15,7 +15,7 @@ import { CatalogPropertiesService } from './../../services/catalog-properties.se
 import { CatalogsService } from './../../services/catalogs.service'
 import { ProductPropertyValuesService } from './../../services/product-property-values.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, UseGuards } from '@nestjs/common'
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -31,8 +31,7 @@ export class GenProductPropertyValuesController {
 		protected readonly productPropertyValuesService: ProductPropertyValuesService,
 	) { }
 	
-	@Get('property/:property')
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('property', ParseIntPipe) property: number) {
+	async findOne(apiKey: ApiKeys, catalog: number, product: bigint, property: number) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
@@ -41,14 +40,13 @@ export class GenProductPropertyValuesController {
 		if(entity===null){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
-		this.validateRead(entity, apiKey, catalog, product, property);
+		await this.validateRead(entity, apiKey, catalog, product, property);
 		return entity;
 	}
 	
-	validateRead(entity, apiKey: ApiKeys, catalog: number, product: bigint, property: number) { }
+	async validateRead(entity, apiKey: ApiKeys, catalog: number, product: bigint, property: number) { }
 	
-	@Patch('property/:property')
-	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('property', ParseIntPipe) property: number, @Body() updateDto: UpdateProductPropertyValueDto) {
+	async update(apiKey: ApiKeys, catalog: number, product: bigint, property: number, updateDto: UpdateProductPropertyValueDto) {
 		updateDto.product = product;
 		updateDto.property = property;
 		const catalogIns0 = await this.catalogsService.findById(catalog);
@@ -69,7 +67,7 @@ export class GenProductPropertyValuesController {
 					throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
 				}
 			}
-			this.validateUpdate(entity, apiKey, catalog, product, property, updateDto, em);
+			await this.validateUpdate(entity, apiKey, catalog, product, property, updateDto, em);
 			if(entity===null){
 				return await this.productPropertyValuesService.update(entity, updateDto, em);
 			} else {
@@ -78,10 +76,9 @@ export class GenProductPropertyValuesController {
 		});
 	}
 	
-	validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, property: number, updateDto: UpdateProductPropertyValueDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, property: number, updateDto: UpdateProductPropertyValueDto, em: EntityManager) { }
 	
-	@Delete('property/:property')
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('property', ParseIntPipe) property: number) {
+	async delete(apiKey: ApiKeys, catalog: number, product: bigint, property: number) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
@@ -91,11 +88,11 @@ export class GenProductPropertyValuesController {
 			if(entity===null){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			this.validateDelete(entity, apiKey, catalog, product, property, em);
+			await this.validateDelete(entity, apiKey, catalog, product, property, em);
 			return await this.productPropertyValuesService.remove(entity, em);
 		});
 	}
 	
-	validateDelete(entity, apiKey: ApiKeys, catalog: number, product: bigint, property: number, em: EntityManager) { }
+	async validateDelete(entity, apiKey: ApiKeys, catalog: number, product: bigint, property: number, em: EntityManager) { }
 	
 }

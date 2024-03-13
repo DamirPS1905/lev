@@ -16,7 +16,7 @@ import { CatalogPropertiesService } from './../../services/catalog-properties.se
 import { CatalogsService } from './../../services/catalogs.service'
 import { OfferPropertyValuesService } from './../../services/offer-property-values.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, UseGuards } from '@nestjs/common'
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -33,8 +33,7 @@ export class GenOfferPropertyValuesController {
 		protected readonly offerPropertyValuesService: OfferPropertyValuesService,
 	) { }
 	
-	@Get('property/:property')
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('offer') offer: bigint, @Param('property', ParseIntPipe) property: number) {
+	async findOne(apiKey: ApiKeys, catalog: number, product: bigint, offer: bigint, property: number) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
@@ -47,14 +46,13 @@ export class GenOfferPropertyValuesController {
 		if(entity===null){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
-		this.validateRead(entity, apiKey, catalog, product, offer, property);
+		await this.validateRead(entity, apiKey, catalog, product, offer, property);
 		return entity;
 	}
 	
-	validateRead(entity, apiKey: ApiKeys, catalog: number, product: bigint, offer: bigint, property: number) { }
+	async validateRead(entity, apiKey: ApiKeys, catalog: number, product: bigint, offer: bigint, property: number) { }
 	
-	@Patch('property/:property')
-	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('offer') offer: bigint, @Param('property', ParseIntPipe) property: number, @Body() updateDto: UpdateOfferPropertyValueDto) {
+	async update(apiKey: ApiKeys, catalog: number, product: bigint, offer: bigint, property: number, updateDto: UpdateOfferPropertyValueDto) {
 		updateDto.offer = offer;
 		updateDto.property = property;
 		const catalogIns0 = await this.catalogsService.findById(catalog);
@@ -79,7 +77,7 @@ export class GenOfferPropertyValuesController {
 					throw new HttpException('Offer not found', HttpStatus.NOT_FOUND);
 				}
 			}
-			this.validateUpdate(entity, apiKey, catalog, product, offer, property, updateDto, em);
+			await this.validateUpdate(entity, apiKey, catalog, product, offer, property, updateDto, em);
 			if(entity===null){
 				return await this.offerPropertyValuesService.update(entity, updateDto, em);
 			} else {
@@ -88,10 +86,9 @@ export class GenOfferPropertyValuesController {
 		});
 	}
 	
-	validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, offer: bigint, property: number, updateDto: UpdateOfferPropertyValueDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, offer: bigint, property: number, updateDto: UpdateOfferPropertyValueDto, em: EntityManager) { }
 	
-	@Delete('property/:property')
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('offer') offer: bigint, @Param('property', ParseIntPipe) property: number) {
+	async delete(apiKey: ApiKeys, catalog: number, product: bigint, offer: bigint, property: number) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
@@ -105,11 +102,11 @@ export class GenOfferPropertyValuesController {
 			if(entity===null){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			this.validateDelete(entity, apiKey, catalog, product, offer, property, em);
+			await this.validateDelete(entity, apiKey, catalog, product, offer, property, em);
 			return await this.offerPropertyValuesService.remove(entity, em);
 		});
 	}
 	
-	validateDelete(entity, apiKey: ApiKeys, catalog: number, product: bigint, offer: bigint, property: number, em: EntityManager) { }
+	async validateDelete(entity, apiKey: ApiKeys, catalog: number, product: bigint, offer: bigint, property: number, em: EntityManager) { }
 	
 }

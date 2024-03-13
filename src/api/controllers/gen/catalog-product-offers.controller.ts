@@ -14,7 +14,7 @@ import { CatalogProductOffersService } from './../../services/catalog-product-of
 import { CatalogProductsService } from './../../services/catalog-products.service'
 import { CatalogsService } from './../../services/catalogs.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -29,8 +29,7 @@ export class GenCatalogProductOffersController {
 		protected readonly catalogsService: CatalogsService,
 	) { }
 	
-	@Get(':id')
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('id') id: bigint) {
+	async findOne(apiKey: ApiKeys, catalog: number, product: bigint, id: bigint) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
@@ -43,14 +42,13 @@ export class GenCatalogProductOffersController {
 		if(entity===null || entity.catalog.id!==catalog){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
-		this.validateRead(entity, apiKey, catalog, product, id);
+		await this.validateRead(entity, apiKey, catalog, product, id);
 		return entity;
 	}
 	
-	validateRead(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint) { }
+	async validateRead(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint) { }
 	
-	@Post()
-	async create(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Body() createDto: CreateCatalogProductOfferDto) {
+	async create(apiKey: ApiKeys, catalog: number, product: bigint, createDto: CreateCatalogProductOfferDto) {
 		createDto.product = product;
 		createDto.catalog = catalog;
 		const catalogIns0 = await this.catalogsService.findById(catalog);
@@ -70,15 +68,14 @@ export class GenCatalogProductOffersController {
 			if(tmp2===null){
 				throw new HttpException('Not found contrainst (product)', HttpStatus.CONFLICT);
 			}
-			this.validateCreate(apiKey, catalog, product, createDto, em);
+			await this.validateCreate(apiKey, catalog, product, createDto, em);
 			return await this.catalogProductOffersService.create(createDto, em);
 		});
 	}
 	
-	validateCreate(apiKey: ApiKeys, catalog: number, product: bigint, createDto: CreateCatalogProductOfferDto, em: EntityManager) { }
+	async validateCreate(apiKey: ApiKeys, catalog: number, product: bigint, createDto: CreateCatalogProductOfferDto, em: EntityManager) { }
 	
-	@Patch(':id')
-	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('id') id: bigint, @Body() updateDto: UpdateCatalogProductOfferDto) {
+	async update(apiKey: ApiKeys, catalog: number, product: bigint, id: bigint, updateDto: UpdateCatalogProductOfferDto) {
 		updateDto.product = product;
 		updateDto.catalog = catalog;
 		const catalogIns0 = await this.catalogsService.findById(catalog);
@@ -111,10 +108,9 @@ export class GenCatalogProductOffersController {
 		});
 	}
 	
-	validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint, updateDto: UpdateCatalogProductOfferDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint, updateDto: UpdateCatalogProductOfferDto, em: EntityManager) { }
 	
-	@Delete(':id')
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('id') id: bigint) {
+	async delete(apiKey: ApiKeys, catalog: number, product: bigint, id: bigint) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
@@ -128,11 +124,11 @@ export class GenCatalogProductOffersController {
 			if(entity===null || entity.catalog.id!==catalog){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			this.validateDelete(entity, apiKey, catalog, product, id, em);
+			await this.validateDelete(entity, apiKey, catalog, product, id, em);
 			return await this.catalogProductOffersService.remove(entity, em);
 		});
 	}
 	
-	validateDelete(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint, em: EntityManager) { }
+	async validateDelete(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint, em: EntityManager) { }
 	
 }

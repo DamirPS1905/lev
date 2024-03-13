@@ -13,7 +13,7 @@ import { UpdateCatalogBrandDto } from './../../dtos/update-catalog-brand.dto'
 import { CatalogBrandsService } from './../../services/catalog-brands.service'
 import { CatalogsService } from './../../services/catalogs.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -27,8 +27,7 @@ export class GenCatalogBrandsController {
 		protected readonly catalogsService: CatalogsService,
 	) { }
 	
-	@Get(':id')
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
+	async findOne(apiKey: ApiKeys, catalog: number, id: number) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
@@ -37,14 +36,13 @@ export class GenCatalogBrandsController {
 		if(entity===null || entity.catalog.id!==catalog){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
-		this.validateRead(entity, apiKey, catalog, id);
+		await this.validateRead(entity, apiKey, catalog, id);
 		return entity;
 	}
 	
-	validateRead(entity, apiKey: ApiKeys, catalog: number, id: number) { }
+	async validateRead(entity, apiKey: ApiKeys, catalog: number, id: number) { }
 	
-	@Post()
-	async create(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Body() createDto: CreateCatalogBrandDto) {
+	async create(apiKey: ApiKeys, catalog: number, createDto: CreateCatalogBrandDto) {
 		createDto.catalog = catalog;
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
@@ -55,15 +53,14 @@ export class GenCatalogBrandsController {
 			if(existed0!==null){
 				throw new HttpException('Duplicate (catalog, title)', HttpStatus.CONFLICT);
 			}
-			this.validateCreate(apiKey, catalog, createDto, em);
+			await this.validateCreate(apiKey, catalog, createDto, em);
 			return await this.catalogBrandsService.create(createDto, em);
 		});
 	}
 	
-	validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreateCatalogBrandDto, em: EntityManager) { }
+	async validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreateCatalogBrandDto, em: EntityManager) { }
 	
-	@Patch(':id')
-	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateCatalogBrandDto) {
+	async update(apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdateCatalogBrandDto) {
 		updateDto.catalog = catalog;
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
@@ -85,10 +82,9 @@ export class GenCatalogBrandsController {
 		});
 	}
 	
-	validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdateCatalogBrandDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdateCatalogBrandDto, em: EntityManager) { }
 	
-	@Delete(':id')
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
+	async delete(apiKey: ApiKeys, catalog: number, id: number) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
@@ -98,11 +94,11 @@ export class GenCatalogBrandsController {
 			if(entity===null || entity.catalog.id!==catalog){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			this.validateDelete(entity, apiKey, catalog, id, em);
+			await this.validateDelete(entity, apiKey, catalog, id, em);
 			return await this.catalogBrandsService.remove(entity, em);
 		});
 	}
 	
-	validateDelete(entity, apiKey: ApiKeys, catalog: number, id: number, em: EntityManager) { }
+	async validateDelete(entity, apiKey: ApiKeys, catalog: number, id: number, em: EntityManager) { }
 	
 }
