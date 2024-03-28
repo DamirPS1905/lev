@@ -30,8 +30,6 @@ export class GenCreateCatalogBrandDto {
 	
 	@IsOptional()
 	@ApiProperty({ required: false, description: 'Изображение бренда' })
-	@IsString()
-	@Transform(({ value }: TransformFnParams) => value?.trim())
-	logo:string;
+	logo:any;
 	
 }

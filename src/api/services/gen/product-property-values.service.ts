@@ -60,10 +60,41 @@ export class GenProductPropertyValuesService {
 		});
 	}
 	
+	listByProperty(property: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(ProductPropertyValues, {
+			property: property
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { product : 'ASC', property : 'ASC' },
+		});
+	}
+	
 	findAllByProduct(product: bigint, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(ProductPropertyValues, {
 			product: product
+		});
+	}
+	
+	listByProduct(product: bigint, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(ProductPropertyValues, {
+			product: product
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { product : 'ASC', property : 'ASC' },
+		});
+	}
+	
+	listAll(offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(ProductPropertyValues, { }, {
+			limit: limit,
+			offset: offset,
+			orderBy: { product : 'ASC', property : 'ASC' },
 		});
 	}
 	

@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, PrimaryKeyProp, Property } from '@mikro-orm/core';
+import { Entity, Index, ManyToOne, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { CatalogProducts } from './CatalogProducts';
 import { CatalogProperties } from './CatalogProperties';
 
@@ -13,7 +13,8 @@ export class ProductPropertyValues {
   @ManyToOne({ entity: () => CatalogProperties, fieldName: 'property', primary: true })
   property!: CatalogProperties;
 
-  @Property({ columnType: 'jsonb' })
-  value!: any;
+  @Index({ name: 'product_property_values_keys_ind' })
+  @Property()
+  valueKey!: bigint;
 
 }

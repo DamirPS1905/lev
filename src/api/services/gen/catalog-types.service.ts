@@ -67,10 +67,41 @@ export class GenCatalogTypesService {
 		});
 	}
 	
+	listByCatalog(catalog: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogTypes, {
+			catalog: catalog
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
 	findAllByParent(parent: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(CatalogTypes, {
 			parent: parent
+		});
+	}
+	
+	listByParent(parent: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogTypes, {
+			parent: parent
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
+	listAll(offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogTypes, { }, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
 		});
 	}
 	

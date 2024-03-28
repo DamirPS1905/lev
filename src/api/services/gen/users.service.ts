@@ -67,10 +67,41 @@ export class GenUsersService {
 		});
 	}
 	
+	listByActor(actor: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(Users, {
+			actor: actor
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
 	findAllByCompany(company: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(Users, {
 			company: company
+		});
+	}
+	
+	listByCompany(company: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(Users, {
+			company: company
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
+	listAll(offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(Users, { }, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
 		});
 	}
 	

@@ -34,7 +34,9 @@
             "dto": true,
             "dtoRequired": "create",
             "dtoMin": 1,
-            "dtoMax": 255
+            "dtoMax": 255,
+            "dtoTrim": true,
+            "dtoDisallow": false
         },
         "catalog": {
             "dto": true,
@@ -47,7 +49,8 @@
             "fillDtoFrom": "catalog",
             "readValidate": "!==catalog",
             "readForWriteValidate": "!==catalog",
-            "ignoreFk": true
+            "ignoreFk": true,
+            "allFilter": true
         },
         "pk": {
             "dto": true,
@@ -97,11 +100,11 @@
                     "key": "catalog",
                     "type": "number",
                     "var": "catalog",
-                    "load":{
-	                    "as": "catalogs",
-	                    "validate": "@@.company.id===apiKey.company.id",
-	                    "eCode": "NOT_FOUND",
-	                    "eMessage": "Catalog not found"
+                    "load": {
+                        "as": "catalogs",
+                        "validate": "@@.company.id===apiKey.company.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Catalog not found"
                     }
                 }
             ]
@@ -110,7 +113,11 @@
     "entities": {
         "catalogs": {
             "def": "def",
-            "controller": false,
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": false,
+            "list": true,
             "fields": {
                 "id": {
                     "def": "id"
@@ -139,11 +146,11 @@
                 },
                 "parent": {
                     "def": "def",
-                    "load":{
-	                    "as": "catalog_types",
-	                    "validate": "@@.catalog.id===catalog",
-	                    "eCode": "CONFLICT",
-	                    "eMessage": "Parent type not found"
+                    "load": {
+                        "as": "catalog_types",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "CONFLICT",
+                        "eMessage": "Parent type not found"
                     }
                 },
                 "root": {
@@ -193,21 +200,21 @@
                 "type": {
                     "def": "def",
                     "dtoRequired": "create",
-                    "load":{
-	                    "as": "catalog_types",
-	                    "validate": "@@.catalog.id===catalog",
-	                    "eCode": "CONFLICT",
-	                    "eMessage": "Type not found"
+                    "load": {
+                        "as": "catalog_types",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "CONFLICT",
+                        "eMessage": "Type not found"
                     }
                 },
                 "brand": {
                     "def": "def",
                     "dtoRequired": "create",
-                    "load":{
-	                    "as": "catalog_brands",
-	                    "validate": "@@.catalog.id===catalog",
-	                    "eCode": "CONFLICT",
-	                    "eMessage": "Brand not found"
+                    "load": {
+                        "as": "catalog_brands",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "CONFLICT",
+                        "eMessage": "Brand not found"
                     }
                 },
                 "title": {
@@ -223,31 +230,6 @@
             "def": "catDef",
             "apiPathName": "offer",
             "apiPrefix": "catalog\/:catalog\/product\/:product",
-            "extraRouteParams": [
-                {
-                    "key": "catalog",
-                    "type": "number",
-                    "var": "catalog",
-                    "load":{
-	                    "as": "catalogs",
-	                    "validate": "@@.company.id===apiKey.company.id",
-	                    "eCode": "NOT_FOUND",
-	                    "eMessage": "Catalog not found"
-                    }
-                },
-                {
-                    "key": "product",
-                    "type": "bigint",
-                    "var": "product",
-                    "load":{
-	                    "as": "catalog_products",
-	                    "validate": "@@.catalog.id===catalog",
-	                    "eCode": "NOT_FOUND",
-	                    "eMessage": "Product not found"
-                    }
-                }
-
-            ],
             "fields": {
                 "id": {
                     "def": "id"
@@ -266,7 +248,31 @@
                     "def": "def",
                     "dto": false
                 }
-            }
+            },
+            "extraRouteParams": [
+                {
+                    "key": "catalog",
+                    "type": "number",
+                    "var": "catalog",
+                    "load": {
+                        "as": "catalogs",
+                        "validate": "@@.company.id===apiKey.company.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Catalog not found"
+                    }
+                },
+                {
+                    "key": "product",
+                    "type": "bigint",
+                    "var": "product",
+                    "load": {
+                        "as": "catalog_products",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Product not found"
+                    }
+                }
+            ]
         },
         "property_types": {
             "def": "catDef",
@@ -303,60 +309,63 @@
         },
         "offer_property_values": {
             "def": "def",
-            "create": false,
             "apiPathName": "offer\/:offer",
+            "create": false,
             "apiPrefix": "catalog\/:catalog\/product\/:product",
-            "methodPath": "property/:property",
+            "methodPath": "property\/:property",
+            "fields": {
+                "offer": {
+                    "def": "pk",
+                    "fillDtoFrom": "offer",
+                    "load": {
+                        "as": "catalog_product_offers",
+                        "validate": "@@.product.id===product",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Offer not found"
+                    }
+                },
+                "property": {
+                    "def": "pk",
+                    "fillDtoFrom": "property",
+                    "load": {
+                        "as": "catalog_properties",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Property not found"
+                    }
+                },
+                "value": {
+                    "def": "def",
+                    "dtoRequired": true
+                },
+                "value_key": {
+                    "def": "def"
+                }
+            },
             "extraRouteParams": [
                 {
                     "key": "catalog",
                     "type": "number",
                     "var": "catalog",
-                    "load":{
-	                    "as": "catalogs",
-	                    "validate": "@@.company.id===apiKey.company.id",
-	                    "eCode": "NOT_FOUND",
-	                    "eMessage": "Catalog not found"
+                    "load": {
+                        "as": "catalogs",
+                        "validate": "@@.company.id===apiKey.company.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Catalog not found"
                     }
                 },
                 {
                     "key": "product",
                     "type": "bigint",
                     "var": "product",
-                    "load":{
-	                    "as": "catalog_products",
-	                    "validate": "@@.catalog.id===catalog",
-	                    "eCode": "NOT_FOUND",
-	                    "eMessage": "Product not found"
+                    "load": {
+                        "as": "catalog_products",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Product not found"
                     }
                 }
-            ],
-            "fields": {
-                "offer": {
-                    "def": "pk",
-                    "fillDtoFrom": "offer",
-                    "load":{
-	                    "as": "catalog_product_offers",
-	                    "validate": "@@.product.id===product",
-	                    "eCode": "NOT_FOUND",
-	                    "eMessage": "Offer not found"
-                    }
-                },
-                "property": {
-                    "def": "pk",
-                    "fillDtoFrom": "property",
-                    "load":{
-	                    "as": "catalog_properties",
-	                    "validate": "@@.catalog.id===catalog",
-	                    "eCode": "NOT_FOUND",
-	                    "eMessage": "Property not found"
-                    }
-                },
-                "value": {
-                    "def": "def",
-                    "dtoRequired": true
-                }
-            }
+            ]
         },
         "catalog_properties": {
             "def": "catDef",
@@ -391,11 +400,11 @@
                 },
                 "property": {
                     "def": "def",
-                    "load":{
-	                    "as": "catalog_properties",
-	                    "validate": "@@.catalog.id===catalog",
-	                    "eCode": "CONFLICT",
-	                    "eMessage": "Property not found"
+                    "load": {
+                        "as": "catalog_properties",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "CONFLICT",
+                        "eMessage": "Property not found"
                     }
                 },
                 "value": {
@@ -410,49 +419,52 @@
         },
         "product_property_values": {
             "def": "def",
-            "create": false,
             "apiPathName": "product\/:product",
+            "create": false,
             "apiPrefix": "catalog\/:catalog",
-            "methodPath": "property/:property",
-            "extraRouteParams": [
-                {
-                    "key": "catalog",
-                    "type": "number",
-                    "var": "catalog",
-                    "load":{
-	                    "as": "catalogs",
-	                    "validate": "@@.company.id===apiKey.company.id",
-	                    "eCode": "NOT_FOUND",
-	                    "eMessage": "Catalog not found"
-                    }
-                }
-            ],
+            "methodPath": "property\/:property",
             "fields": {
                 "product": {
                     "def": "pk",
                     "fillDtoFrom": "product",
-                    "load":{
-	                    "as": "catalog_products",
-	                    "validate": "@@.catalog.id===catalog",
-	                    "eCode": "NOT_FOUND",
-	                    "eMessage": "Product not found"
+                    "load": {
+                        "as": "catalog_products",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Product not found"
                     }
                 },
                 "property": {
                     "def": "pk",
                     "fillDtoFrom": "property",
-                    "load":{
-	                    "as": "catalog_properties",
-	                    "validate": "@@.catalog.id===catalog",
-	                    "eCode": "NOT_FOUND",
-	                    "eMessage": "Property not found"
+                    "load": {
+                        "as": "catalog_properties",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Property not found"
                     }
                 },
                 "value": {
                     "def": "def",
                     "dtoRequired": true
+                },
+                "value_key": {
+                    "def": "def"
                 }
-            }
+            },
+            "extraRouteParams": [
+                {
+                    "key": "catalog",
+                    "type": "number",
+                    "var": "catalog",
+                    "load": {
+                        "as": "catalogs",
+                        "validate": "@@.company.id===apiKey.company.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Catalog not found"
+                    }
+                }
+            ]
         },
         "actor_types": {
             "def": "def",
@@ -540,6 +552,317 @@
                     "def": "def"
                 },
                 "title": {
+                    "def": "def"
+                }
+            }
+        },
+        "metatypes": {
+            "def": "def",
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": false,
+            "list": true,
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "title": {
+                    "def": "def"
+                }
+            }
+        },
+        "catalog_metatypes": {
+            "def": "def",
+            "controller": false,
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "catalog": {
+                    "def": "def"
+                },
+                "metatype": {
+                    "def": "def"
+                }
+            }
+        },
+        "unit_groups": {
+            "def": "def",
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "title": {
+                    "def": "def"
+                },
+                "company": {
+                    "def": "def",
+                    "dto": "create",
+                    "dtoDisallow": true,
+                    "fillDtoFrom": "apiKey.company.id"
+                },
+                "description": {
+                    "def": "def"
+                },
+                "base": {
+                    "def": "def"
+                }
+            }
+        },
+        "units": {
+            "def": "def",
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "company": {
+                    "def": "def",
+                    "dto": "create",
+                    "dtoDisallow": true,
+                    "fillDtoFrom": "apiKey.company.id"
+                },
+                "title": {
+                    "def": "def"
+                },
+                "abbr": {
+                    "def": "def"
+                },
+                "group": {
+                    "def": "def"
+                },
+                "add": {
+                    "def": "def"
+                },
+                "factor": {
+                    "def": "def"
+                }
+            }
+        },
+        "currencies": {
+            "def": "def",
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": false,
+            "list": true,
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "key": {
+                    "def": "def"
+                },
+                "title": {
+                    "def": "def"
+                },
+                "symbol": {
+                    "def": "def"
+                },
+                "precision": {
+                    "def": "def"
+                },
+                "icon": {
+                    "def": "def"
+                }
+            }
+        },
+        "rates_sources": {
+            "def": "def",
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": false,
+            "list": true,
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "title": {
+                    "def": "def"
+                },
+                "base_currency": {
+                    "def": "def"
+                },
+                "timezone": {
+                    "def": "def"
+                },
+                "fine": {
+                    "def": "def"
+                },
+                "fine_at": {
+                    "def": "def"
+                },
+                "problem_info": {
+                    "def": "def"
+                }
+            }
+        },
+        "rates": {
+            "def": "def",
+            "fields": {
+                "from": {
+                    "def": "def"
+                },
+                "to": {
+                    "def": "def"
+                },
+                "source": {
+                    "def": "def"
+                },
+                "rate": {
+                    "def": "def"
+                },
+                "updated_at": {
+                    "def": "def"
+                }
+            }
+        },
+        "rates_history": {
+            "def": "def",
+            "fields": {
+                "from": {
+                    "def": "def"
+                },
+                "to": {
+                    "def": "def"
+                },
+                "source": {
+                    "def": "def"
+                },
+                "date": {
+                    "def": "def"
+                },
+                "rate": {
+                    "def": "def"
+                }
+            }
+        },
+        "price_types": {
+            "def": "def",
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "company": {
+                    "def": "def"
+                },
+                "title": {
+                    "def": "def"
+                },
+                "display_currency": {
+                    "def": "def"
+                }
+            }
+        },
+        "product_prices": {
+            "def": "def",
+            "create": false,
+            "fields": {
+                "product": {
+                    "def": "pk"
+                },
+                "price_type": {
+                    "def": "pk"
+                },
+                "value": {
+                    "def": "def"
+                },
+                "currency": {
+                    "def": "def"
+                },
+                "updated_at": {
+                    "def": "def",
+                    "dto": false
+                },
+                "last_change": {
+                    "def": "def",
+                    "dto": false
+                }
+            }
+        },
+        "offers_prices": {
+            "def": "def",
+            "create": false,
+            "fields": {
+                "offer": {
+                    "def": "pk"
+                },
+                "price_type": {
+                    "def": "pk"
+                },
+                "value": {
+                    "def": "def"
+                },
+                "currency": {
+                    "def": "def"
+                },
+                "updated_at": {
+                    "def": "def",
+                    "dto": false
+                },
+                "last_change": {
+                    "def": "def",
+                    "dto": false
+                }
+            }
+        },
+        "stores": {
+            "def": "def",
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "company": {
+                    "def": "def"
+                },
+                "title": {
+                    "def": "def"
+                },
+                "address": {
+                    "def": "def"
+                },
+                "geo_lat": {
+                    "def": "def"
+                },
+                "geo_long": {
+                    "def": "def"
+                }
+            }
+        },
+        "offer_amounts": {
+            "def": "def",
+            "create": false,
+            "fields": {
+                "offer": {
+                    "def": "pk"
+                },
+                "store": {
+                    "def": "pk"
+                },
+                "amount": {
+                    "def": "def"
+                },
+                "changed_at": {
+                    "def": "def",
+                    "dto": false
+                }
+            }
+        },
+        "property_values": {
+            "def": "def",
+            "controller": false,
+            "fields": {
+                "value_key": {
+                    "def": "def"
+                },
+                "order": {
+                    "def": "def"
+                },
+                "type": {
+                    "def": "def"
+                },
+                "value": {
                     "def": "def"
                 }
             }

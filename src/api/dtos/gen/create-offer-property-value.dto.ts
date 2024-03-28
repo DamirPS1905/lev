@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty } from 'class-validator'
+import { IsOptional } from 'class-validator'
 
 export class GenCreateOfferPropertyValueDto {
 	
@@ -15,8 +15,8 @@ export class GenCreateOfferPropertyValueDto {
 	
 	property:number;
 	
-	@IsNotEmpty()
-	@ApiProperty()
-	value:any;
+	@IsOptional()
+	@ApiProperty({ required: false })
+	valueKey:bigint;
 	
 }

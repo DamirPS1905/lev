@@ -2,6 +2,7 @@ import { GenCatalogTypesService } from './gen/catalog-types.service';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/postgresql'
 import { CatalogTypes } from './../../entities/CatalogTypes'
+import { CatalogTypesOverload } from './../../entities/CatalogTypesOverload'
 
 @Injectable()
 export class CatalogTypesService extends GenCatalogTypesService {
@@ -28,5 +29,32 @@ export class CatalogTypesService extends GenCatalogTypesService {
 		return children.length>0;
   }
 
+	async readTree(treeRoot, emt: EntityManager = null){
+		const em = this.getEm(emt),
+					conn = em.getConnection(),
+					qb = em.createQueryBuilder(CatalogTypesOverload, 'o')
+							.join('o.child', 'ch')
+							.select('ch.*')
+							.orderBy({ delta: 'ASC', "ch.title": 'ASC' })
+							.where('o.parent = ?', [treeRoot.id]);
+		console.log(qb.getQuery());
+		const tree = {
+						id: treeRoot.id,
+						title: treeRoot.title,
+						children: []
+					},
+					dict = {},
+					list = await conn.execute(qb.getKnexQuery());
+		dict[treeRoot.id] = tree;
+		for(let item of list){
+			dict[item.id] = {
+				id: item.id,
+				title: item.title,
+				children: []
+			};
+			dict[item.parent].children.push(dict[item.id]);
+		}
+		return tree;
+	}
 	
 }

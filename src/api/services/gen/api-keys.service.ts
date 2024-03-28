@@ -67,10 +67,41 @@ export class GenApiKeysService {
 		});
 	}
 	
+	listByActor(actor: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(ApiKeys, {
+			actor: actor
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
 	findAllByCompany(company: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(ApiKeys, {
 			company: company
+		});
+	}
+	
+	listByCompany(company: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(ApiKeys, {
+			company: company
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
+	listAll(offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(ApiKeys, { }, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
 		});
 	}
 	

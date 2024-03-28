@@ -67,5 +67,25 @@ export class GenOptionsPropertyValuesService {
 		});
 	}
 	
+	listByProperty(property: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(OptionsPropertyValues, {
+			property: property
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
+	listAll(offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(OptionsPropertyValues, { }, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
 	
 }

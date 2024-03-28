@@ -15,6 +15,12 @@ export class CatalogTypesController extends GenCatalogTypesController {
 		return await super.findOne(apiKey, catalog, await this.processInputType(catalog, id));
 	}
 	
+	@Get(':id/tree')
+	async getTree(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
+		const one = await super.findOne(apiKey, catalog, await this.processInputType(catalog, id));
+		return await this.catalogTypesService.readTree(one);
+	}
+	
 	@Post()
 	async create(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Body() createDto: CreateCatalogTypeDto) {
 		createDto.parent = await this.processInputType(catalog, createDto.parent);

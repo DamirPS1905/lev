@@ -60,10 +60,41 @@ export class GenCatalogTypesOverloadService {
 		});
 	}
 	
+	listByChild(child: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogTypesOverload, {
+			child: child
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { child : 'ASC', parent : 'ASC' },
+		});
+	}
+	
 	findAllByParent(parent: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(CatalogTypesOverload, {
 			parent: parent
+		});
+	}
+	
+	listByParent(parent: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogTypesOverload, {
+			parent: parent
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { child : 'ASC', parent : 'ASC' },
+		});
+	}
+	
+	listAll(offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogTypesOverload, { }, {
+			limit: limit,
+			offset: offset,
+			orderBy: { child : 'ASC', parent : 'ASC' },
 		});
 	}
 	

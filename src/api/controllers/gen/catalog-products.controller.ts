@@ -31,6 +31,17 @@ export class GenCatalogProductsController {
 		protected readonly catalogsService: CatalogsService,
 	) { }
 	
+	async findAll(apiKey: ApiKeys, catalog: number, offset: number, limit: number) {
+		const catalogIns0 = await this.catalogsService.findById(catalog);
+		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
+		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
+		if(limit>1000) limit = 1000; // throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
+		return await this.catalogProductsService.listByCatalog(catalog, offset, limit);
+	}
+	
 	async findOne(apiKey: ApiKeys, catalog: number, id: bigint) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){

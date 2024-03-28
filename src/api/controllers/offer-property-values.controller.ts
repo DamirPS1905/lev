@@ -5,10 +5,15 @@ import { UpdateOfferPropertyValueDto } from './../dtos/update-offer-property-val
 import { OfferPropertyValuesService } from './../services/offer-property-values.service'
 import { GenOfferPropertyValuesController } from './gen/offer-property-values.controller'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Body, Delete, Get, Param, ParseIntPipe, Patch } from '@nestjs/common'
+import { Body, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Patch, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 
 export class OfferPropertyValuesController extends GenOfferPropertyValuesController {
+	
+	@Get('all')
+	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
+		return await super.findAll(apiKey, catalog, product, offset, limit);
+	}
 	
 	@Get('property/:property')
 	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('offer') offer: bigint, @Param('property', ParseIntPipe) property: number) {

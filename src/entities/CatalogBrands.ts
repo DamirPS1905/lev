@@ -16,7 +16,7 @@ export class CatalogBrands {
   @Property({ columnType: 'text', nullable: true })
   description?: string;
 
-  @Property({ nullable: true })
-  logo?: string;
+  @Property({ columnType: 'jsonb', nullable: true })
+  logo?: any;
 
 }

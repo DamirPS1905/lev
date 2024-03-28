@@ -1,6 +1,8 @@
-import { Entity, ManyToOne, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { Collection, Entity, ManyToMany, ManyToOne, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
 import { CatalogProducts } from './CatalogProducts';
 import { Catalogs } from './Catalogs';
+import { OfferAmounts } from './OfferAmounts';
+import { Stores } from './Stores';
 
 @Entity()
 export class CatalogProductOffers {
@@ -19,5 +21,8 @@ export class CatalogProductOffers {
 
   @Property({ length: 6 })
   created!: Date;
+
+  @ManyToMany({ entity: () => Stores, pivotTable: 'offer_amounts', pivotEntity: () => OfferAmounts, joinColumn: 'offer', inverseJoinColumn: 'store' })
+  offerAmounts = new Collection<Stores>(this);
 
 }

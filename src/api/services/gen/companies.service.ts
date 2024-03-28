@@ -60,5 +60,14 @@ export class GenCompaniesService {
 		});
 	}
 	
+	listAll(offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(Companies, { }, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
 	
 }

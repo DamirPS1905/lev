@@ -5,10 +5,15 @@ import { UpdateCatalogBrandDto } from './../dtos/update-catalog-brand.dto'
 import { CatalogBrandsService } from './../services/catalog-brands.service'
 import { GenCatalogBrandsController } from './gen/catalog-brands.controller'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Body, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common'
+import { Body, Delete, Get, Param, ParseIntPipe, DefaultValuePipe, Patch, Post, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 
 export class CatalogBrandsController extends GenCatalogBrandsController {
+	
+	@Get('all')
+	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
+		return await super.findAll(apiKey, catalog, offset, limit);
+	}
 	
 	@Get(':id')
 	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {

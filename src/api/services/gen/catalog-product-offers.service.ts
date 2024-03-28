@@ -67,10 +67,41 @@ export class GenCatalogProductOffersService {
 		});
 	}
 	
+	listByProduct(product: bigint, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogProductOffers, {
+			product: product
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
 	findAllByCatalog(catalog: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(CatalogProductOffers, {
 			catalog: catalog
+		});
+	}
+	
+	listByCatalog(catalog: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogProductOffers, {
+			catalog: catalog
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
+	listAll(offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogProductOffers, { }, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
 		});
 	}
 	

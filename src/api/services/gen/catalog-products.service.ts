@@ -67,6 +67,17 @@ export class GenCatalogProductsService {
 		});
 	}
 	
+	listByBrand(brand: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogProducts, {
+			brand: brand
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
 	findAllByType(type: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(CatalogProducts, {
@@ -74,10 +85,41 @@ export class GenCatalogProductsService {
 		});
 	}
 	
+	listByType(type: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogProducts, {
+			type: type
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
 	findAllByCatalog(catalog: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(CatalogProducts, {
 			catalog: catalog
+		});
+	}
+	
+	listByCatalog(catalog: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogProducts, {
+			catalog: catalog
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
+	listAll(offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogProducts, { }, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
 		});
 	}
 	

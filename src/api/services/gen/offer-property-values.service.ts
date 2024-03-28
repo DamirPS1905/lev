@@ -60,10 +60,41 @@ export class GenOfferPropertyValuesService {
 		});
 	}
 	
+	listByProperty(property: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(OfferPropertyValues, {
+			property: property
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { offer : 'ASC', property : 'ASC' },
+		});
+	}
+	
 	findAllByOffer(offer: bigint, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(OfferPropertyValues, {
 			offer: offer
+		});
+	}
+	
+	listByOffer(offer: bigint, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(OfferPropertyValues, {
+			offer: offer
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { offer : 'ASC', property : 'ASC' },
+		});
+	}
+	
+	listAll(offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(OfferPropertyValues, { }, {
+			limit: limit,
+			offset: offset,
+			orderBy: { offer : 'ASC', property : 'ASC' },
 		});
 	}
 	
