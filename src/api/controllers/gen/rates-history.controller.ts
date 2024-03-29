@@ -32,7 +32,7 @@ export class GenRatesHistoryController {
 		return await this.ratesHistoryService.listAll(offset, limit);
 	}
 	
-	async findOne(apiKey: ApiKeys, from: number, to: number, source: number, date: any) {
+	async findOne(apiKey: ApiKeys, from: number, to: number, source: number, date: Date) {
 		const entity = await this.ratesHistoryService.findByFromAndToAndSourceAndDate(from, to, source, date);
 		if(entity===null){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
@@ -41,7 +41,7 @@ export class GenRatesHistoryController {
 		return entity;
 	}
 	
-	async validateRead(entity, apiKey: ApiKeys, from: number, to: number, source: number, date: any) { }
+	async validateRead(entity, apiKey: ApiKeys, from: number, to: number, source: number, date: Date) { }
 	
 	async create(apiKey: ApiKeys, createDto: CreateRatesHistoryDto) {
 		createDto.from = from;
@@ -56,7 +56,7 @@ export class GenRatesHistoryController {
 	
 	async validateCreate(apiKey: ApiKeys, createDto: CreateRatesHistoryDto, em: EntityManager) { }
 	
-	async update(apiKey: ApiKeys, from: number, to: number, source: number, date: any, updateDto: UpdateRatesHistoryDto) {
+	async update(apiKey: ApiKeys, from: number, to: number, source: number, date: Date, updateDto: UpdateRatesHistoryDto) {
 		return await this.ratesHistoryService.transactional(async (em) => {
 			const entity = await this.ratesHistoryService.findByFromAndToAndSourceAndDate(from, to, source, date, em);
 			await this.validateUpdate(entity, apiKey, from, to, source, date, updateDto, em);
@@ -68,9 +68,9 @@ export class GenRatesHistoryController {
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, from: number, to: number, source: number, date: any, updateDto: UpdateRatesHistoryDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, from: number, to: number, source: number, date: Date, updateDto: UpdateRatesHistoryDto, em: EntityManager) { }
 	
-	async delete(apiKey: ApiKeys, from: number, to: number, source: number, date: any) {
+	async delete(apiKey: ApiKeys, from: number, to: number, source: number, date: Date) {
 		return await this.ratesHistoryService.transactional(async (em) => {
 			const entity = await this.ratesHistoryService.findByFromAndToAndSourceAndDate(from, to, source, date, em);
 			if(entity===null){
@@ -81,6 +81,6 @@ export class GenRatesHistoryController {
 		});
 	}
 	
-	async validateDelete(entity, apiKey: ApiKeys, from: number, to: number, source: number, date: any, em: EntityManager) { }
+	async validateDelete(entity, apiKey: ApiKeys, from: number, to: number, source: number, date: Date, em: EntityManager) { }
 	
 }

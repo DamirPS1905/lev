@@ -28,10 +28,11 @@ export class GenCreateRateDto {
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	rate:any;
+	@IsInt()
+	rate:number;
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	updatedAt:any;
+	updatedAt:Date;
 	
 }

@@ -31,10 +31,12 @@ export class GenUpdateUnitDto {
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	add:any;
+	@IsInt()
+	add:number;
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	factor:any;
+	@IsInt()
+	factor:number;
 	
 }

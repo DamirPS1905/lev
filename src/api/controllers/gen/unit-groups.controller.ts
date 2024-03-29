@@ -10,7 +10,6 @@ import { AuthInfo } from './../../../decorators/auth.decorator'
 import { ApiKeys } from './../../../entities/ApiKeys'
 import { CreateUnitGroupDto } from './../../dtos/create-unit-group.dto'
 import { UpdateUnitGroupDto } from './../../dtos/update-unit-group.dto'
-import { CompaniesService } from './../../services/companies.service'
 import { UnitGroupsService } from './../../services/unit-groups.service'
 import { UnitsService } from './../../services/units.service'
 import { EntityManager } from '@mikro-orm/postgresql'
@@ -24,7 +23,6 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 @Controller('catalog/:catalog/unit-group')
 export class GenUnitGroupsController {
 	constructor(
-		protected readonly companiesService: CompaniesService,
 		protected readonly unitGroupsService: UnitGroupsService,
 		protected readonly unitsService: UnitsService,
 	) { }
@@ -33,12 +31,12 @@ export class GenUnitGroupsController {
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
 		if(limit>1000) limit = 1000; // throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		return await this.unitGroupsService.listAll(offset, limit);
+		return await this.unitGroupsService.listByCompany(apiKey.company.id, offset, limit);
 	}
 	
 	async findOne(apiKey: ApiKeys, id: number) {
 		const entity = await this.unitGroupsService.findById(id);
-		if(entity===null){
+		if(entity===null || entity.company.id!==apiKey.company.id){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
 		await this.validateRead(entity, apiKey, id);
@@ -50,12 +48,8 @@ export class GenUnitGroupsController {
 	async create(apiKey: ApiKeys, createDto: CreateUnitGroupDto) {
 		createDto.company = apiKey.company.id;
 		return await this.unitGroupsService.transactional(async (em) => {
-			const tmp0 = await this.companiesService.findById(createDto.company, em);
+			const tmp0 = await this.unitsService.findById(createDto.base, em);
 			if(tmp0===null){
-				throw new HttpException('Not found contrainst (company)', HttpStatus.CONFLICT);
-			}
-			const tmp1 = await this.unitsService.findById(createDto.base, em);
-			if(tmp1===null){
 				throw new HttpException('Not found contrainst (base)', HttpStatus.CONFLICT);
 			}
 			await this.validateCreate(apiKey, createDto, em);
@@ -69,12 +63,12 @@ export class GenUnitGroupsController {
 		return await this.unitGroupsService.transactional(async (em) => {
 			const entity = await this.unitGroupsService.findById(id, em);
 			if((updateDto.base!==undefined && updateDto.base!==entity.base.id)){
-				const tmp2 = await this.unitsService.findById(updateDto.base, em);
-				if(tmp2===null){
+				const tmp1 = await this.unitsService.findById(updateDto.base, em);
+				if(tmp1===null){
 					throw new HttpException('Not found contrainst (base)', HttpStatus.CONFLICT);
 				}
 			}
-			if(entity===null){
+			if(entity===null || entity.company.id!==apiKey.company.id){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			this.validateUpdate(entity, apiKey, id, updateDto, em);
@@ -87,7 +81,7 @@ export class GenUnitGroupsController {
 	async delete(apiKey: ApiKeys, id: number) {
 		return await this.unitGroupsService.transactional(async (em) => {
 			const entity = await this.unitGroupsService.findById(id, em);
-			if(entity===null){
+			if(entity===null || entity.company.id!==apiKey.company.id){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			await this.validateDelete(entity, apiKey, id, em);

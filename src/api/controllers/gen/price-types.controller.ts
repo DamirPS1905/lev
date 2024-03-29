@@ -31,12 +31,12 @@ export class GenPriceTypesController {
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
 		if(limit>1000) limit = 1000; // throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		return await this.priceTypesService.listAll(offset, limit);
+		return await this.priceTypesService.listByCompany(apiKey.company.id, offset, limit);
 	}
 	
 	async findOne(apiKey: ApiKeys, id: number) {
 		const entity = await this.priceTypesService.findById(id);
-		if(entity===null){
+		if(entity===null || entity.company.id!==apiKey.company.id){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
 		await this.validateRead(entity, apiKey, id);
@@ -72,11 +72,11 @@ export class GenPriceTypesController {
 					throw new HttpException('Not found contrainst (displayCurrency)', HttpStatus.CONFLICT);
 				}
 			}
-			if(entity===null){
+			if(entity===null || entity.company.id!==apiKey.company.id){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			if((updateDto.company!==undefined && updateDto.company!==entity.company) || (updateDto.title!==undefined && updateDto.title!==entity.title)){
-				const existed0 = await this.priceTypesService.findByCompanyAndTitle(updateDto.company, updateDto.title, em);
+			if((updateDto.title!==undefined && updateDto.title!==entity.title)){
+				const existed0 = await this.priceTypesService.findByCompanyAndTitle(entity.company.id, updateDto.title, em);
 				if(existed0!==null && (entity.id !== existed0.id)){
 					throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 				}
@@ -91,7 +91,7 @@ export class GenPriceTypesController {
 	async delete(apiKey: ApiKeys, id: number) {
 		return await this.priceTypesService.transactional(async (em) => {
 			const entity = await this.priceTypesService.findById(id, em);
-			if(entity===null){
+			if(entity===null || entity.company.id!==apiKey.company.id){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			await this.validateDelete(entity, apiKey, id, em);

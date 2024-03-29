@@ -8,7 +8,7 @@
  */
 import { ApiProperty } from '@nestjs/swagger'
 import { Transform, TransformFnParams } from 'class-transformer'
-import { IsOptional, IsString } from 'class-validator'
+import { IsInt, IsOptional, IsString } from 'class-validator'
 
 export class GenUpdateStoreDto {
 	
@@ -26,10 +26,12 @@ export class GenUpdateStoreDto {
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	geoLat:any;
+	@IsInt()
+	geoLat:number;
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	geoLong:any;
+	@IsInt()
+	geoLong:number;
 	
 }

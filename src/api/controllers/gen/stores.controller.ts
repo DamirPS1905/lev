@@ -10,7 +10,6 @@ import { AuthInfo } from './../../../decorators/auth.decorator'
 import { ApiKeys } from './../../../entities/ApiKeys'
 import { CreateStoreDto } from './../../dtos/create-store.dto'
 import { UpdateStoreDto } from './../../dtos/update-store.dto'
-import { CompaniesService } from './../../services/companies.service'
 import { StoresService } from './../../services/stores.service'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
@@ -23,7 +22,6 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 @Controller('catalog/:catalog/store')
 export class GenStoresController {
 	constructor(
-		protected readonly companiesService: CompaniesService,
 		protected readonly storesService: StoresService,
 	) { }
 	
@@ -31,12 +29,12 @@ export class GenStoresController {
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
 		if(limit>1000) limit = 1000; // throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		return await this.storesService.listAll(offset, limit);
+		return await this.storesService.listByCompany(apiKey.company.id, offset, limit);
 	}
 	
 	async findOne(apiKey: ApiKeys, id: number) {
 		const entity = await this.storesService.findById(id);
-		if(entity===null){
+		if(entity===null || entity.company.id!==apiKey.company.id){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
 		await this.validateRead(entity, apiKey, id);
@@ -52,10 +50,6 @@ export class GenStoresController {
 			if(existed0!==null){
 				throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 			}
-			const tmp0 = await this.companiesService.findById(createDto.company, em);
-			if(tmp0===null){
-				throw new HttpException('Not found contrainst (company)', HttpStatus.CONFLICT);
-			}
 			await this.validateCreate(apiKey, createDto, em);
 			return await this.storesService.create(createDto, em);
 		});
@@ -66,11 +60,11 @@ export class GenStoresController {
 	async update(apiKey: ApiKeys, id: number, updateDto: UpdateStoreDto) {
 		return await this.storesService.transactional(async (em) => {
 			const entity = await this.storesService.findById(id, em);
-			if(entity===null){
+			if(entity===null || entity.company.id!==apiKey.company.id){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			if((updateDto.company!==undefined && updateDto.company!==entity.company.id) || (updateDto.title!==undefined && updateDto.title!==entity.title)){
-				const existed0 = await this.storesService.findByCompanyAndTitle(updateDto.company, updateDto.title, em);
+			if((updateDto.title!==undefined && updateDto.title!==entity.title)){
+				const existed0 = await this.storesService.findByCompanyAndTitle(entity.company.id, updateDto.title, em);
 				if(existed0!==null && (entity.id !== existed0.id)){
 					throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 				}
@@ -85,7 +79,7 @@ export class GenStoresController {
 	async delete(apiKey: ApiKeys, id: number) {
 		return await this.storesService.transactional(async (em) => {
 			const entity = await this.storesService.findById(id, em);
-			if(entity===null){
+			if(entity===null || entity.company.id!==apiKey.company.id){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			await this.validateDelete(entity, apiKey, id, em);

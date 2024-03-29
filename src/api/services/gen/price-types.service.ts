@@ -78,6 +78,24 @@ export class GenPriceTypesService {
 		});
 	}
 	
+	findAllByCompany(company: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(PriceTypes, {
+			company: company
+		});
+	}
+	
+	listByCompany(company: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(PriceTypes, {
+			company: company
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id : 'ASC' },
+		});
+	}
+	
 	listAll(offset: number, limit: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(PriceTypes, { }, {

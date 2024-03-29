@@ -29,7 +29,7 @@ export class GenCatalogsController {
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
 		if(limit>1000) limit = 1000; // throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		return await this.catalogsService.listAll(offset, limit);
+		return await this.catalogsService.listByCompany(apiKey.company.id, offset, limit);
 	}
 	
 }

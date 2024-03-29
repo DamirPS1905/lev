@@ -17,7 +17,8 @@ export class GenUpdateProductPriceDto {
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	value:any;
+	@IsInt()
+	value:number;
 	
 	@IsOptional()
 	@ApiProperty({ required: false })

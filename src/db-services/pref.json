@@ -30,6 +30,19 @@
             "dtoTrim": true,
             "dtoDisallow": false
         },
+        "company": {
+            "dto": "create",
+            "dtoRequired": true,
+            "dtoMin": false,
+            "dtoMax": false,
+            "dtoTrim": true,
+            "dtoDisallow": true,
+            "fillDtoFrom": "apiKey.company.id",
+            "readValidate": "!==apiKey.company.id",
+            "readForWriteValidate": "!==apiKey.company.id",
+            "ignoreFk": true,
+            "allFilter": true
+        },
         "title": {
             "dto": true,
             "dtoRequired": "create",
@@ -123,10 +136,10 @@
                     "def": "id"
                 },
                 "title": {
-                    "def": "def"
+                    "def": "title"
                 },
                 "company": {
-                    "def": "def"
+                    "def": "company"
                 }
             }
         },
@@ -549,10 +562,10 @@
             "controller": false,
             "fields": {
                 "id": {
-                    "def": "def"
+                    "def": "id"
                 },
                 "title": {
-                    "def": "def"
+                    "def": "title"
                 }
             }
         },
@@ -597,10 +610,7 @@
                     "def": "def"
                 },
                 "company": {
-                    "def": "def",
-                    "dto": "create",
-                    "dtoDisallow": true,
-                    "fillDtoFrom": "apiKey.company.id"
+                    "def": "company"
                 },
                 "description": {
                     "def": "def"
@@ -617,10 +627,7 @@
                     "def": "id"
                 },
                 "company": {
-                    "def": "def",
-                    "dto": "create",
-                    "dtoDisallow": true,
-                    "fillDtoFrom": "apiKey.company.id"
+                    "def": "company"
                 },
                 "title": {
                     "def": "def"
@@ -745,10 +752,7 @@
                     "def": "id"
                 },
                 "company": {
-                    "def": "def",
-                    "dto": "create",
-                    "dtoDisallow": true,
-                    "fillDtoFrom": "apiKey.company.id"
+                    "def": "company"
                 },
                 "title": {
                     "def": "def"
@@ -817,10 +821,7 @@
                     "def": "id"
                 },
                 "company": {
-                    "def": "def",
-                    "dto": "create",
-                    "dtoDisallow": true,
-                    "fillDtoFrom": "apiKey.company.id"
+                    "def": "company"
                 },
                 "title": {
                     "def": "def"

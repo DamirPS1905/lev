@@ -19,12 +19,7 @@ export class OfferAmountsController extends GenOfferAmountsController {
 	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('offer') offer: bigint, @Param('store', ParseIntPipe) store: number) {
 		return await super.findOne(apiKey, offer, store);
 	}
-	
-	@Post()
-	async create(@AuthInfo() apiKey: ApiKeys, @Body() createDto: CreateOfferAmountDto) {
-		return await super.create(apiKey, createDto);
-	}
-	
+		
 	@Patch(':offer-:store')
 	async update(@AuthInfo() apiKey: ApiKeys, @Param('offer') offer: bigint, @Param('store', ParseIntPipe) store: number, @Body() updateDto: UpdateOfferAmountDto) {
 		return await super.update(apiKey, offer, store, updateDto);

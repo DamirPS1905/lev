@@ -19,12 +19,7 @@ export class ProductPricesController extends GenProductPricesController {
 	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('product') product: bigint, @Param('priceType', ParseIntPipe) priceType: number) {
 		return await super.findOne(apiKey, product, priceType);
 	}
-	
-	@Post()
-	async create(@AuthInfo() apiKey: ApiKeys, @Body() createDto: CreateProductPriceDto) {
-		return await super.create(apiKey, createDto);
-	}
-	
+		
 	@Patch(':product-:priceType')
 	async update(@AuthInfo() apiKey: ApiKeys, @Param('product') product: bigint, @Param('priceType', ParseIntPipe) priceType: number, @Body() updateDto: UpdateProductPriceDto) {
 		return await super.update(apiKey, product, priceType, updateDto);

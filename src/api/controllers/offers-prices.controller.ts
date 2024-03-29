@@ -19,12 +19,7 @@ export class OffersPricesController extends GenOffersPricesController {
 	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('offer') offer: bigint, @Param('priceType', ParseIntPipe) priceType: number) {
 		return await super.findOne(apiKey, offer, priceType);
 	}
-	
-	@Post()
-	async create(@AuthInfo() apiKey: ApiKeys, @Body() createDto: CreateOffersPriceDto) {
-		return await super.create(apiKey, createDto);
-	}
-	
+		
 	@Patch(':offer-:priceType')
 	async update(@AuthInfo() apiKey: ApiKeys, @Param('offer') offer: bigint, @Param('priceType', ParseIntPipe) priceType: number, @Body() updateDto: UpdateOffersPriceDto) {
 		return await super.update(apiKey, offer, priceType, updateDto);

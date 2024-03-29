@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { ApiProperty } from '@nestjs/swagger'
-import { IsOptional } from 'class-validator'
+import { IsInt, IsOptional } from 'class-validator'
 
 export class GenCreateOfferAmountDto {
 	
@@ -17,6 +17,7 @@ export class GenCreateOfferAmountDto {
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	amount:any;
+	@IsInt()
+	amount:number;
 	
 }

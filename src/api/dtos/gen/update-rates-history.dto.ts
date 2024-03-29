@@ -28,10 +28,11 @@ export class GenUpdateRatesHistoryDto {
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	date:any;
+	date:Date;
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	rate:any;
+	@IsInt()
+	rate:number;
 	
 }

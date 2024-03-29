@@ -1,15 +1,15 @@
-import { Entity, ManyToOne, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Entity, ManyToOne, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { Companies } from './Companies';
 import { Currencies } from './Currencies';
 
 @Entity()
-@Unique({ name: 'price_types_company_title_uind', properties: ['company', 'title'] })
 export class PriceTypes {
 
   @PrimaryKey()
   id!: number;
 
-  @Property()
-  company!: number;
+  @OneToOne({ entity: () => Companies, fieldName: 'company', unique: 'price_types_company_title_uind' })
+  company!: Companies;
 
   @Property()
   title!: string;
