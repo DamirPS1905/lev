@@ -14,11 +14,6 @@ export class GenUpdatePriceTypeDto {
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	@IsInt()
-	company:number;
-	
-	@IsOptional()
-	@ApiProperty({ required: false })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	title:string;

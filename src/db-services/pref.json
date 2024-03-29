@@ -745,7 +745,10 @@
                     "def": "id"
                 },
                 "company": {
-                    "def": "def"
+                    "def": "def",
+                    "dto": "create",
+                    "dtoDisallow": true,
+                    "fillDtoFrom": "apiKey.company.id"
                 },
                 "title": {
                     "def": "def"
@@ -814,7 +817,10 @@
                     "def": "id"
                 },
                 "company": {
-                    "def": "def"
+                    "def": "def",
+                    "dto": "create",
+                    "dtoDisallow": true,
+                    "fillDtoFrom": "apiKey.company.id"
                 },
                 "title": {
                     "def": "def"

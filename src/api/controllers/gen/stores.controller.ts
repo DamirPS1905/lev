@@ -46,6 +46,7 @@ export class GenStoresController {
 	async validateRead(entity, apiKey: ApiKeys, id: number) { }
 	
 	async create(apiKey: ApiKeys, createDto: CreateStoreDto) {
+		createDto.company = apiKey.company.id;
 		return await this.storesService.transactional(async (em) => {
 			const existed0 = await this.storesService.findByCompanyAndTitle(createDto.company, createDto.title, em);
 			if(existed0!==null){
@@ -65,12 +66,6 @@ export class GenStoresController {
 	async update(apiKey: ApiKeys, id: number, updateDto: UpdateStoreDto) {
 		return await this.storesService.transactional(async (em) => {
 			const entity = await this.storesService.findById(id, em);
-			if((updateDto.company!==undefined && updateDto.company!==entity.company.id)){
-				const tmp1 = await this.companiesService.findById(updateDto.company, em);
-				if(tmp1===null){
-					throw new HttpException('Not found contrainst (company)', HttpStatus.CONFLICT);
-				}
-			}
 			if(entity===null){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}

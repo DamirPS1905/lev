@@ -46,6 +46,7 @@ export class GenPriceTypesController {
 	async validateRead(entity, apiKey: ApiKeys, id: number) { }
 	
 	async create(apiKey: ApiKeys, createDto: CreatePriceTypeDto) {
+		createDto.company = apiKey.company.id;
 		return await this.priceTypesService.transactional(async (em) => {
 			const existed0 = await this.priceTypesService.findByCompanyAndTitle(createDto.company, createDto.title, em);
 			if(existed0!==null){

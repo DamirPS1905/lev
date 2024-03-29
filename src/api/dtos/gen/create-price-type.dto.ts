@@ -12,9 +12,6 @@ import { IsInt, IsOptional, IsString } from 'class-validator'
 
 export class GenCreatePriceTypeDto {
 	
-	@IsOptional()
-	@ApiProperty({ required: false })
-	@IsInt()
 	company:number;
 	
 	@IsOptional()
