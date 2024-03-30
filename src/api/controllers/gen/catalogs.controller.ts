@@ -12,14 +12,15 @@ import { CreateCatalogDto } from './../../dtos/create-catalog.dto'
 import { UpdateCatalogDto } from './../../dtos/update-catalog.dto'
 import { CatalogsService } from './../../services/catalogs.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
+import { ClassSerializerInterceptor, Controller, HttpException, HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Catalogs')
-@Controller('catalog/:catalog/catalog')
+@Controller('catalog')
+@UseInterceptors(ClassSerializerInterceptor)
 export class GenCatalogsController {
 	constructor(
 		protected readonly catalogsService: CatalogsService,

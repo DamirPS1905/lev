@@ -33,12 +33,14 @@ export class GenCreateUnitDto {
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	@IsInt()
-	add:number;
+	@IsString()
+	@Transform(({ value }: TransformFnParams) => value?.trim())
+	add:string;
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	@IsInt()
-	factor:number;
+	@IsString()
+	@Transform(({ value }: TransformFnParams) => value?.trim())
+	factor:string;
 	
 }

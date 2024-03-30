@@ -16,10 +16,10 @@ export class Rates {
   @ManyToOne({ entity: () => RatesSources, fieldName: 'source', primary: true })
   source!: RatesSources;
 
-  @Property({ columnType: 'numeric(10,0)' })
+  @Property({ columnType: 'numeric(18,9)' })
   rate!: string;
 
-  @Property({ type: 'string', columnType: 'time(0)', defaultRaw: `CURRENT_TIMESTAMP` })
-  updatedAt!: string & Opt;
+  @Property({ type: 'Date', length: 6, defaultRaw: `CURRENT_TIMESTAMP` })
+  updatedAt!: Date & Opt;
 
 }

@@ -7,7 +7,8 @@
  * in a proper way.
  */
 import { ApiProperty } from '@nestjs/swagger'
-import { IsInt, IsOptional } from 'class-validator'
+import { Transform, TransformFnParams } from 'class-transformer'
+import { IsOptional, IsString } from 'class-validator'
 
 export class GenCreateOfferAmountDto {
 	
@@ -17,7 +18,8 @@ export class GenCreateOfferAmountDto {
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	@IsInt()
-	amount:number;
+	@IsString()
+	@Transform(({ value }: TransformFnParams) => value?.trim())
+	amount:string;
 	
 }

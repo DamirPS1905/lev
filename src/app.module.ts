@@ -7,6 +7,7 @@ import { ExchangeApi } from './api/exchange-api.module';
 import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ImagesService } from './tasks/images.service'
+import { RCBService } from './tasks/rcb.service'
 import { HttpModule } from '@nestjs/axios'
 
 @Module({
@@ -19,6 +20,6 @@ import { HttpModule } from '@nestjs/axios'
 	  HttpModule
   ],
   controllers: [AppController],
-  providers: [AppService, ImagesService],
+  providers: [AppService, ImagesService, RCBService],
 })
 export class AppModule {}

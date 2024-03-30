@@ -13,7 +13,7 @@ export class OffersPrices {
   @ManyToOne({ entity: () => PriceTypes, fieldName: 'price_type', primary: true })
   priceType!: PriceTypes;
 
-  @Property({ columnType: 'numeric(10,0)' })
+  @Property({ columnType: 'numeric(18,2)' })
   value!: string;
 
   @Property()

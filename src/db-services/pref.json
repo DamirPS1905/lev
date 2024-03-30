@@ -93,8 +93,7 @@
             "delete": true,
             "getOne": true,
             "list": true,
-            "paginateByMax": 1000,
-            "apiPrefix": "catalog\/:catalog"
+            "paginateByMax": 1000
         },
         "catDef": {
             "controller": true,
@@ -707,15 +706,20 @@
         },
         "rates": {
             "def": "def",
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": true,
+            "list": true,
             "fields": {
                 "from": {
-                    "def": "def"
+                    "def": "pk"
                 },
                 "to": {
-                    "def": "def"
+                    "def": "pk"
                 },
                 "source": {
-                    "def": "def"
+                    "def": "pk"
                 },
                 "rate": {
                     "def": "def"
@@ -727,18 +731,23 @@
         },
         "rates_history": {
             "def": "def",
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": true,
+            "list": true,
             "fields": {
                 "from": {
-                    "def": "def"
+                    "def": "pk"
                 },
                 "to": {
-                    "def": "def"
+                    "def": "pk"
                 },
                 "source": {
-                    "def": "def"
+                    "def": "pk"
                 },
                 "date": {
-                    "def": "def"
+                    "def": "pk"
                 },
                 "rate": {
                     "def": "def"
@@ -764,13 +773,30 @@
         },
         "product_prices": {
             "def": "def",
+            "apiPathName": "product\/:product\/price",
             "create": false,
+            "apiPrefix": "catalog\/:catalog",
+            "methodPath": ":priceType",
             "fields": {
                 "product": {
-                    "def": "pk"
+                    "def": "pk",
+                    "fillDtoFrom": "product",
+                    "load": {
+                        "as": "catalog_products",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Product not found"
+                    }
                 },
                 "price_type": {
-                    "def": "pk"
+                    "def": "pk",
+                    "fillDtoFrom": "priceType",
+                    "load": {
+                        "as": "price_types",
+                        "validate": "@@.company.id===apiKey.company.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Price type not found"
+                    }
                 },
                 "value": {
                     "def": "def"
@@ -786,17 +812,47 @@
                     "def": "def",
                     "dto": false
                 }
-            }
+            },
+            "extraRouteParams": [
+                {
+                    "key": "catalog",
+                    "type": "number",
+                    "var": "catalog",
+                    "load": {
+                        "as": "catalogs",
+                        "validate": "@@.company.id===apiKey.company.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Catalog not found"
+                    }
+                }
+            ]
         },
         "offers_prices": {
             "def": "def",
+            "apiPathName": "offer\/:offer\/price",
             "create": false,
+            "apiPrefix": "catalog\/:catalog",
+            "methodPath": ":priceType",
             "fields": {
                 "offer": {
-                    "def": "pk"
+                    "def": "pk",
+                    "fillDtoFrom": "offer",
+                    "load": {
+                        "as": "catalog_product_offers",
+                        "validate": "@@.product.catalog.id===catalog",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Offer not found"
+                    }
                 },
                 "price_type": {
-                    "def": "pk"
+                    "def": "pk",
+                    "fillDtoFrom": "priceType",
+                    "load": {
+                        "as": "price_types",
+                        "validate": "@@.company.id===apiKey.company.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Price type not found"
+                    }
                 },
                 "value": {
                     "def": "def"
@@ -812,7 +868,20 @@
                     "def": "def",
                     "dto": false
                 }
-            }
+            },
+            "extraRouteParams": [
+                {
+                    "key": "catalog",
+                    "type": "number",
+                    "var": "catalog",
+                    "load": {
+                        "as": "catalogs",
+                        "validate": "@@.company.id===apiKey.company.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Catalog not found"
+                    }
+                }
+            ]
         },
         "stores": {
             "def": "def",
@@ -839,13 +908,30 @@
         },
         "offer_amounts": {
             "def": "def",
+            "apiPathName": "offer\/:offer\/store",
             "create": false,
+            "apiPrefix": "catalog\/:catalog",
+            "methodPath": ":store\/amount",
             "fields": {
                 "offer": {
-                    "def": "pk"
+                    "def": "pk",
+                    "fillDtoFrom": "offer",
+                    "load": {
+                        "as": "catalog_product_offers",
+                        "validate": "@@.product.catalog.id===catalog",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Offer not found"
+                    }
                 },
                 "store": {
-                    "def": "pk"
+                    "def": "pk",
+                    "fillDtoFrom": "store",
+                    "load": {
+                        "as": "stores",
+                        "validate": "@@.company.id===apiKey.company.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Store not found"
+                    }
                 },
                 "amount": {
                     "def": "def"
@@ -854,7 +940,20 @@
                     "def": "def",
                     "dto": false
                 }
-            }
+            },
+            "extraRouteParams": [
+                {
+                    "key": "catalog",
+                    "type": "number",
+                    "var": "catalog",
+                    "load": {
+                        "as": "catalogs",
+                        "validate": "@@.company.id===apiKey.company.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Catalog not found"
+                    }
+                }
+            ]
         },
         "property_values": {
             "def": "def",

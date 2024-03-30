@@ -46,7 +46,7 @@ export class GenRatesHistoryService {
 	async transactional(cb){ return await this.em.fork().transactional(cb); }
 	
 	
-	findByFromAndToAndSourceAndDate(from: number, to: number, source: number, date: Date, emt: EntityManager = null) {
+	findByFromAndToAndSourceAndDate(from: number, to: number, source: number, date: string, emt: EntityManager = null) {
 		const em = this.getEm(emt);
 		return em.findOne(RatesHistory, {
 			from: from, to: to, source: source, date: date

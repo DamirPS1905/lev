@@ -14,7 +14,7 @@ import { CatalogPropertiesService } from './../../services/catalog-properties.se
 import { CatalogsService } from './../../services/catalogs.service'
 import { PropertyTypesService } from './../../services/property-types.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
+import { ClassSerializerInterceptor, Controller, HttpException, HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -22,6 +22,7 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Catalog properties')
 @Controller('catalog/:catalog/properties')
+@UseInterceptors(ClassSerializerInterceptor)
 export class GenCatalogPropertiesController {
 	constructor(
 		protected readonly catalogPropertiesService: CatalogPropertiesService,

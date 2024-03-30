@@ -11,58 +11,75 @@ import { ApiKeys } from './../../../entities/ApiKeys'
 import { CreateOffersPriceDto } from './../../dtos/create-offers-price.dto'
 import { UpdateOffersPriceDto } from './../../dtos/update-offers-price.dto'
 import { CatalogProductOffersService } from './../../services/catalog-product-offers.service'
+import { CatalogsService } from './../../services/catalogs.service'
 import { OffersPricesService } from './../../services/offers-prices.service'
 import { PriceTypesService } from './../../services/price-types.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
+import { ClassSerializerInterceptor, Controller, HttpException, HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Offers prices')
-@Controller('catalog/:catalog/offers-price')
+@Controller('catalog/:catalog/offer/:offer/price')
+@UseInterceptors(ClassSerializerInterceptor)
 export class GenOffersPricesController {
 	constructor(
 		protected readonly catalogProductOffersService: CatalogProductOffersService,
+		protected readonly catalogsService: CatalogsService,
 		protected readonly offersPricesService: OffersPricesService,
 		protected readonly priceTypesService: PriceTypesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, offset: number, limit: number) {
+	async findAll(apiKey: ApiKeys, catalog: number, offset: number, limit: number) {
+		const catalogIns0 = await this.catalogsService.findById(catalog);
+		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
 		if(limit>1000) limit = 1000; // throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
 		return await this.offersPricesService.listAll(offset, limit);
 	}
 	
-	async findOne(apiKey: ApiKeys, offer: bigint, priceType: number) {
+	async findOne(apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number) {
+		const catalogIns0 = await this.catalogsService.findById(catalog);
+		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
 		const entity = await this.offersPricesService.findByOfferAndPriceType(offer, priceType);
 		if(entity===null){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
-		await this.validateRead(entity, apiKey, offer, priceType);
+		await this.validateRead(entity, apiKey, catalog, offer, priceType);
 		return entity;
 	}
 	
-	async validateRead(entity, apiKey: ApiKeys, offer: bigint, priceType: number) { }
+	async validateRead(entity, apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number) { }
 	
-	async update(apiKey: ApiKeys, offer: bigint, priceType: number, updateDto: UpdateOffersPriceDto) {
+	async update(apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number, updateDto: UpdateOffersPriceDto) {
+		updateDto.offer = offer;
+		updateDto.priceType = priceType;
+		const catalogIns0 = await this.catalogsService.findById(catalog);
+		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
 		return await this.offersPricesService.transactional(async (em) => {
 			const entity = await this.offersPricesService.findByOfferAndPriceType(offer, priceType, em);
 			if((updateDto.priceType!==undefined && updateDto.priceType!==entity.priceType.id)){
-				const tmp0 = await this.priceTypesService.findById(updateDto.priceType, em);
-				if(tmp0===null){
-					throw new HttpException('Not found contrainst (priceType)', HttpStatus.CONFLICT);
+				const priceTypeIns1 = await this.priceTypesService.findById(updateDto.priceType);
+				if(priceTypeIns1===null || !(priceTypeIns1.company.id===apiKey.company.id)){
+					throw new HttpException('Price type not found', HttpStatus.NOT_FOUND);
 				}
 			}
 			if((updateDto.offer!==undefined && updateDto.offer!==entity.offer.id)){
-				const tmp1 = await this.catalogProductOffersService.findById(updateDto.offer, em);
-				if(tmp1===null){
-					throw new HttpException('Not found contrainst (offer)', HttpStatus.CONFLICT);
+				const offerIns2 = await this.catalogProductOffersService.findById(updateDto.offer);
+				if(offerIns2===null || !(offerIns2.product.catalog.id===catalog)){
+					throw new HttpException('Offer not found', HttpStatus.NOT_FOUND);
 				}
 			}
-			await this.validateUpdate(entity, apiKey, offer, priceType, updateDto, em);
+			await this.validateUpdate(entity, apiKey, catalog, offer, priceType, updateDto, em);
 			if(entity===null){
 				return await this.offersPricesService.update(entity, updateDto, em);
 			} else {
@@ -71,19 +88,23 @@ export class GenOffersPricesController {
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, offer: bigint, priceType: number, updateDto: UpdateOffersPriceDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number, updateDto: UpdateOffersPriceDto, em: EntityManager) { }
 	
-	async delete(apiKey: ApiKeys, offer: bigint, priceType: number) {
+	async delete(apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number) {
+		const catalogIns0 = await this.catalogsService.findById(catalog);
+		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
 		return await this.offersPricesService.transactional(async (em) => {
 			const entity = await this.offersPricesService.findByOfferAndPriceType(offer, priceType, em);
 			if(entity===null){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, apiKey, offer, priceType, em);
+			await this.validateDelete(entity, apiKey, catalog, offer, priceType, em);
 			return await this.offersPricesService.remove(entity, em);
 		});
 	}
 	
-	async validateDelete(entity, apiKey: ApiKeys, offer: bigint, priceType: number, em: EntityManager) { }
+	async validateDelete(entity, apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number, em: EntityManager) { }
 	
 }

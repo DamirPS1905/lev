@@ -1,4 +1,5 @@
 import { Entity, Opt, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Exclude } from 'class-transformer'
 
 @Entity()
 export class Currencies {
@@ -14,12 +15,15 @@ export class Currencies {
   @Property()
   title!: string;
 
+	@Exclude()
   @Property({ type: 'string' })
   symbol: string & Opt = '';
 
+	@Exclude()
   @Property({ type: 'number' })
   precision: number & Opt = 4;
 
+	@Exclude()
   @Property({ nullable: true })
   icon?: string;
 

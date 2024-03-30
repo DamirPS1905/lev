@@ -12,14 +12,15 @@ import { CreateStoreDto } from './../../dtos/create-store.dto'
 import { UpdateStoreDto } from './../../dtos/update-store.dto'
 import { StoresService } from './../../services/stores.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
+import { ClassSerializerInterceptor, Controller, HttpException, HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Stores')
-@Controller('catalog/:catalog/store')
+@Controller('store')
+@UseInterceptors(ClassSerializerInterceptor)
 export class GenStoresController {
 	constructor(
 		protected readonly storesService: StoresService,

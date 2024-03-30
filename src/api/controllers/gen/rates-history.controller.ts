@@ -12,14 +12,15 @@ import { CreateRatesHistoryDto } from './../../dtos/create-rates-history.dto'
 import { UpdateRatesHistoryDto } from './../../dtos/update-rates-history.dto'
 import { RatesHistoryService } from './../../services/rates-history.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
+import { ClassSerializerInterceptor, Controller, HttpException, HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Rates history')
-@Controller('catalog/:catalog/rates-history')
+@Controller('rates-history')
+@UseInterceptors(ClassSerializerInterceptor)
 export class GenRatesHistoryController {
 	constructor(
 		protected readonly ratesHistoryService: RatesHistoryService,
@@ -32,7 +33,7 @@ export class GenRatesHistoryController {
 		return await this.ratesHistoryService.listAll(offset, limit);
 	}
 	
-	async findOne(apiKey: ApiKeys, from: number, to: number, source: number, date: Date) {
+	async findOne(apiKey: ApiKeys, from: number, to: number, source: number, date: string) {
 		const entity = await this.ratesHistoryService.findByFromAndToAndSourceAndDate(from, to, source, date);
 		if(entity===null){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
@@ -41,46 +42,6 @@ export class GenRatesHistoryController {
 		return entity;
 	}
 	
-	async validateRead(entity, apiKey: ApiKeys, from: number, to: number, source: number, date: Date) { }
-	
-	async create(apiKey: ApiKeys, createDto: CreateRatesHistoryDto) {
-		createDto.from = from;
-		createDto.to = to;
-		createDto.source = source;
-		createDto.date = date;
-		return await this.ratesHistoryService.transactional(async (em) => {
-			await this.validateCreate(apiKey, createDto, em);
-			return await this.ratesHistoryService.create(createDto, em);
-		});
-	}
-	
-	async validateCreate(apiKey: ApiKeys, createDto: CreateRatesHistoryDto, em: EntityManager) { }
-	
-	async update(apiKey: ApiKeys, from: number, to: number, source: number, date: Date, updateDto: UpdateRatesHistoryDto) {
-		return await this.ratesHistoryService.transactional(async (em) => {
-			const entity = await this.ratesHistoryService.findByFromAndToAndSourceAndDate(from, to, source, date, em);
-			await this.validateUpdate(entity, apiKey, from, to, source, date, updateDto, em);
-			if(entity===null){
-				return await this.ratesHistoryService.update(entity, updateDto, em);
-			} else {
-				return await this.ratesHistoryService.create(updateDto, em);
-			}
-		});
-	}
-	
-	async validateUpdate(entity, apiKey: ApiKeys, from: number, to: number, source: number, date: Date, updateDto: UpdateRatesHistoryDto, em: EntityManager) { }
-	
-	async delete(apiKey: ApiKeys, from: number, to: number, source: number, date: Date) {
-		return await this.ratesHistoryService.transactional(async (em) => {
-			const entity = await this.ratesHistoryService.findByFromAndToAndSourceAndDate(from, to, source, date, em);
-			if(entity===null){
-				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
-			}
-			await this.validateDelete(entity, apiKey, from, to, source, date, em);
-			return await this.ratesHistoryService.remove(entity, em);
-		});
-	}
-	
-	async validateDelete(entity, apiKey: ApiKeys, from: number, to: number, source: number, date: Date, em: EntityManager) { }
+	async validateRead(entity, apiKey: ApiKeys, from: number, to: number, source: number, date: string) { }
 	
 }

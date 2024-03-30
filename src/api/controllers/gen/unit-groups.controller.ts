@@ -13,14 +13,15 @@ import { UpdateUnitGroupDto } from './../../dtos/update-unit-group.dto'
 import { UnitGroupsService } from './../../services/unit-groups.service'
 import { UnitsService } from './../../services/units.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
+import { ClassSerializerInterceptor, Controller, HttpException, HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Unit groups')
-@Controller('catalog/:catalog/unit-group')
+@Controller('unit-group')
+@UseInterceptors(ClassSerializerInterceptor)
 export class GenUnitGroupsController {
 	constructor(
 		protected readonly unitGroupsService: UnitGroupsService,
