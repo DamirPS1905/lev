@@ -14,7 +14,7 @@ import { CatalogProductOffersService } from './../../services/catalog-product-of
 import { CatalogProductsService } from './../../services/catalog-products.service'
 import { CatalogsService } from './../../services/catalogs.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { ClassSerializerInterceptor, Controller, HttpException, HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common'
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -22,7 +22,6 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Catalog product offers')
 @Controller('catalog/:catalog/product/:product/offer')
-@UseInterceptors(ClassSerializerInterceptor)
 export class GenCatalogProductOffersController {
 	constructor(
 		protected readonly catalogProductOffersService: CatalogProductOffersService,

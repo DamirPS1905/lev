@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, OneToOne, Opt, PrimaryKey, Property } from '@mikro-orm/core';
+import { Entity, ManyToOne, OneToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
 import { Catalogs } from './Catalogs';
 
 @Entity()

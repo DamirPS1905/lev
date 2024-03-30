@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, Opt, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Entity, type Hidden, ManyToOne, type Opt, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 import { Currencies } from './Currencies';
 
 @Entity()
@@ -20,10 +20,10 @@ export class RatesSources {
   @Property({ type: 'boolean' })
   fine: boolean & Opt = false;
 
-  @Property({ type: 'Date', length: 6, defaultRaw: `CURRENT_TIMESTAMP` })
-  fineAt!: Date & Opt;
+  @Property({ type: 'Date', length: 6, hidden: true, defaultRaw: `CURRENT_TIMESTAMP` })
+  fineAt!: Date & Hidden & Opt;
 
-  @Property({ columnType: 'text', nullable: true })
-  problemInfo?: string;
+  @Property({ type: 'string', columnType: 'text', nullable: true, hidden: true })
+  problemInfo?: string & Hidden;
 
 }

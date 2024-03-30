@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { UpdateCatalogDto } from './catalogs/dto/update-catalog.dto';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
@@ -20,6 +19,5 @@ async function bootstrap() {
   
   await app.listen(3000);
 }
-let c = new UpdateCatalogDto();
-console.log(c);
+
 bootstrap();

@@ -12,7 +12,7 @@ import { CreateMetatypeDto } from './../../dtos/create-metatype.dto'
 import { UpdateMetatypeDto } from './../../dtos/update-metatype.dto'
 import { MetatypesService } from './../../services/metatypes.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { ClassSerializerInterceptor, Controller, HttpException, HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common'
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -20,7 +20,6 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Metatypes')
 @Controller('metatype')
-@UseInterceptors(ClassSerializerInterceptor)
 export class GenMetatypesController {
 	constructor(
 		protected readonly metatypesService: MetatypesService,

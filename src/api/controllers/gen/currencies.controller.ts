@@ -12,7 +12,7 @@ import { CreateCurrencyDto } from './../../dtos/create-currency.dto'
 import { UpdateCurrencyDto } from './../../dtos/update-currency.dto'
 import { CurrenciesService } from './../../services/currencies.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { ClassSerializerInterceptor, Controller, HttpException, HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common'
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -20,7 +20,6 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Currencies')
 @Controller('currency')
-@UseInterceptors(ClassSerializerInterceptor)
 export class GenCurrenciesController {
 	constructor(
 		protected readonly currenciesService: CurrenciesService,

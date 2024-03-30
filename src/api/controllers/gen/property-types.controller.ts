@@ -13,7 +13,7 @@ import { UpdatePropertyTypeDto } from './../../dtos/update-property-type.dto'
 import { CatalogsService } from './../../services/catalogs.service'
 import { PropertyTypesService } from './../../services/property-types.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { ClassSerializerInterceptor, Controller, HttpException, HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common'
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -21,7 +21,6 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Property types')
 @Controller('catalog/:catalog/types')
-@UseInterceptors(ClassSerializerInterceptor)
 export class GenPropertyTypesController {
 	constructor(
 		protected readonly catalogsService: CatalogsService,

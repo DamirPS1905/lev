@@ -11,6 +11,7 @@ import { XMLParser } from 'fast-xml-parser'
 import { RatesSourcesService } from './../api/services/rates-sources.service'
 import { CurrenciesService } from './../api/services/currencies.service'
 import { CreateRatesSourceDto } from './../api/dtos/create-rates-source.dto'
+import { UpdateRatesSourceDto } from './../api/dtos/update-rates-source.dto'
 import { CreateCurrencyDto } from './../api/dtos/create-currency.dto'
 
 @Injectable()
@@ -96,9 +97,17 @@ export class RCBService {
 					updatedAt: date
 				});
 		  }
-		  em.flush();
+		  await em.flush();
+		  const updDto = new UpdateRatesSourceDto();
+		  updDto.fine = true;
+		  updDto.fineAt = new Date();
+		  await this.ratesSourcesService.update(this.source, updDto);
 		}catch(e){
 			console.log('error '+ukey);
+		  const updDto = new UpdateRatesSourceDto();
+		  updDto.fine = false;
+		  updDto.problemInfo = e.errno;
+		  await this.ratesSourcesService.update(this.source, updDto);
 			console.log(e);
 			//console.log(e.errno);
 		}finally{

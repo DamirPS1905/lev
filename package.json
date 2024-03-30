@@ -23,7 +23,7 @@
    "dependencies": {
       "@mikro-orm/cli": "^6.1.7",
       "@mikro-orm/core": "^6.1.7",
-      "@mikro-orm/entity-generator": "^6.1.7",
+      "@mikro-orm/entity-generator": "^6.1.12",
       "@mikro-orm/nestjs": "^5.2.3",
       "@mikro-orm/postgresql": "^6.1.7",
       "@nestjs/axios": "^3.0.2",

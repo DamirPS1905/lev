@@ -14,7 +14,7 @@ import { CatalogTypesOverloadService } from './../../services/catalog-types-over
 import { CatalogTypesService } from './../../services/catalog-types.service'
 import { CatalogsService } from './../../services/catalogs.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { ClassSerializerInterceptor, Controller, HttpException, HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common'
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -22,7 +22,6 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Catalog types')
 @Controller('catalog/:catalog/type')
-@UseInterceptors(ClassSerializerInterceptor)
 export class GenCatalogTypesController {
 	constructor(
 		protected readonly catalogTypesOverloadService: CatalogTypesOverloadService,

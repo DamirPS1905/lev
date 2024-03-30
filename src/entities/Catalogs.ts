@@ -1,4 +1,4 @@
-import { Entity, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { Entity, type Hidden, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
 import { Companies } from './Companies';
 
 @Entity()
@@ -10,7 +10,7 @@ export class Catalogs {
   @Property()
   title!: string;
 
-  @OneToOne({ entity: () => Companies, fieldName: 'company', unique: 'catalogs_company_title_uind' })
-  company!: Companies;
+  @OneToOne({ entity: () => Companies, fieldName: 'company', hidden: true, unique: 'catalogs_company_title_uind' })
+  company!: Companies & Hidden;
 
 }

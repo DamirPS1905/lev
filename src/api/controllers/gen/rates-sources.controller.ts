@@ -12,7 +12,7 @@ import { CreateRatesSourceDto } from './../../dtos/create-rates-source.dto'
 import { UpdateRatesSourceDto } from './../../dtos/update-rates-source.dto'
 import { RatesSourcesService } from './../../services/rates-sources.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { ClassSerializerInterceptor, Controller, HttpException, HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common'
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -20,7 +20,6 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Rates sources')
 @Controller('rates-source')
-@UseInterceptors(ClassSerializerInterceptor)
 export class GenRatesSourcesController {
 	constructor(
 		protected readonly ratesSourcesService: RatesSourcesService,

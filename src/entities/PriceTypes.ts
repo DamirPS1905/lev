@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { Entity, type Hidden, ManyToOne, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
 import { Companies } from './Companies';
 import { Currencies } from './Currencies';
 
@@ -8,8 +8,8 @@ export class PriceTypes {
   @PrimaryKey()
   id!: number;
 
-  @OneToOne({ entity: () => Companies, fieldName: 'company', unique: 'price_types_company_title_uind' })
-  company!: Companies;
+  @OneToOne({ entity: () => Companies, fieldName: 'company', hidden: true, unique: 'price_types_company_title_uind' })
+  company!: Companies & Hidden;
 
   @Property()
   title!: string;

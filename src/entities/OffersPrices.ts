@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, Opt, PrimaryKeyProp, Property } from '@mikro-orm/core';
+import { Entity, ManyToOne, type Opt, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { CatalogProductOffers } from './CatalogProductOffers';
 import { PriceTypes } from './PriceTypes';
 

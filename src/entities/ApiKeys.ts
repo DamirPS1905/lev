@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, Opt, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Entity, ManyToOne, type Opt, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 import { Actors } from './Actors';
 import { Companies } from './Companies';
 

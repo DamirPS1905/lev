@@ -41,7 +41,8 @@
             "readValidate": "!==apiKey.company.id",
             "readForWriteValidate": "!==apiKey.company.id",
             "ignoreFk": true,
-            "allFilter": true
+            "allFilter": true,
+            "hidden": true
         },
         "title": {
             "dto": true,
@@ -543,10 +544,12 @@
                     "def": "def"
                 },
                 "pwd_hash": {
-                    "def": "def"
+                    "def": "def",
+                    "hidden": true
                 },
                 "actor": {
-                    "def": "def"
+                    "def": "def",
+                    "hidden": true
                 },
                 "created": {
                     "def": "def"
@@ -663,13 +666,16 @@
                     "def": "def"
                 },
                 "symbol": {
-                    "def": "def"
+                    "def": "def",
+                    "hidden": true
                 },
                 "precision": {
-                    "def": "def"
+                    "def": "def",
+                    "hidden": true
                 },
                 "icon": {
-                    "def": "def"
+                    "def": "def",
+                    "hidden": true
                 }
             }
         },
@@ -697,10 +703,12 @@
                     "def": "def"
                 },
                 "fine_at": {
-                    "def": "def"
+                    "def": "def",
+                    "hidden": true
                 },
                 "problem_info": {
-                    "def": "def"
+                    "def": "def",
+                    "hidden": true
                 }
             }
         },

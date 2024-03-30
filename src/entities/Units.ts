@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { Entity, type Hidden, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
 import { Companies } from './Companies';
 import { UnitGroups } from './UnitGroups';
 
@@ -8,8 +8,8 @@ export class Units {
   @PrimaryKey()
   id!: number;
 
-  @ManyToOne({ entity: () => Companies, fieldName: 'company', nullable: true })
-  company?: Companies;
+  @ManyToOne({ entity: () => Companies, fieldName: 'company', nullable: true, hidden: true })
+  company?: Companies & Hidden;
 
   @Property()
   title!: string;

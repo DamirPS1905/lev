@@ -12,7 +12,7 @@ import { CreateRatesHistoryDto } from './../../dtos/create-rates-history.dto'
 import { UpdateRatesHistoryDto } from './../../dtos/update-rates-history.dto'
 import { RatesHistoryService } from './../../services/rates-history.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { ClassSerializerInterceptor, Controller, HttpException, HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common'
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -20,7 +20,6 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Rates history')
 @Controller('rates-history')
-@UseInterceptors(ClassSerializerInterceptor)
 export class GenRatesHistoryController {
 	constructor(
 		protected readonly ratesHistoryService: RatesHistoryService,
