@@ -717,8 +717,9 @@
             "create": false,
             "update": false,
             "delete": false,
-            "getOne": true,
-            "list": true,
+            "getOne": false,
+            "list": false,
+            "extraServices": "rates_sources, currencies",
             "fields": {
                 "from": {
                     "def": "pk"
@@ -739,11 +740,7 @@
         },
         "rates_history": {
             "def": "def",
-            "create": false,
-            "update": false,
-            "delete": false,
-            "getOne": true,
-            "list": true,
+            "controller": false,
             "fields": {
                 "from": {
                     "def": "pk"

@@ -75,3 +75,33 @@ INSERT INTO public.catalog_types_overload (parent, child, delta)
 SELECT o.parent, 10, o.delta +1
 FROM public.catalog_types_overload AS o
 WHERE o.child = 9;
+
+
+
+
+
+CREATE OR REPLACE FUNCTION public.rates_after_update_insert_fnc()
+RETURNS trigger 
+AS $function$
+	BEGIN
+INSERT INTO public.rates_history (source, "from", "to", "date", rate)
+VALUES(NEW.source, NEW."from", NEW."to", date(NEW."updated_at"), NEW.rate)
+ON CONFLICT (source, "from", "to", "date") DO UPDATE SET rate = EXCLUDED.rate;
+RETURN NEW;
+	END;
+$function$
+LANGUAGE 'plpgsql';
+
+
+CREATE OR REPLACE TRIGGER rates_after_insert
+    AFTER INSERT
+    ON public.rates
+    FOR EACH ROW
+	EXECUTE PROCEDURE rates_after_update_insert_fnc();
+
+CREATE OR REPLACE TRIGGER rates_after_update
+    AFTER UPDATE
+    ON public.rates
+    FOR EACH ROW
+	WHEN (OLD.rate IS DISTINCT FROM NEW.rate)
+	EXECUTE PROCEDURE rates_after_update_insert_fnc();
