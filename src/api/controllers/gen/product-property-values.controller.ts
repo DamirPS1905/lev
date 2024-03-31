@@ -79,7 +79,7 @@ export class GenProductPropertyValuesController {
 				}
 			}
 			await this.validateUpdate(entity, apiKey, catalog, product, property, updateDto, em);
-			if(entity===null){
+			if(entity!==null){
 				return await this.productPropertyValuesService.update(entity, updateDto, em);
 			} else {
 				return await this.productPropertyValuesService.create(updateDto, em);

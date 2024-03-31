@@ -46,7 +46,7 @@ export class GenCatalogTypesController {
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const entity = await this.catalogTypesService.findById(id);
-		if(entity===null || entity.catalog.id!==catalog){
+		if(entity===null || !(entity.catalog.id===catalog)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
 		await this.validateRead(entity, apiKey, catalog, id);
@@ -91,7 +91,7 @@ export class GenCatalogTypesController {
 					throw new HttpException('Parent type not found', HttpStatus.CONFLICT);
 				}
 			}
-			if(entity===null || entity.catalog.id!==catalog){
+			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			if((updateDto.title!==undefined && updateDto.title!==entity.title) || (updateDto.parent!==undefined && updateDto.parent!==entity.parent.id)){
@@ -114,7 +114,7 @@ export class GenCatalogTypesController {
 		}
 		return await this.catalogTypesService.transactional(async (em) => {
 			const entity = await this.catalogTypesService.findById(id, em);
-			if(entity===null || entity.catalog.id!==catalog){
+			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			await this.validateDelete(entity, apiKey, catalog, id, em);

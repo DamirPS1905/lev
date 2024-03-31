@@ -46,7 +46,7 @@ export class GenCatalogPropertiesController {
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const entity = await this.catalogPropertiesService.findById(id);
-		if(entity===null || entity.catalog.id!==catalog){
+		if(entity===null || !(entity.catalog.id===catalog)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
 		await this.validateRead(entity, apiKey, catalog, id);
@@ -91,7 +91,7 @@ export class GenCatalogPropertiesController {
 					throw new HttpException('Not found contrainst (type)', HttpStatus.CONFLICT);
 				}
 			}
-			if(entity===null || entity.catalog.id!==catalog){
+			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			if((updateDto.catalog!==undefined && updateDto.catalog!==entity.catalog.id) || (updateDto.title!==undefined && updateDto.title!==entity.title)){
@@ -114,7 +114,7 @@ export class GenCatalogPropertiesController {
 		}
 		return await this.catalogPropertiesService.transactional(async (em) => {
 			const entity = await this.catalogPropertiesService.findById(id, em);
-			if(entity===null || entity.catalog.id!==catalog){
+			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			await this.validateDelete(entity, apiKey, catalog, id, em);

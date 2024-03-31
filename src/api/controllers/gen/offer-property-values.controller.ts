@@ -93,7 +93,7 @@ export class GenOfferPropertyValuesController {
 				}
 			}
 			await this.validateUpdate(entity, apiKey, catalog, product, offer, property, updateDto, em);
-			if(entity===null){
+			if(entity!==null){
 				return await this.offerPropertyValuesService.update(entity, updateDto, em);
 			} else {
 				return await this.offerPropertyValuesService.create(updateDto, em);

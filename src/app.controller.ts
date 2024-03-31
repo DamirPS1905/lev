@@ -5,13 +5,9 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('/date')
+  getHello(): Date {
+    return this.appService.getDate();
   }
   
-  @Get('/catalog/:catalog')
-  getCatalog(@Param() params: Record<string, string>): object {
-    return this.appService.getCatalog(params.catalog);
-  }
 }

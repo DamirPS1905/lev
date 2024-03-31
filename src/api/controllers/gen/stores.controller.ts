@@ -34,7 +34,7 @@ export class GenStoresController {
 	
 	async findOne(apiKey: ApiKeys, id: number) {
 		const entity = await this.storesService.findById(id);
-		if(entity===null || entity.company.id!==apiKey.company.id){
+		if(entity===null || !(entity.company.id===apiKey.company.id)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
 		await this.validateRead(entity, apiKey, id);
@@ -60,7 +60,7 @@ export class GenStoresController {
 	async update(apiKey: ApiKeys, id: number, updateDto: UpdateStoreDto) {
 		return await this.storesService.transactional(async (em) => {
 			const entity = await this.storesService.findById(id, em);
-			if(entity===null || entity.company.id!==apiKey.company.id){
+			if(entity===null){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			if((updateDto.title!==undefined && updateDto.title!==entity.title)){
@@ -79,7 +79,7 @@ export class GenStoresController {
 	async delete(apiKey: ApiKeys, id: number) {
 		return await this.storesService.transactional(async (em) => {
 			const entity = await this.storesService.findById(id, em);
-			if(entity===null || entity.company.id!==apiKey.company.id){
+			if(entity===null || !(entity.company.id===apiKey.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			await this.validateDelete(entity, apiKey, id, em);

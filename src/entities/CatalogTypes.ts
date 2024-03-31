@@ -1,4 +1,5 @@
-import { Entity, ManyToOne, OneToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
+import { Collection, Entity, ManyToMany, ManyToOne, OneToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
+import { CatalogProperties } from './CatalogProperties';
 import { Catalogs } from './Catalogs';
 
 @Entity()
@@ -21,5 +22,8 @@ export class CatalogTypes {
 
   @Property({ columnType: 'smallint' })
   level!: number;
+
+  @ManyToMany({ entity: () => CatalogProperties, pivotTable: 'property_in_types', joinColumn: 'type', inverseJoinColumn: 'property' })
+  propertyInTypes = new Collection<CatalogProperties>(this);
 
 }

@@ -79,7 +79,7 @@ export class GenOffersPricesController {
 				}
 			}
 			await this.validateUpdate(entity, apiKey, catalog, offer, priceType, updateDto, em);
-			if(entity===null){
+			if(entity!==null){
 				return await this.offersPricesService.update(entity, updateDto, em);
 			} else {
 				return await this.offersPricesService.create(updateDto, em);

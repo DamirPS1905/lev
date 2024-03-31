@@ -17,7 +17,7 @@ export class RatesHistory {
   @PrimaryKey({ columnType: 'date' })
   date!: string;
 
-  @Property({ columnType: 'numeric(10,0)' })
+  @Property({ columnType: 'numeric(18,9)' })
   rate!: string;
 
 }

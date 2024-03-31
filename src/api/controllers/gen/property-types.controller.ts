@@ -44,7 +44,7 @@ export class GenPropertyTypesController {
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const entity = await this.propertyTypesService.findById(id);
-		if(entity===null || entity.catalog.id!==catalog){
+		if(entity===null || !(entity.catalog.id===catalog)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
 		await this.validateRead(entity, apiKey, catalog, id);
@@ -75,7 +75,7 @@ export class GenPropertyTypesController {
 		}
 		return await this.propertyTypesService.transactional(async (em) => {
 			const entity = await this.propertyTypesService.findById(id, em);
-			if(entity===null || entity.catalog.id!==catalog){
+			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			this.validateUpdate(entity, apiKey, catalog, id, updateDto, em);
@@ -92,7 +92,7 @@ export class GenPropertyTypesController {
 		}
 		return await this.propertyTypesService.transactional(async (em) => {
 			const entity = await this.propertyTypesService.findById(id, em);
-			if(entity===null || entity.catalog.id!==catalog){
+			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			await this.validateDelete(entity, apiKey, catalog, id, em);

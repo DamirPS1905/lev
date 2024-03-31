@@ -38,8 +38,8 @@
             "dtoTrim": true,
             "dtoDisallow": true,
             "fillDtoFrom": "apiKey.company.id",
-            "readValidate": "!==apiKey.company.id",
-            "readForWriteValidate": "!==apiKey.company.id",
+            "readValidate": "@@===apiKey.company.id",
+            "readForWriteValidate": "@@===apiKey.company.id",
             "ignoreFk": true,
             "allFilter": true,
             "hidden": true
@@ -61,8 +61,8 @@
             "dtoDisallow": true,
             "apiDescription": "Current catalog",
             "fillDtoFrom": "catalog",
-            "readValidate": "!==catalog",
-            "readForWriteValidate": "!==catalog",
+            "readValidate": "@@===catalog",
+            "readForWriteValidate": "@@===catalog",
             "ignoreFk": true,
             "allFilter": true
         },
@@ -977,6 +977,52 @@
                     "def": "def"
                 }
             }
+        },
+        "property_in_types": {
+            "def": "def",
+            "apiPathName": "type\/:type\/property",
+            "create": false,
+            "list": false,
+            "apiPrefix": "catalog\/:catalog",
+            "methodPath": ":property",
+            "fields": {
+                "type": {
+                    "def": "pk",
+                    "fillDtoFrom": "type",
+                    "readValidate": "@#.catalog.id===catalog",
+                    "readForWriteValidate": "@#.catalog.id===catalog",
+                    "allFilter": true,
+                    "load": {
+                        "as": "catalog_types",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Product type not found"
+                    }
+                },
+                "property": {
+                    "def": "pk",
+                    "fillDtoFrom": "property",
+                    "load": {
+                        "as": "catalog_properties",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Property not found"
+                    }
+                }
+            },
+            "extraRouteParams": [
+                {
+                    "key": "catalog",
+                    "type": "number",
+                    "var": "catalog",
+                    "load": {
+                        "as": "catalogs",
+                        "validate": "@@.company.id===apiKey.company.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Catalog not found"
+                    }
+                }
+            ]
         }
     }
 }

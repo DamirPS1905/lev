@@ -36,7 +36,7 @@ export class GenPriceTypesController {
 	
 	async findOne(apiKey: ApiKeys, id: number) {
 		const entity = await this.priceTypesService.findById(id);
-		if(entity===null || entity.company.id!==apiKey.company.id){
+		if(entity===null || !(entity.company.id===apiKey.company.id)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
 		await this.validateRead(entity, apiKey, id);
@@ -72,7 +72,7 @@ export class GenPriceTypesController {
 					throw new HttpException('Not found contrainst (displayCurrency)', HttpStatus.CONFLICT);
 				}
 			}
-			if(entity===null || entity.company.id!==apiKey.company.id){
+			if(entity===null){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			if((updateDto.title!==undefined && updateDto.title!==entity.title)){
@@ -91,7 +91,7 @@ export class GenPriceTypesController {
 	async delete(apiKey: ApiKeys, id: number) {
 		return await this.priceTypesService.transactional(async (em) => {
 			const entity = await this.priceTypesService.findById(id, em);
-			if(entity===null || entity.company.id!==apiKey.company.id){
+			if(entity===null || !(entity.company.id===apiKey.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			await this.validateDelete(entity, apiKey, id, em);

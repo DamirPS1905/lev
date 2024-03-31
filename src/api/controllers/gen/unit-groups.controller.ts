@@ -36,7 +36,7 @@ export class GenUnitGroupsController {
 	
 	async findOne(apiKey: ApiKeys, id: number) {
 		const entity = await this.unitGroupsService.findById(id);
-		if(entity===null || entity.company.id!==apiKey.company.id){
+		if(entity===null || !(entity.company.id===apiKey.company.id)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
 		await this.validateRead(entity, apiKey, id);
@@ -68,7 +68,7 @@ export class GenUnitGroupsController {
 					throw new HttpException('Not found contrainst (base)', HttpStatus.CONFLICT);
 				}
 			}
-			if(entity===null || entity.company.id!==apiKey.company.id){
+			if(entity===null){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			this.validateUpdate(entity, apiKey, id, updateDto, em);
@@ -81,7 +81,7 @@ export class GenUnitGroupsController {
 	async delete(apiKey: ApiKeys, id: number) {
 		return await this.unitGroupsService.transactional(async (em) => {
 			const entity = await this.unitGroupsService.findById(id, em);
-			if(entity===null || entity.company.id!==apiKey.company.id){
+			if(entity===null || !(entity.company.id===apiKey.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			await this.validateDelete(entity, apiKey, id, em);

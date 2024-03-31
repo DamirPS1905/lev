@@ -79,7 +79,7 @@ export class GenProductPricesController {
 				}
 			}
 			await this.validateUpdate(entity, apiKey, catalog, product, priceType, updateDto, em);
-			if(entity===null){
+			if(entity!==null){
 				return await this.productPricesService.update(entity, updateDto, em);
 			} else {
 				return await this.productPricesService.create(updateDto, em);
