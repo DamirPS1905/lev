@@ -33,7 +33,7 @@ export class GenOfferPropertyValuesController {
 		protected readonly offerPropertyValuesService: OfferPropertyValuesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, catalog: number, product: bigint, offset: number, limit: number) {
+	async findAll(apiKey: ApiKeys, offset: number, limit: number, catalog: number, product: bigint) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
@@ -44,7 +44,7 @@ export class GenOfferPropertyValuesController {
 		}
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		if(limit>1000) limit = 1000; // throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
+		if(limit>1000) limit = 1000;
 		return await this.offerPropertyValuesService.listAll(offset, limit);
 	}
 	
@@ -80,19 +80,15 @@ export class GenOfferPropertyValuesController {
 		}
 		return await this.offerPropertyValuesService.transactional(async (em) => {
 			const entity = await this.offerPropertyValuesService.findByOfferAndProperty(offer, property, em);
-			if((updateDto.property!==undefined && updateDto.property!==entity.property.id)){
-				const propertyIns2 = await this.catalogPropertiesService.findById(updateDto.property);
-				if(propertyIns2===null || !(propertyIns2.catalog.id===catalog)){
-					throw new HttpException('Property not found', HttpStatus.NOT_FOUND);
-				}
+			const propertyIns2 = await this.catalogPropertiesService.findById(updateDto.property);
+			if(propertyIns2===null || !(propertyIns2.catalog.id===catalog)){
+				throw new HttpException('Property not found', HttpStatus.NOT_FOUND);
 			}
-			if((updateDto.offer!==undefined && updateDto.offer!==entity.offer.id)){
-				const offerIns3 = await this.catalogProductOffersService.findById(updateDto.offer);
-				if(offerIns3===null || !(offerIns3.product.id===product)){
-					throw new HttpException('Offer not found', HttpStatus.NOT_FOUND);
-				}
+			const offerIns3 = await this.catalogProductOffersService.findById(updateDto.offer);
+			if(offerIns3===null || !(offerIns3.product.id===product)){
+				throw new HttpException('Offer not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateUpdate(entity, apiKey, catalog, product, offer, property, updateDto, em);
+			await this.validateUpdate(entity, apiKey, catalog, product, offer, property, updateDto);
 			if(entity!==null){
 				return await this.offerPropertyValuesService.update(entity, updateDto, em);
 			} else {
@@ -101,7 +97,7 @@ export class GenOfferPropertyValuesController {
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, offer: bigint, property: number, updateDto: UpdateOfferPropertyValueDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, offer: bigint, property: number, updateDto: UpdateOfferPropertyValueDto) { }
 	
 	async delete(apiKey: ApiKeys, catalog: number, product: bigint, offer: bigint, property: number) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);

@@ -6,8 +6,6 @@
  * in api/controllers/rates.controller
  * in a proper way.
  */
-import { AuthInfo } from './../../../decorators/auth.decorator'
-import { ApiKeys } from './../../../entities/ApiKeys'
 import { CreateRateDto } from './../../dtos/create-rate.dto'
 import { UpdateRateDto } from './../../dtos/update-rate.dto'
 import { CurrenciesService } from './../../services/currencies.service'

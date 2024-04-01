@@ -921,6 +921,9 @@
                 "offer": {
                     "def": "pk",
                     "fillDtoFrom": "offer",
+                    "readValidate": "@#.product.catalog.id===catalog",
+                    "readForWriteValidate": "@#.product.catalog.id===catalog",
+                    "allFilter": true,
                     "load": {
                         "as": "catalog_product_offers",
                         "validate": "@@.product.catalog.id===catalog",

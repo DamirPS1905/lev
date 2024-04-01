@@ -1,4 +1,4 @@
-import { GenUpdateUserDto } from './gen/update-user.dto';
+import { GenUpdateUserDto } from './gen/update-user.dto'
 
 export class UpdateUserDto extends GenUpdateUserDto {
 	

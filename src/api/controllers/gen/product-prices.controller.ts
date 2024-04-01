@@ -31,14 +31,14 @@ export class GenProductPricesController {
 		protected readonly productPricesService: ProductPricesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, catalog: number, offset: number, limit: number) {
+	async findAll(apiKey: ApiKeys, offset: number, limit: number, catalog: number) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		if(limit>1000) limit = 1000; // throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
+		if(limit>1000) limit = 1000;
 		return await this.productPricesService.listAll(offset, limit);
 	}
 	
@@ -66,19 +66,15 @@ export class GenProductPricesController {
 		}
 		return await this.productPricesService.transactional(async (em) => {
 			const entity = await this.productPricesService.findByProductAndPriceType(product, priceType, em);
-			if((updateDto.priceType!==undefined && updateDto.priceType!==entity.priceType.id)){
-				const priceTypeIns1 = await this.priceTypesService.findById(updateDto.priceType);
-				if(priceTypeIns1===null || !(priceTypeIns1.company.id===apiKey.company.id)){
-					throw new HttpException('Price type not found', HttpStatus.NOT_FOUND);
-				}
+			const price_typeIns1 = await this.priceTypesService.findById(updateDto.price_type);
+			if(price_typeIns1===null || !(price_typeIns1.company.id===apiKey.company.id)){
+				throw new HttpException('Price type not found', HttpStatus.NOT_FOUND);
 			}
-			if((updateDto.product!==undefined && updateDto.product!==entity.product.id)){
-				const productIns2 = await this.catalogProductsService.findById(updateDto.product);
-				if(productIns2===null || !(productIns2.catalog.id===catalog)){
-					throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
-				}
+			const productIns2 = await this.catalogProductsService.findById(updateDto.product);
+			if(productIns2===null || !(productIns2.catalog.id===catalog)){
+				throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateUpdate(entity, apiKey, catalog, product, priceType, updateDto, em);
+			await this.validateUpdate(entity, apiKey, catalog, product, priceType, updateDto);
 			if(entity!==null){
 				return await this.productPricesService.update(entity, updateDto, em);
 			} else {
@@ -87,7 +83,7 @@ export class GenProductPricesController {
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, priceType: number, updateDto: UpdateProductPriceDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, priceType: number, updateDto: UpdateProductPriceDto) { }
 	
 	async delete(apiKey: ApiKeys, catalog: number, product: bigint, priceType: number) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);

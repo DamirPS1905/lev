@@ -55,19 +55,15 @@ export class GenPropertyInTypesController {
 		}
 		return await this.propertyInTypesService.transactional(async (em) => {
 			const entity = await this.propertyInTypesService.findByTypeAndProperty(type, property, em);
-			if((updateDto.property!==undefined && updateDto.property!==entity.property.id)){
-				const propertyIns1 = await this.catalogPropertiesService.findById(updateDto.property);
-				if(propertyIns1===null || !(propertyIns1.catalog.id===catalog)){
-					throw new HttpException('Property not found', HttpStatus.NOT_FOUND);
-				}
+			const propertyIns1 = await this.catalogPropertiesService.findById(updateDto.property);
+			if(propertyIns1===null || !(propertyIns1.catalog.id===catalog)){
+				throw new HttpException('Property not found', HttpStatus.NOT_FOUND);
 			}
-			if((updateDto.type!==undefined && updateDto.type!==entity.type.id)){
-				const typeIns2 = await this.catalogTypesService.findById(updateDto.type);
-				if(typeIns2===null || !(typeIns2.catalog.id===catalog)){
-					throw new HttpException('Product type not found', HttpStatus.NOT_FOUND);
-				}
+			const typeIns2 = await this.catalogTypesService.findById(updateDto.type);
+			if(typeIns2===null || !(typeIns2.catalog.id===catalog)){
+				throw new HttpException('Product type not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateUpdate(entity, apiKey, catalog, type, property, updateDto, em);
+			await this.validateUpdate(entity, apiKey, catalog, type, property, updateDto);
 			if(entity!==null){
 				if(!(entity.type.catalog.id===catalog)){
 					throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
@@ -79,7 +75,7 @@ export class GenPropertyInTypesController {
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, type: number, property: number, updateDto: UpdatePropertyInTypeDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, type: number, property: number, updateDto: UpdatePropertyInTypeDto) { }
 	
 	async delete(apiKey: ApiKeys, catalog: number, type: number, property: number) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);

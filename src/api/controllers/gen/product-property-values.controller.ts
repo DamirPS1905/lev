@@ -31,14 +31,14 @@ export class GenProductPropertyValuesController {
 		protected readonly productPropertyValuesService: ProductPropertyValuesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, catalog: number, offset: number, limit: number) {
+	async findAll(apiKey: ApiKeys, offset: number, limit: number, catalog: number) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		if(limit>1000) limit = 1000; // throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
+		if(limit>1000) limit = 1000;
 		return await this.productPropertyValuesService.listAll(offset, limit);
 	}
 	
@@ -66,19 +66,15 @@ export class GenProductPropertyValuesController {
 		}
 		return await this.productPropertyValuesService.transactional(async (em) => {
 			const entity = await this.productPropertyValuesService.findByProductAndProperty(product, property, em);
-			if((updateDto.property!==undefined && updateDto.property!==entity.property.id)){
-				const propertyIns1 = await this.catalogPropertiesService.findById(updateDto.property);
-				if(propertyIns1===null || !(propertyIns1.catalog.id===catalog)){
-					throw new HttpException('Property not found', HttpStatus.NOT_FOUND);
-				}
+			const propertyIns1 = await this.catalogPropertiesService.findById(updateDto.property);
+			if(propertyIns1===null || !(propertyIns1.catalog.id===catalog)){
+				throw new HttpException('Property not found', HttpStatus.NOT_FOUND);
 			}
-			if((updateDto.product!==undefined && updateDto.product!==entity.product.id)){
-				const productIns2 = await this.catalogProductsService.findById(updateDto.product);
-				if(productIns2===null || !(productIns2.catalog.id===catalog)){
-					throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
-				}
+			const productIns2 = await this.catalogProductsService.findById(updateDto.product);
+			if(productIns2===null || !(productIns2.catalog.id===catalog)){
+				throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateUpdate(entity, apiKey, catalog, product, property, updateDto, em);
+			await this.validateUpdate(entity, apiKey, catalog, product, property, updateDto);
 			if(entity!==null){
 				return await this.productPropertyValuesService.update(entity, updateDto, em);
 			} else {
@@ -87,7 +83,7 @@ export class GenProductPropertyValuesController {
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, property: number, updateDto: UpdateProductPropertyValueDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, property: number, updateDto: UpdateProductPropertyValueDto) { }
 	
 	async delete(apiKey: ApiKeys, catalog: number, product: bigint, property: number) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);

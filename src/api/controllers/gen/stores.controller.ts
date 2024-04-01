@@ -25,10 +25,10 @@ export class GenStoresController {
 		protected readonly storesService: StoresService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, offset: number, limit: number) {
+	async findAll(apiKey: ApiKeys, apiKey.company.id: number, offset: number, limit: number) {
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		if(limit>1000) limit = 1000; // throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
+		if(limit>1000) limit = 1000;
 		return await this.storesService.listByCompany(apiKey.company.id, offset, limit);
 	}
 	
@@ -60,7 +60,7 @@ export class GenStoresController {
 	async update(apiKey: ApiKeys, id: number, updateDto: UpdateStoreDto) {
 		return await this.storesService.transactional(async (em) => {
 			const entity = await this.storesService.findById(id, em);
-			if(entity===null){
+			if(entity===null || !(entity.company.id===apiKey.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			if((updateDto.title!==undefined && updateDto.title!==entity.title)){
@@ -69,12 +69,12 @@ export class GenStoresController {
 					throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 				}
 			}
-			this.validateUpdate(entity, apiKey, id, updateDto, em);
+			this.validateUpdate(entity, apiKey, id, updateDto);
 			return await this.storesService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, id: number, updateDto: UpdateStoreDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, id: number, updateDto: UpdateStoreDto) { }
 	
 	async delete(apiKey: ApiKeys, id: number) {
 		return await this.storesService.transactional(async (em) => {

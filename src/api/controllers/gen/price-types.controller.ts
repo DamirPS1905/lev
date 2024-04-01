@@ -27,10 +27,10 @@ export class GenPriceTypesController {
 		protected readonly priceTypesService: PriceTypesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, offset: number, limit: number) {
+	async findAll(apiKey: ApiKeys, apiKey.company.id: number, offset: number, limit: number) {
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		if(limit>1000) limit = 1000; // throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
+		if(limit>1000) limit = 1000;
 		return await this.priceTypesService.listByCompany(apiKey.company.id, offset, limit);
 	}
 	
@@ -66,13 +66,11 @@ export class GenPriceTypesController {
 	async update(apiKey: ApiKeys, id: number, updateDto: UpdatePriceTypeDto) {
 		return await this.priceTypesService.transactional(async (em) => {
 			const entity = await this.priceTypesService.findById(id, em);
-			if((updateDto.displayCurrency!==undefined && updateDto.displayCurrency!==entity.displayCurrency.id)){
-				const tmp1 = await this.currenciesService.findById(updateDto.displayCurrency, em);
-				if(tmp1===null){
-					throw new HttpException('Not found contrainst (displayCurrency)', HttpStatus.CONFLICT);
-				}
+			const tmp0 = await this.currenciesService.findById(updateDto.displayCurrency, em);
+			if(tmp0===null){
+				throw new HttpException('Not found contrainst (displayCurrency)', HttpStatus.CONFLICT);
 			}
-			if(entity===null){
+			if(entity===null || !(entity.company.id===apiKey.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			if((updateDto.title!==undefined && updateDto.title!==entity.title)){
@@ -81,12 +79,12 @@ export class GenPriceTypesController {
 					throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 				}
 			}
-			this.validateUpdate(entity, apiKey, id, updateDto, em);
+			this.validateUpdate(entity, apiKey, id, updateDto);
 			return await this.priceTypesService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, id: number, updateDto: UpdatePriceTypeDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, id: number, updateDto: UpdatePriceTypeDto) { }
 	
 	async delete(apiKey: ApiKeys, id: number) {
 		return await this.priceTypesService.transactional(async (em) => {

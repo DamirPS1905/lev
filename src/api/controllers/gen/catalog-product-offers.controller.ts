@@ -29,7 +29,7 @@ export class GenCatalogProductOffersController {
 		protected readonly catalogsService: CatalogsService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, catalog: number, product: bigint, offset: number, limit: number) {
+	async findAll(apiKey: ApiKeys, catalog: number, offset: number, limit: number, catalog: number, product: bigint) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);
 		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
@@ -40,7 +40,7 @@ export class GenCatalogProductOffersController {
 		}
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		if(limit>1000) limit = 1000; // throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
+		if(limit>1000) limit = 1000;
 		return await this.catalogProductOffersService.listByCatalog(catalog, offset, limit);
 	}
 	
@@ -103,11 +103,9 @@ export class GenCatalogProductOffersController {
 		}
 		return await this.catalogProductOffersService.transactional(async (em) => {
 			const entity = await this.catalogProductOffersService.findById(id, em);
-			if((updateDto.product!==undefined && updateDto.product!==entity.product.id)){
-				const tmp3 = await this.catalogProductsService.findById(updateDto.product, em);
-				if(tmp3===null){
-					throw new HttpException('Not found contrainst (product)', HttpStatus.CONFLICT);
-				}
+			const tmp2 = await this.catalogProductsService.findById(updateDto.product, em);
+			if(tmp2===null){
+				throw new HttpException('Not found contrainst (product)', HttpStatus.CONFLICT);
 			}
 			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
@@ -118,12 +116,12 @@ export class GenCatalogProductOffersController {
 					throw new HttpException('Duplicate (catalog, article)', HttpStatus.CONFLICT);
 				}
 			}
-			this.validateUpdate(entity, apiKey, catalog, product, id, updateDto, em);
+			this.validateUpdate(entity, apiKey, catalog, product, id, updateDto);
 			return await this.catalogProductOffersService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint, updateDto: UpdateCatalogProductOfferDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint, updateDto: UpdateCatalogProductOfferDto) { }
 	
 	async delete(apiKey: ApiKeys, catalog: number, product: bigint, id: bigint) {
 		const catalogIns0 = await this.catalogsService.findById(catalog);
