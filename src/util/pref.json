@@ -261,7 +261,11 @@
                 },
                 "product": {
                     "def": "def",
-                    "fillDtoFrom": "product"
+                    "fillDtoFrom": "product",
+                    "readValidate": "@@===product",
+                    "readForWriteValidate": "@@===product",
+                    "from": "path: product",
+                    "fillDto": "create"
                 },
                 "catalog": {
                     "def": "catalog"

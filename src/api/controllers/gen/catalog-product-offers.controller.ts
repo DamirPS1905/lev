@@ -54,7 +54,7 @@ export class GenCatalogProductOffersController {
 			throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
 		}
 		const entity = await this.catalogProductOffersService.findById(id);
-		if(entity===null || !(entity.catalog.id===catalog)){
+		if(entity===null || !(entity.product.id===product) || !(entity.catalog.id===catalog)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
 		await this.validateRead(entity, apiKey, catalog, product, id);
@@ -64,6 +64,7 @@ export class GenCatalogProductOffersController {
 	async validateRead(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint) { }
 	
 	async create(apiKey: ApiKeys, catalog: number, product: bigint, createDto: CreateCatalogProductOfferDto) {
+		createDto.product = product;
 		createDto.catalog = catalog;
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
@@ -78,7 +79,7 @@ export class GenCatalogProductOffersController {
 			if(existed0!==null){
 				throw new HttpException('Duplicate (catalog, article)', HttpStatus.CONFLICT);
 			}
-			const tmp = await this.catalogProductsService.findById(createDto.product, em);
+			const tmp = await this.catalogProductsService.findById(product, em);
 			if(tmp===null){
 				throw new HttpException('Not found contrainst (product)', HttpStatus.CONFLICT);
 			}
@@ -100,11 +101,11 @@ export class GenCatalogProductOffersController {
 		}
 		return await this.catalogProductOffersService.transactional(async (em) => {
 			const entity = await this.catalogProductOffersService.findById(id, em);
-			const tmp = await this.catalogProductsService.findById(updateDto.product, em);
+			const tmp = await this.catalogProductsService.findById(product, em);
 			if(tmp===null){
 				throw new HttpException('Not found contrainst (product)', HttpStatus.CONFLICT);
 			}
-			if(entity===null || !(entity.catalog.id===catalog)){
+			if(entity===null || !(entity.product.id===product) || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			if((updateDto.article!==undefined && updateDto.article!==entity.article)){
@@ -131,7 +132,7 @@ export class GenCatalogProductOffersController {
 		}
 		return await this.catalogProductOffersService.transactional(async (em) => {
 			const entity = await this.catalogProductOffersService.findById(id, em);
-			if(entity===null || !(entity.catalog.id===catalog)){
+			if(entity===null || !(entity.product.id===product) || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			await this.validateDelete(entity, apiKey, catalog, product, id, em);
