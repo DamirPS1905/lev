@@ -65,7 +65,14 @@ export class GenActorTypesService {
 		return em.find(ActorTypes, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(ActorTypes, { }, {
+			orderBy: { id: "ASC" },
 		});
 	}
 	

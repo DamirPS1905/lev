@@ -25,7 +25,7 @@ export class GenStoresController {
 		protected readonly storesService: StoresService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, apiKey.company.id: number, offset: number, limit: number) {
+	async findAll(apiKey: ApiKeys, offset: number, limit: number) {
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
 		if(limit>1000) limit = 1000;
@@ -46,7 +46,7 @@ export class GenStoresController {
 	async create(apiKey: ApiKeys, createDto: CreateStoreDto) {
 		createDto.company = apiKey.company.id;
 		return await this.storesService.transactional(async (em) => {
-			const existed0 = await this.storesService.findByCompanyAndTitle(createDto.company, createDto.title, em);
+			const existed0 = await this.storesService.findByCompanyAndTitle(apiKey.company.id, createDto.title, em);
 			if(existed0!==null){
 				throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 			}
@@ -64,17 +64,17 @@ export class GenStoresController {
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			if((updateDto.title!==undefined && updateDto.title!==entity.title)){
-				const existed0 = await this.storesService.findByCompanyAndTitle(entity.company.id, updateDto.title, em);
-				if(existed0!==null && (entity.id !== existed0.id)){
+				const existed = await this.storesService.findByCompanyAndTitle(entity.company.id, updateDto.title, em);
+				if(existed!==null && (entity.id!==existed.id)){
 					throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 				}
 			}
-			this.validateUpdate(entity, apiKey, id, updateDto);
+			this.validateUpdate(entity, apiKey, id, updateDto, em);
 			return await this.storesService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, id: number, updateDto: UpdateStoreDto) { }
+	async validateUpdate(entity, apiKey: ApiKeys, id: number, updateDto: UpdateStoreDto, em: EntityManager) { }
 	
 	async delete(apiKey: ApiKeys, id: number) {
 		return await this.storesService.transactional(async (em) => {

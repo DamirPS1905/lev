@@ -67,7 +67,7 @@ export class GenProductPricesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { product : 'ASC', priceType : 'ASC' },
+			orderBy: { product: "ASC", priceType: "ASC" },
 		});
 	}
 	
@@ -85,7 +85,7 @@ export class GenProductPricesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { product : 'ASC', priceType : 'ASC' },
+			orderBy: { product: "ASC", priceType: "ASC" },
 		});
 	}
 	
@@ -94,7 +94,14 @@ export class GenProductPricesService {
 		return em.find(ProductPrices, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { product : 'ASC', priceType : 'ASC' },
+			orderBy: { product: "ASC", priceType: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(ProductPrices, { }, {
+			orderBy: { product: "ASC", priceType: "ASC" },
 		});
 	}
 	

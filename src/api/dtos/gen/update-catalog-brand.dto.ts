@@ -12,8 +12,6 @@ import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator'
 
 export class GenUpdateCatalogBrandDto {
 	
-	catalog:number;
-	
 	@IsOptional()
 	@ApiProperty({ required: false, description: 'Наименование бренда' })
 	@IsString()

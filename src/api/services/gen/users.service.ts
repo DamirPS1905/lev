@@ -74,7 +74,7 @@ export class GenUsersService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
 		});
 	}
 	
@@ -92,7 +92,7 @@ export class GenUsersService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
 		});
 	}
 	
@@ -101,7 +101,14 @@ export class GenUsersService {
 		return em.find(Users, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(Users, { }, {
+			orderBy: { id: "ASC" },
 		});
 	}
 	

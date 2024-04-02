@@ -24,6 +24,4 @@ export class GenUpdatePropertyTypeDto {
 	@ApiProperty({ required: false })
 	scheme:any;
 	
-	catalog:number;
-	
 }

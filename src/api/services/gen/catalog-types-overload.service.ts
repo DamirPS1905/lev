@@ -67,7 +67,7 @@ export class GenCatalogTypesOverloadService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { child : 'ASC', parent : 'ASC' },
+			orderBy: { child: "ASC", parent: "ASC" },
 		});
 	}
 	
@@ -85,7 +85,7 @@ export class GenCatalogTypesOverloadService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { child : 'ASC', parent : 'ASC' },
+			orderBy: { child: "ASC", parent: "ASC" },
 		});
 	}
 	
@@ -94,7 +94,14 @@ export class GenCatalogTypesOverloadService {
 		return em.find(CatalogTypesOverload, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { child : 'ASC', parent : 'ASC' },
+			orderBy: { child: "ASC", parent: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogTypesOverload, { }, {
+			orderBy: { child: "ASC", parent: "ASC" },
 		});
 	}
 	

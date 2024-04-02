@@ -67,7 +67,7 @@ export class GenOfferPropertyValuesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { offer : 'ASC', property : 'ASC' },
+			orderBy: { offer: "ASC", property: "ASC" },
 		});
 	}
 	
@@ -85,7 +85,7 @@ export class GenOfferPropertyValuesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { offer : 'ASC', property : 'ASC' },
+			orderBy: { offer: "ASC", property: "ASC" },
 		});
 	}
 	
@@ -94,7 +94,14 @@ export class GenOfferPropertyValuesService {
 		return em.find(OfferPropertyValues, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { offer : 'ASC', property : 'ASC' },
+			orderBy: { offer: "ASC", property: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(OfferPropertyValues, { }, {
+			orderBy: { offer: "ASC", property: "ASC" },
 		});
 	}
 	

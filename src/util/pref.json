@@ -28,7 +28,9 @@
             "dtoMin": false,
             "dtoMax": false,
             "dtoTrim": true,
-            "dtoDisallow": false
+            "dtoDisallow": false,
+            "from": "body",
+            "fillDto": false
         },
         "company": {
             "dto": "create",
@@ -42,7 +44,9 @@
             "readForWriteValidate": "@@===apiKey.company.id",
             "ignoreFk": true,
             "allFilter": true,
-            "hidden": true
+            "hidden": true,
+            "from": "other: apiKey.company.id",
+            "fillDto": "create"
         },
         "title": {
             "dto": true,
@@ -50,10 +54,12 @@
             "dtoMin": 1,
             "dtoMax": 255,
             "dtoTrim": true,
-            "dtoDisallow": false
+            "dtoDisallow": false,
+            "from": "body",
+            "fillDto": false
         },
         "catalog": {
-            "dto": true,
+            "dto": "create",
             "dtoRequired": false,
             "dtoMin": false,
             "dtoMax": false,
@@ -64,7 +70,9 @@
             "readValidate": "@@===catalog",
             "readForWriteValidate": "@@===catalog",
             "ignoreFk": true,
-            "allFilter": true
+            "allFilter": true,
+            "from": "extra",
+            "fillDto": "create"
         },
         "pk": {
             "dto": true,
@@ -72,7 +80,9 @@
             "dtoMin": false,
             "dtoMax": false,
             "dtoTrim": true,
-            "dtoDisallow": true
+            "dtoDisallow": true,
+            "from": "path",
+            "fillDto": "create"
         },
         "id": {
             "dto": false,
@@ -80,7 +90,9 @@
             "dtoMin": false,
             "dtoMax": false,
             "dtoTrim": true,
-            "dtoDisallow": false
+            "dtoDisallow": false,
+            "from": "body",
+            "fillDto": false
         }
     },
     "entitiesDefaults": {

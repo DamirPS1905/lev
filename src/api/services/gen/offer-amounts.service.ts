@@ -67,7 +67,7 @@ export class GenOfferAmountsService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { offer : 'ASC', store : 'ASC' },
+			orderBy: { offer: "ASC", store: "ASC" },
 		});
 	}
 	
@@ -85,7 +85,7 @@ export class GenOfferAmountsService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { offer : 'ASC', store : 'ASC' },
+			orderBy: { offer: "ASC", store: "ASC" },
 		});
 	}
 	
@@ -94,7 +94,14 @@ export class GenOfferAmountsService {
 		return em.find(OfferAmounts, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { offer : 'ASC', store : 'ASC' },
+			orderBy: { offer: "ASC", store: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(OfferAmounts, { }, {
+			orderBy: { offer: "ASC", store: "ASC" },
 		});
 	}
 	

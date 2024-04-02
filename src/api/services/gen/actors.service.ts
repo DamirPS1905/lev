@@ -74,7 +74,7 @@ export class GenActorsService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
 		});
 	}
 	
@@ -83,7 +83,14 @@ export class GenActorsService {
 		return em.find(Actors, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(Actors, { }, {
+			orderBy: { id: "ASC" },
 		});
 	}
 	

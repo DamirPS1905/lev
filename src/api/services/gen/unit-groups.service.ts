@@ -67,7 +67,7 @@ export class GenUnitGroupsService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
 		});
 	}
 	
@@ -85,7 +85,7 @@ export class GenUnitGroupsService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
 		});
 	}
 	
@@ -94,7 +94,14 @@ export class GenUnitGroupsService {
 		return em.find(UnitGroups, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(UnitGroups, { }, {
+			orderBy: { id: "ASC" },
 		});
 	}
 	

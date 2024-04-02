@@ -67,7 +67,7 @@ export class GenPropertyValuesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { order : 'ASC', valueKey : 'ASC' },
+			orderBy: { order: "ASC", valueKey: "ASC" },
 		});
 	}
 	
@@ -76,7 +76,14 @@ export class GenPropertyValuesService {
 		return em.find(PropertyValues, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { order : 'ASC', valueKey : 'ASC' },
+			orderBy: { order: "ASC", valueKey: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(PropertyValues, { }, {
+			orderBy: { order: "ASC", valueKey: "ASC" },
 		});
 	}
 	

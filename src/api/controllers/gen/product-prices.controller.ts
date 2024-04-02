@@ -31,9 +31,9 @@ export class GenProductPricesController {
 		protected readonly productPricesService: ProductPricesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, offset: number, limit: number, catalog: number) {
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+	async findAll(apiKey: ApiKeys, catalog: number, offset: number, limit: number) {
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
@@ -43,8 +43,8 @@ export class GenProductPricesController {
 	}
 	
 	async findOne(apiKey: ApiKeys, catalog: number, product: bigint, priceType: number) {
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const entity = await this.productPricesService.findByProductAndPriceType(product, priceType);
@@ -58,23 +58,21 @@ export class GenProductPricesController {
 	async validateRead(entity, apiKey: ApiKeys, catalog: number, product: bigint, priceType: number) { }
 	
 	async update(apiKey: ApiKeys, catalog: number, product: bigint, priceType: number, updateDto: UpdateProductPriceDto) {
-		updateDto.product = product;
-		updateDto.priceType = priceType;
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.productPricesService.transactional(async (em) => {
 			const entity = await this.productPricesService.findByProductAndPriceType(product, priceType, em);
-			const price_typeIns1 = await this.priceTypesService.findById(updateDto.price_type);
-			if(price_typeIns1===null || !(price_typeIns1.company.id===apiKey.company.id)){
+			const priceTypeIns = await this.priceTypesService.findById(priceType);
+			if(priceTypeIns===null || !(priceTypeIns.company.id===apiKey.company.id)){
 				throw new HttpException('Price type not found', HttpStatus.NOT_FOUND);
 			}
-			const productIns2 = await this.catalogProductsService.findById(updateDto.product);
-			if(productIns2===null || !(productIns2.catalog.id===catalog)){
+			const productIns = await this.catalogProductsService.findById(product);
+			if(productIns===null || !(productIns.catalog.id===catalog)){
 				throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateUpdate(entity, apiKey, catalog, product, priceType, updateDto);
+			await this.validateUpdate(entity, apiKey, catalog, product, priceType, updateDto, em);
 			if(entity!==null){
 				return await this.productPricesService.update(entity, updateDto, em);
 			} else {
@@ -83,11 +81,11 @@ export class GenProductPricesController {
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, priceType: number, updateDto: UpdateProductPriceDto) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, priceType: number, updateDto: UpdateProductPriceDto, em: EntityManager) { }
 	
 	async delete(apiKey: ApiKeys, catalog: number, product: bigint, priceType: number) {
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.productPricesService.transactional(async (em) => {

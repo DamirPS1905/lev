@@ -72,7 +72,14 @@ export class GenCurrenciesService {
 		return em.find(Currencies, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(Currencies, { }, {
+			orderBy: { id: "ASC" },
 		});
 	}
 	

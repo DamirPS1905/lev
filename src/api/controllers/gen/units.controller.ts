@@ -27,7 +27,7 @@ export class GenUnitsController {
 		protected readonly unitsService: UnitsService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, apiKey.company.id: number, offset: number, limit: number) {
+	async findAll(apiKey: ApiKeys, offset: number, limit: number) {
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
 		if(limit>1000) limit = 1000;
@@ -48,8 +48,8 @@ export class GenUnitsController {
 	async create(apiKey: ApiKeys, createDto: CreateUnitDto) {
 		createDto.company = apiKey.company.id;
 		return await this.unitsService.transactional(async (em) => {
-			const tmp0 = await this.unitGroupsService.findById(createDto.group, em);
-			if(tmp0===null){
+			const tmp = await this.unitGroupsService.findById(createDto.group, em);
+			if(tmp===null){
 				throw new HttpException('Not found contrainst (group)', HttpStatus.CONFLICT);
 			}
 			await this.validateCreate(apiKey, createDto, em);
@@ -62,19 +62,19 @@ export class GenUnitsController {
 	async update(apiKey: ApiKeys, id: number, updateDto: UpdateUnitDto) {
 		return await this.unitsService.transactional(async (em) => {
 			const entity = await this.unitsService.findById(id, em);
-			const tmp0 = await this.unitGroupsService.findById(updateDto.group, em);
-			if(tmp0===null){
+			const tmp = await this.unitGroupsService.findById(updateDto.group, em);
+			if(tmp===null){
 				throw new HttpException('Not found contrainst (group)', HttpStatus.CONFLICT);
 			}
 			if(entity===null || !(entity.company.id===apiKey.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			this.validateUpdate(entity, apiKey, id, updateDto);
+			this.validateUpdate(entity, apiKey, id, updateDto, em);
 			return await this.unitsService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, id: number, updateDto: UpdateUnitDto) { }
+	async validateUpdate(entity, apiKey: ApiKeys, id: number, updateDto: UpdateUnitDto, em: EntityManager) { }
 	
 	async delete(apiKey: ApiKeys, id: number) {
 		return await this.unitsService.transactional(async (em) => {

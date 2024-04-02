@@ -12,8 +12,6 @@ import { IsInt, IsOptional, IsString, MaxLength, MinLength } from 'class-validat
 
 export class GenUpdateCatalogTypeDto {
 	
-	catalog:number;
-	
 	@IsOptional()
 	@ApiProperty({ required: false })
 	@IsString()

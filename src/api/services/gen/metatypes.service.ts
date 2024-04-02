@@ -65,7 +65,14 @@ export class GenMetatypesService {
 		return em.find(Metatypes, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(Metatypes, { }, {
+			orderBy: { id: "ASC" },
 		});
 	}
 	

@@ -74,7 +74,7 @@ export class GenOptionsPropertyValuesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
 		});
 	}
 	
@@ -83,7 +83,14 @@ export class GenOptionsPropertyValuesService {
 		return em.find(OptionsPropertyValues, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(OptionsPropertyValues, { }, {
+			orderBy: { id: "ASC" },
 		});
 	}
 	

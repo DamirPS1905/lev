@@ -16,8 +16,6 @@ export class GenUpdateCatalogProductOfferDto {
 	@ApiProperty({ required: false })
 	product:bigint;
 	
-	catalog:number;
-	
 	@IsOptional()
 	@ApiProperty({ required: false })
 	@IsString()

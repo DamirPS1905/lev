@@ -67,7 +67,7 @@ export class GenRatesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { from : 'ASC', to : 'ASC', source : 'ASC' },
+			orderBy: { from: "ASC", to: "ASC", source: "ASC" },
 		});
 	}
 	
@@ -85,7 +85,7 @@ export class GenRatesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { from : 'ASC', to : 'ASC', source : 'ASC' },
+			orderBy: { from: "ASC", to: "ASC", source: "ASC" },
 		});
 	}
 	
@@ -103,7 +103,7 @@ export class GenRatesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { from : 'ASC', to : 'ASC', source : 'ASC' },
+			orderBy: { from: "ASC", to: "ASC", source: "ASC" },
 		});
 	}
 	
@@ -112,7 +112,14 @@ export class GenRatesService {
 		return em.find(Rates, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { from : 'ASC', to : 'ASC', source : 'ASC' },
+			orderBy: { from: "ASC", to: "ASC", source: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(Rates, { }, {
+			orderBy: { from: "ASC", to: "ASC", source: "ASC" },
 		});
 	}
 	

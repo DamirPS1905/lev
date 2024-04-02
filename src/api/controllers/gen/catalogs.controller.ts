@@ -25,7 +25,7 @@ export class GenCatalogsController {
 		protected readonly catalogsService: CatalogsService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, apiKey.company.id: number, offset: number, limit: number) {
+	async findAll(apiKey: ApiKeys, offset: number, limit: number) {
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
 		if(limit>1000) limit = 1000;

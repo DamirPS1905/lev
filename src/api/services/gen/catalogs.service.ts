@@ -74,7 +74,7 @@ export class GenCatalogsService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
 		});
 	}
 	
@@ -83,7 +83,14 @@ export class GenCatalogsService {
 		return em.find(Catalogs, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(Catalogs, { }, {
+			orderBy: { id: "ASC" },
 		});
 	}
 	

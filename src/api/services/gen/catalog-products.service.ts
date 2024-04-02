@@ -74,7 +74,7 @@ export class GenCatalogProductsService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
 		});
 	}
 	
@@ -92,7 +92,7 @@ export class GenCatalogProductsService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
 		});
 	}
 	
@@ -110,7 +110,7 @@ export class GenCatalogProductsService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
 		});
 	}
 	
@@ -119,7 +119,14 @@ export class GenCatalogProductsService {
 		return em.find(CatalogProducts, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id : 'ASC' },
+			orderBy: { id: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogProducts, { }, {
+			orderBy: { id: "ASC" },
 		});
 	}
 	

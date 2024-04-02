@@ -58,7 +58,14 @@ export class GenRatesHistoryService {
 		return em.find(RatesHistory, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { from : 'ASC', to : 'ASC', source : 'ASC', date : 'ASC' },
+			orderBy: { from: "ASC", to: "ASC", source: "ASC", date: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(RatesHistory, { }, {
+			orderBy: { from: "ASC", to: "ASC", source: "ASC", date: "ASC" },
 		});
 	}
 	

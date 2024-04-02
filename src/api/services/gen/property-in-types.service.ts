@@ -67,7 +67,7 @@ export class GenPropertyInTypesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { type : 'ASC', property : 'ASC' },
+			orderBy: { type: "ASC", property: "ASC" },
 		});
 	}
 	
@@ -85,7 +85,7 @@ export class GenPropertyInTypesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { type : 'ASC', property : 'ASC' },
+			orderBy: { type: "ASC", property: "ASC" },
 		});
 	}
 	
@@ -94,7 +94,14 @@ export class GenPropertyInTypesService {
 		return em.find(PropertyInTypes, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { type : 'ASC', property : 'ASC' },
+			orderBy: { type: "ASC", property: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(PropertyInTypes, { }, {
+			orderBy: { type: "ASC", property: "ASC" },
 		});
 	}
 	

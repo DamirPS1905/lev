@@ -67,7 +67,7 @@ export class GenProductPropertyValuesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { product : 'ASC', property : 'ASC' },
+			orderBy: { product: "ASC", property: "ASC" },
 		});
 	}
 	
@@ -85,7 +85,7 @@ export class GenProductPropertyValuesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { product : 'ASC', property : 'ASC' },
+			orderBy: { product: "ASC", property: "ASC" },
 		});
 	}
 	
@@ -94,7 +94,14 @@ export class GenProductPropertyValuesService {
 		return em.find(ProductPropertyValues, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { product : 'ASC', property : 'ASC' },
+			orderBy: { product: "ASC", property: "ASC" },
+		});
+	}
+	
+	findAll(emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(ProductPropertyValues, { }, {
+			orderBy: { product: "ASC", property: "ASC" },
 		});
 	}
 	

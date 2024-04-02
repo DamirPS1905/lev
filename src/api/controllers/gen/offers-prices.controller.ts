@@ -31,9 +31,9 @@ export class GenOffersPricesController {
 		protected readonly priceTypesService: PriceTypesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, offset: number, limit: number, catalog: number) {
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+	async findAll(apiKey: ApiKeys, catalog: number, offset: number, limit: number) {
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
@@ -43,8 +43,8 @@ export class GenOffersPricesController {
 	}
 	
 	async findOne(apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number) {
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const entity = await this.offersPricesService.findByOfferAndPriceType(offer, priceType);
@@ -58,23 +58,21 @@ export class GenOffersPricesController {
 	async validateRead(entity, apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number) { }
 	
 	async update(apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number, updateDto: UpdateOffersPriceDto) {
-		updateDto.offer = offer;
-		updateDto.priceType = priceType;
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.offersPricesService.transactional(async (em) => {
 			const entity = await this.offersPricesService.findByOfferAndPriceType(offer, priceType, em);
-			const price_typeIns1 = await this.priceTypesService.findById(updateDto.price_type);
-			if(price_typeIns1===null || !(price_typeIns1.company.id===apiKey.company.id)){
+			const priceTypeIns = await this.priceTypesService.findById(priceType);
+			if(priceTypeIns===null || !(priceTypeIns.company.id===apiKey.company.id)){
 				throw new HttpException('Price type not found', HttpStatus.NOT_FOUND);
 			}
-			const offerIns2 = await this.catalogProductOffersService.findById(updateDto.offer);
-			if(offerIns2===null || !(offerIns2.product.catalog.id===catalog)){
+			const offerIns = await this.catalogProductOffersService.findById(offer);
+			if(offerIns===null || !(offerIns.product.catalog.id===catalog)){
 				throw new HttpException('Offer not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateUpdate(entity, apiKey, catalog, offer, priceType, updateDto);
+			await this.validateUpdate(entity, apiKey, catalog, offer, priceType, updateDto, em);
 			if(entity!==null){
 				return await this.offersPricesService.update(entity, updateDto, em);
 			} else {
@@ -83,11 +81,11 @@ export class GenOffersPricesController {
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number, updateDto: UpdateOffersPriceDto) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number, updateDto: UpdateOffersPriceDto, em: EntityManager) { }
 	
 	async delete(apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number) {
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.offersPricesService.transactional(async (em) => {

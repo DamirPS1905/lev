@@ -27,9 +27,9 @@ export class GenPropertyTypesController {
 		protected readonly propertyTypesService: PropertyTypesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, catalog: number, offset: number, limit: number, catalog: number) {
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+	async findAll(apiKey: ApiKeys, catalog: number, offset: number, limit: number) {
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
@@ -39,8 +39,8 @@ export class GenPropertyTypesController {
 	}
 	
 	async findOne(apiKey: ApiKeys, catalog: number, id: number) {
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const entity = await this.propertyTypesService.findById(id);
@@ -55,8 +55,8 @@ export class GenPropertyTypesController {
 	
 	async create(apiKey: ApiKeys, catalog: number, createDto: CreatePropertyTypeDto) {
 		createDto.catalog = catalog;
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.propertyTypesService.transactional(async (em) => {
@@ -68,9 +68,8 @@ export class GenPropertyTypesController {
 	async validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreatePropertyTypeDto, em: EntityManager) { }
 	
 	async update(apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdatePropertyTypeDto) {
-		updateDto.catalog = catalog;
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.propertyTypesService.transactional(async (em) => {
@@ -78,16 +77,16 @@ export class GenPropertyTypesController {
 			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			this.validateUpdate(entity, apiKey, catalog, id, updateDto);
+			this.validateUpdate(entity, apiKey, catalog, id, updateDto, em);
 			return await this.propertyTypesService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdatePropertyTypeDto) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdatePropertyTypeDto, em: EntityManager) { }
 	
 	async delete(apiKey: ApiKeys, catalog: number, id: number) {
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.propertyTypesService.transactional(async (em) => {

@@ -31,13 +31,13 @@ export class GenOfferAmountsController {
 		protected readonly storesService: StoresService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, offer: bigint, offset: number, limit: number, catalog: number) {
-		const catalogIns1 = await this.catalogsService.findById(catalog);
-		if(catalogIns1===null || !(catalogIns1.company.id===apiKey.company.id)){
+	async findAll(apiKey: ApiKeys, catalog: number, offer: bigint, offset: number, limit: number) {
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		const offerIns0 = await this.catalogProductOffersService.findById(offer);
-		if(offerIns0===null || !(offerIns0.product.catalog.id===catalog)){
+		const offerIns = await this.catalogProductOffersService.findById(offer);
+		if(offerIns===null || !(offerIns.product.catalog.id===catalog)){
 			throw new HttpException('Offer not found', HttpStatus.NOT_FOUND);
 		}
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
@@ -47,8 +47,8 @@ export class GenOfferAmountsController {
 	}
 	
 	async findOne(apiKey: ApiKeys, catalog: number, offer: bigint, store: number) {
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const entity = await this.offerAmountsService.findByOfferAndStore(offer, store);
@@ -62,23 +62,21 @@ export class GenOfferAmountsController {
 	async validateRead(entity, apiKey: ApiKeys, catalog: number, offer: bigint, store: number) { }
 	
 	async update(apiKey: ApiKeys, catalog: number, offer: bigint, store: number, updateDto: UpdateOfferAmountDto) {
-		updateDto.offer = offer;
-		updateDto.store = store;
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.offerAmountsService.transactional(async (em) => {
 			const entity = await this.offerAmountsService.findByOfferAndStore(offer, store, em);
-			const storeIns1 = await this.storesService.findById(updateDto.store);
-			if(storeIns1===null || !(storeIns1.company.id===apiKey.company.id)){
+			const storeIns = await this.storesService.findById(store);
+			if(storeIns===null || !(storeIns.company.id===apiKey.company.id)){
 				throw new HttpException('Store not found', HttpStatus.NOT_FOUND);
 			}
-			const offerIns2 = await this.catalogProductOffersService.findById(updateDto.offer);
-			if(offerIns2===null || !(offerIns2.product.catalog.id===catalog)){
+			const offerIns = await this.catalogProductOffersService.findById(offer);
+			if(offerIns===null || !(offerIns.product.catalog.id===catalog)){
 				throw new HttpException('Offer not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateUpdate(entity, apiKey, catalog, offer, store, updateDto);
+			await this.validateUpdate(entity, apiKey, catalog, offer, store, updateDto, em);
 			if(entity!==null){
 				if(!(entity.offer.product.catalog.id===catalog)){
 					throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
@@ -90,11 +88,11 @@ export class GenOfferAmountsController {
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, offer: bigint, store: number, updateDto: UpdateOfferAmountDto) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, offer: bigint, store: number, updateDto: UpdateOfferAmountDto, em: EntityManager) { }
 	
 	async delete(apiKey: ApiKeys, catalog: number, offer: bigint, store: number) {
-		const catalogIns0 = await this.catalogsService.findById(catalog);
-		if(catalogIns0===null || !(catalogIns0.company.id===apiKey.company.id)){
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.offerAmountsService.transactional(async (em) => {

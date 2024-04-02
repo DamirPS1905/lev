@@ -7,12 +7,15 @@ import { GenOfferAmountsController } from './gen/offer-amounts.controller'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Patch, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
+import { ApiQuery } from '@nestjs/swagger'
 
 export class OfferAmountsController extends GenOfferAmountsController {
 	
 	@Get('all')
-	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
-		return await super.findAll(apiKey, catalog, offset, limit);
+	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
+	@ApiQuery({ name: 'offset', description: 'Count of skipping entities', required: false})
+	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('offer') offer: bigint, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
+		return await super.findAll(apiKey, catalog, offer, offset, limit);
 	}
 	
 	@Get(':store/amount')
