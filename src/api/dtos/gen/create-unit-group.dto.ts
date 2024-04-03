@@ -8,12 +8,12 @@
  */
 import { ApiProperty } from '@nestjs/swagger'
 import { Transform, TransformFnParams } from 'class-transformer'
-import { IsInt, IsOptional, IsString } from 'class-validator'
+import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator'
 
 export class GenCreateUnitGroupDto {
 	
-	@IsOptional()
-	@ApiProperty({ required: false })
+	@IsNotEmpty()
+	@ApiProperty()
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	title:string;

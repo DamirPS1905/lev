@@ -305,7 +305,10 @@
         },
         "property_types": {
             "def": "catDef",
-            "apiPathName": "types",
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": false,
             "fields": {
                 "id": {
                     "def": "id"
@@ -625,7 +628,8 @@
                     "def": "id"
                 },
                 "title": {
-                    "def": "def"
+                    "def": "def",
+                    "dtoRequired": "create"
                 },
                 "company": {
                     "def": "company"
@@ -648,13 +652,17 @@
                     "def": "company"
                 },
                 "title": {
-                    "def": "def"
+                    "def": "def",
+                    "dtoRequired": "create"
                 },
                 "abbr": {
-                    "def": "def"
+                    "def": "def",
+                    "dtoRequired": "create"
                 },
                 "group": {
-                    "def": "def"
+                    "def": "def",
+                    "dto": "create",
+                    "dtoRequired": "create"
                 },
                 "add": {
                     "def": "def"
@@ -785,7 +793,8 @@
                     "def": "company"
                 },
                 "title": {
-                    "def": "def"
+                    "def": "def",
+                    "dtoRequired": "create"
                 },
                 "display_currency": {
                     "def": "def"
@@ -914,7 +923,8 @@
                     "def": "company"
                 },
                 "title": {
-                    "def": "def"
+                    "def": "def",
+                    "dtoRequired": "create"
                 },
                 "address": {
                     "def": "def"

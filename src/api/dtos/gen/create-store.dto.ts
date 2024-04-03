@@ -8,14 +8,14 @@
  */
 import { ApiProperty } from '@nestjs/swagger'
 import { Transform, TransformFnParams } from 'class-transformer'
-import { IsOptional, IsString } from 'class-validator'
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator'
 
 export class GenCreateStoreDto {
 	
 	company:number;
 	
-	@IsOptional()
-	@ApiProperty({ required: false })
+	@IsNotEmpty()
+	@ApiProperty()
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	title:string;

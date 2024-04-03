@@ -20,7 +20,7 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Property types')
-@Controller('catalog/:catalog/types')
+@Controller('catalog/:catalog/property-type')
 export class GenPropertyTypesController {
 	constructor(
 		protected readonly catalogsService: CatalogsService,
@@ -37,68 +37,5 @@ export class GenPropertyTypesController {
 		if(limit>1000) limit = 1000;
 		return await this.propertyTypesService.listByCatalog(catalog, offset, limit);
 	}
-	
-	async findOne(apiKey: ApiKeys, catalog: number, id: number) {
-		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
-			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
-		}
-		const entity = await this.propertyTypesService.findById(id);
-		if(entity===null || !(entity.catalog.id===catalog)){
-			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
-		}
-		await this.validateRead(entity, apiKey, catalog, id);
-		return entity;
-	}
-	
-	async validateRead(entity, apiKey: ApiKeys, catalog: number, id: number) { }
-	
-	async create(apiKey: ApiKeys, catalog: number, createDto: CreatePropertyTypeDto) {
-		createDto.catalog = catalog;
-		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
-			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
-		}
-		return await this.propertyTypesService.transactional(async (em) => {
-			await this.validateCreate(apiKey, catalog, createDto, em);
-			return await this.propertyTypesService.create(createDto, em);
-		});
-	}
-	
-	async validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreatePropertyTypeDto, em: EntityManager) { }
-	
-	async update(apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdatePropertyTypeDto) {
-		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
-			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
-		}
-		return await this.propertyTypesService.transactional(async (em) => {
-			const entity = await this.propertyTypesService.findById(id, em);
-			if(entity===null || !(entity.catalog.id===catalog)){
-				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
-			}
-			this.validateUpdate(entity, apiKey, catalog, id, updateDto, em);
-			return await this.propertyTypesService.update(entity, updateDto, em);
-		});
-	}
-	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdatePropertyTypeDto, em: EntityManager) { }
-	
-	async delete(apiKey: ApiKeys, catalog: number, id: number) {
-		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
-			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
-		}
-		return await this.propertyTypesService.transactional(async (em) => {
-			const entity = await this.propertyTypesService.findById(id, em);
-			if(entity===null || !(entity.catalog.id===catalog)){
-				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
-			}
-			await this.validateDelete(entity, apiKey, catalog, id, em);
-			return await this.propertyTypesService.remove(entity, em);
-		});
-	}
-	
-	async validateDelete(entity, apiKey: ApiKeys, catalog: number, id: number, em: EntityManager) { }
 	
 }

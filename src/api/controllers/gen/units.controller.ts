@@ -62,10 +62,6 @@ export class GenUnitsController {
 	async update(apiKey: ApiKeys, id: number, updateDto: UpdateUnitDto) {
 		return await this.unitsService.transactional(async (em) => {
 			const entity = await this.unitsService.findById(id, em);
-			const tmp = await this.unitGroupsService.findById(updateDto.group, em);
-			if(tmp===null){
-				throw new HttpException('Not found contrainst (group)', HttpStatus.CONFLICT);
-			}
 			if(entity===null || !(entity.company.id===apiKey.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
