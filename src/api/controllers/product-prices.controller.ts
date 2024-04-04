@@ -5,14 +5,14 @@ import { UpdateProductPriceDto } from './../dtos/update-product-price.dto'
 import { ProductPricesService } from './../services/product-prices.service'
 import { GenProductPricesController } from './gen/product-prices.controller'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Body, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Patch, Query } from '@nestjs/common'
+import { Body, Delete, Get, Param, ParseIntPipe, Patch } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 
 export class ProductPricesController extends GenProductPricesController {
 	
 	@Get('all')
-	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
-		return await super.findAll(apiKey, catalog, offset, limit);
+	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number) {
+		return await super.findAll(apiKey, catalog);
 	}
 	
 	@Get(':priceType')

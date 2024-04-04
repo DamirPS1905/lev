@@ -7,10 +7,13 @@ import { GenOfferPropertyValuesController } from './gen/offer-property-values.co
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Patch, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
+import { ApiQuery } from '@nestjs/swagger'
 
 export class OfferPropertyValuesController extends GenOfferPropertyValuesController {
 	
 	@Get('all')
+	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
+	@ApiQuery({ name: 'offset', description: 'Count of skipping entities', required: false})
 	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
 		return await super.findAll(apiKey, catalog, product, offset, limit);
 	}
