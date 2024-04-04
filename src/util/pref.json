@@ -611,15 +611,18 @@
             }
         },
         "catalog_metatypes": {
-            "def": "def",
-            "controller": false,
+            "def": "catDef",
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": false,
             "paginateByMax": 0,
             "fields": {
                 "id": {
                     "def": "id"
                 },
                 "catalog": {
-                    "def": "def"
+                    "def": "catalog"
                 },
                 "metatype": {
                     "def": "def"

@@ -154,3 +154,24 @@ CREATE OR REPLACE TRIGGER unit_groups_after_update
     FOR EACH ROW
 	WHEN (OLD.base IS DISTINCT FROM NEW.base AND NEW.base IS NOT NULL AND OLD.base IS NOT NULL)
 	EXECUTE PROCEDURE unit_groups_after_update_fnc();
+
+
+CREATE OR REPLACE FUNCTION public.catalogs_after_insert_fnc()
+RETURNS trigger 
+AS $function$
+	BEGIN
+INSERT INTO public.catalog_metatypes (catalog, metatype)
+SELECT NEW.id, m.id
+FROM metatypes AS m;
+INSERT INTO catalog_types (catalog, title, parent, root, level)
+VALUES (NEW.id, CONCAT('root-', NEW.id), NULL, TRUE, 0);
+RETURN NEW;
+	END;
+$function$
+LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE TRIGGER catalogs_after_insert
+    AFTER INSERT
+    ON public.catalogs
+    FOR EACH ROW
+	EXECUTE PROCEDURE catalogs_after_insert_fnc();

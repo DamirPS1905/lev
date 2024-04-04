@@ -11,9 +11,6 @@ import { IsInt, IsOptional } from 'class-validator'
 
 export class GenCreateCatalogMetatypeDto {
 	
-	@IsOptional()
-	@ApiProperty({ required: false })
-	@IsInt()
 	catalog:number;
 	
 	@IsOptional()

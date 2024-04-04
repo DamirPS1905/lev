@@ -14,11 +14,6 @@ export class GenUpdateCatalogMetatypeDto {
 	@IsOptional()
 	@ApiProperty({ required: false })
 	@IsInt()
-	catalog:number;
-	
-	@IsOptional()
-	@ApiProperty({ required: false })
-	@IsInt()
 	metatype:number;
 	
 }
