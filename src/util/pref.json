@@ -143,6 +143,7 @@
             "delete": false,
             "getOne": false,
             "list": true,
+            "paginateByMax": 0,
             "fields": {
                 "id": {
                     "def": "id"
@@ -151,7 +152,8 @@
                     "def": "title"
                 },
                 "company": {
-                    "def": "company"
+                    "def": "company",
+                    "allFilter": true
                 }
             }
         },
@@ -309,6 +311,7 @@
             "update": false,
             "delete": false,
             "getOne": false,
+            "paginateByMax": 0,
             "fields": {
                 "id": {
                     "def": "id"
@@ -597,6 +600,7 @@
             "delete": false,
             "getOne": false,
             "list": true,
+            "paginateByMax": 0,
             "fields": {
                 "id": {
                     "def": "id"
@@ -609,6 +613,7 @@
         "catalog_metatypes": {
             "def": "def",
             "controller": false,
+            "paginateByMax": 0,
             "fields": {
                 "id": {
                     "def": "id"
@@ -623,6 +628,7 @@
         },
         "unit_groups": {
             "def": "def",
+            "paginateByMax": 0,
             "fields": {
                 "id": {
                     "def": "id"
@@ -654,6 +660,7 @@
         "units": {
             "def": "def",
             "apiPathName": "unit-group\/:group\/units",
+            "paginateByMax": 0,
             "fields": {
                 "id": {
                     "def": "id"
@@ -710,6 +717,7 @@
             "delete": false,
             "getOne": false,
             "list": true,
+            "paginateByMax": 0,
             "fields": {
                 "id": {
                     "def": "id"
@@ -741,6 +749,7 @@
             "delete": false,
             "getOne": false,
             "list": true,
+            "paginateByMax": 0,
             "fields": {
                 "id": {
                     "def": "id"
@@ -816,6 +825,7 @@
         },
         "price_types": {
             "def": "def",
+            "paginateByMax": 0,
             "fields": {
                 "id": {
                     "def": "id"
@@ -841,6 +851,7 @@
             "def": "def",
             "apiPathName": "product\/:product\/price",
             "create": false,
+            "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": ":priceType",
             "fields": {
@@ -897,6 +908,7 @@
             "def": "def",
             "apiPathName": "offer\/:offer\/price",
             "create": false,
+            "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": ":priceType",
             "fields": {
@@ -951,6 +963,7 @@
         },
         "stores": {
             "def": "def",
+            "paginateByMax": 0,
             "fields": {
                 "id": {
                     "def": "id"
@@ -977,6 +990,7 @@
             "def": "def",
             "apiPathName": "offer\/:offer\/store",
             "create": false,
+            "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": ":store\/amount",
             "fields": {
@@ -1028,6 +1042,7 @@
         "property_values": {
             "def": "def",
             "controller": false,
+            "paginateByMax": 0,
             "fields": {
                 "value_key": {
                     "def": "def"

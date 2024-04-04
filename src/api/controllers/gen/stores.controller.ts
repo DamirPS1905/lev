@@ -25,11 +25,8 @@ export class GenStoresController {
 		protected readonly storesService: StoresService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, offset: number, limit: number) {
-		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
-		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		if(limit>1000) limit = 1000;
-		return await this.storesService.listByCompany(apiKey.company.id, offset, limit);
+	async findAll(apiKey: ApiKeys) {
+		return await this.storesService.getAllByCompany(apiKey.company.id);
 	}
 	
 	async findOne(apiKey: ApiKeys, id: number) {

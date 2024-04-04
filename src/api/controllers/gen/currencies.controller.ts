@@ -12,7 +12,7 @@ import { CreateCurrencyDto } from './../../dtos/create-currency.dto'
 import { UpdateCurrencyDto } from './../../dtos/update-currency.dto'
 import { CurrenciesService } from './../../services/currencies.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
+import { Controller, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -25,11 +25,8 @@ export class GenCurrenciesController {
 		protected readonly currenciesService: CurrenciesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, offset: number, limit: number) {
-		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
-		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		if(limit>1000) limit = 1000;
-		return await this.currenciesService.listAll(offset, limit);
+	async findAll(apiKey: ApiKeys) {
+		return await this.currenciesService.findAll();
 	}
 	
 }

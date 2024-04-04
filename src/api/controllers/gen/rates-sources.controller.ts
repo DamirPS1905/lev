@@ -12,7 +12,7 @@ import { CreateRatesSourceDto } from './../../dtos/create-rates-source.dto'
 import { UpdateRatesSourceDto } from './../../dtos/update-rates-source.dto'
 import { RatesSourcesService } from './../../services/rates-sources.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
+import { Controller, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -25,11 +25,8 @@ export class GenRatesSourcesController {
 		protected readonly ratesSourcesService: RatesSourcesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, offset: number, limit: number) {
-		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
-		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		if(limit>1000) limit = 1000;
-		return await this.ratesSourcesService.listAll(offset, limit);
+	async findAll(apiKey: ApiKeys) {
+		return await this.ratesSourcesService.findAll();
 	}
 	
 }

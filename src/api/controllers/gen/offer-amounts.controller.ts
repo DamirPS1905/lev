@@ -31,7 +31,7 @@ export class GenOfferAmountsController {
 		protected readonly storesService: StoresService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, catalog: number, offer: bigint, offset: number, limit: number) {
+	async findAll(apiKey: ApiKeys, catalog: number, offer: bigint) {
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
@@ -40,10 +40,7 @@ export class GenOfferAmountsController {
 		if(offerIns===null || !(offerIns.product.catalog.id===catalog)){
 			throw new HttpException('Offer not found', HttpStatus.NOT_FOUND);
 		}
-		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
-		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		if(limit>1000) limit = 1000;
-		return await this.offerAmountsService.listByOffer(offer, offset, limit);
+		return await this.offerAmountsService.getAllByOffer(offer);
 	}
 	
 	async findOne(apiKey: ApiKeys, catalog: number, offer: bigint, store: number) {

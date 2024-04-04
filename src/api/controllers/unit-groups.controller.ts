@@ -7,15 +7,12 @@ import { GenUnitGroupsController } from './gen/unit-groups.controller'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, DefaultValuePipe, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { ApiQuery } from '@nestjs/swagger'
 
 export class UnitGroupsController extends GenUnitGroupsController {
 	
 	@Get('all')
-	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
-	@ApiQuery({ name: 'offset', description: 'Count of skipping entities', required: false})
-	async findAll(@AuthInfo() apiKey: ApiKeys, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
-		return await super.findAll(apiKey, offset, limit);
+	async findAll(@AuthInfo() apiKey: ApiKeys) {
+		return await super.findAll(apiKey);
 	}
 	
 	@Get(':id')

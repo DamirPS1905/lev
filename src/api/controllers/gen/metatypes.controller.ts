@@ -12,7 +12,7 @@ import { CreateMetatypeDto } from './../../dtos/create-metatype.dto'
 import { UpdateMetatypeDto } from './../../dtos/update-metatype.dto'
 import { MetatypesService } from './../../services/metatypes.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
+import { Controller, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -25,11 +25,8 @@ export class GenMetatypesController {
 		protected readonly metatypesService: MetatypesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, offset: number, limit: number) {
-		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
-		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		if(limit>1000) limit = 1000;
-		return await this.metatypesService.listAll(offset, limit);
+	async findAll(apiKey: ApiKeys) {
+		return await this.metatypesService.findAll();
 	}
 	
 }

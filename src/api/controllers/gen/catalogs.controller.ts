@@ -12,7 +12,7 @@ import { CreateCatalogDto } from './../../dtos/create-catalog.dto'
 import { UpdateCatalogDto } from './../../dtos/update-catalog.dto'
 import { CatalogsService } from './../../services/catalogs.service'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
+import { Controller, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
@@ -25,11 +25,8 @@ export class GenCatalogsController {
 		protected readonly catalogsService: CatalogsService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, offset: number, limit: number) {
-		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
-		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		if(limit>1000) limit = 1000;
-		return await this.catalogsService.listByCompany(apiKey.company.id, offset, limit);
+	async findAll(apiKey: ApiKeys) {
+		return await this.catalogsService.getAllByCompany(apiKey.company.id);
 	}
 	
 }

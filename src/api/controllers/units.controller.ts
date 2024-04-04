@@ -11,12 +11,12 @@ import { AuthGuard } from '@nestjs/passport'
 export class UnitsController extends GenUnitsController {
 	
 	@Get('all')
-	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('group', ParseIntPipe) group: number, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
+	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('group', ParseIntPipe) group: number) {
 		const groupIns = await this.unitGroupsService.findById(group);
 		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===apiKey.company.id)){
 			throw new HttpException('Units group not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.unitsService.listByGroupAndCompany(group, apiKey.company.id, offset, limit);
+		return await this.unitsService.listByGroupAndCompany(group, apiKey.company.id);
 	}
 	
 	@Get(':id')

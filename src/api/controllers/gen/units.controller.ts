@@ -27,15 +27,12 @@ export class GenUnitsController {
 		protected readonly unitsService: UnitsService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, group: number, offset: number, limit: number) {
+	async findAll(apiKey: ApiKeys, group: number) {
 		const groupIns = await this.unitGroupsService.findById(group);
 		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===apiKey.company.id)){
 			throw new HttpException('Units group not found', HttpStatus.NOT_FOUND);
 		}
-		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
-		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
-		if(limit>1000) limit = 1000;
-		return await this.unitsService.listByCompany(apiKey.company.id, offset, limit);
+		return await this.unitsService.getAllByCompany(apiKey.company.id);
 	}
 	
 	async findOne(apiKey: ApiKeys, group: number, id: number) {
