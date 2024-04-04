@@ -5,7 +5,7 @@ import { UpdatePropertyTypeDto } from './../dtos/update-property-type.dto'
 import { PropertyTypesService } from './../services/property-types.service'
 import { GenPropertyTypesController } from './gen/property-types.controller'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Get, ParseIntPipe } from '@nestjs/common'
+import { Get, Param, ParseIntPipe } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 
 export class PropertyTypesController extends GenPropertyTypesController {
