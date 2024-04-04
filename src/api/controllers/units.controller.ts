@@ -16,7 +16,7 @@ export class UnitsController extends GenUnitsController {
 		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===apiKey.company.id)){
 			throw new HttpException('Units group not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.unitsService.listByGroupAndCompany(group, apiKey.company.id);
+		return await this.unitsService.findAllByGroupAndCompany(group, apiKey.company.id);
 	}
 	
 	@Get(':id')
