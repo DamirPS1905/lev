@@ -1380,6 +1380,9 @@ COPY public.metatypes (id, title) FROM stdin;
 1	Catalog type
 2	Catalog brand
 3	Brand collection
+4	Product type
+5	Brand
+6	Collection
 \.
 
 
@@ -1997,7 +2000,7 @@ SELECT pg_catalog.setval('public.catalog_brands_id_seq', 22, true);
 -- Name: catalog_metatypes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.catalog_metatypes_id_seq', 3, true);
+SELECT pg_catalog.setval('public.catalog_metatypes_id_seq', 6, true);
 
 
 --
