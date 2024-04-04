@@ -26,7 +26,7 @@ export class GenCatalogsController {
 	) { }
 	
 	async findAll(apiKey: ApiKeys) {
-		return await this.catalogsService.getAllByCompany(apiKey.company.id);
+		return await this.catalogsService.findAllByCompany(apiKey.company.id);
 	}
 	
 }

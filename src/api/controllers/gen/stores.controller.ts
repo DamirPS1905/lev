@@ -26,7 +26,7 @@ export class GenStoresController {
 	) { }
 	
 	async findAll(apiKey: ApiKeys) {
-		return await this.storesService.getAllByCompany(apiKey.company.id);
+		return await this.storesService.findAllByCompany(apiKey.company.id);
 	}
 	
 	async findOne(apiKey: ApiKeys, id: number) {

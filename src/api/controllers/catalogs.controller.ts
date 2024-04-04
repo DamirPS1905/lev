@@ -11,8 +11,8 @@ import { AuthGuard } from '@nestjs/passport'
 export class CatalogsController extends GenCatalogsController {
 	
 	@Get('all')
-	async findAll(@AuthInfo() apiKey: ApiKeys, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
-		return await super.findAll(apiKey, offset, limit);
+	async findAll(@AuthInfo() apiKey: ApiKeys) {
+		return await super.findAll(apiKey);
 	}
 	
 	

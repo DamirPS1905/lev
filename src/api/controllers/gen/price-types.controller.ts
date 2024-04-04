@@ -28,7 +28,7 @@ export class GenPriceTypesController {
 	) { }
 	
 	async findAll(apiKey: ApiKeys) {
-		return await this.priceTypesService.getAllByCompany(apiKey.company.id);
+		return await this.priceTypesService.findAllByCompany(apiKey.company.id);
 	}
 	
 	async findOne(apiKey: ApiKeys, id: number) {

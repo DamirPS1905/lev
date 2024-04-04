@@ -32,7 +32,7 @@ export class GenPropertyTypesController {
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.propertyTypesService.getAllByCatalog(catalog);
+		return await this.propertyTypesService.findAllByCatalog(catalog);
 	}
 	
 }

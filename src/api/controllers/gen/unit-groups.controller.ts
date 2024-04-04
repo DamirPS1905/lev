@@ -28,7 +28,7 @@ export class GenUnitGroupsController {
 	) { }
 	
 	async findAll(apiKey: ApiKeys) {
-		return await this.unitGroupsService.getAllByCompany(apiKey.company.id);
+		return await this.unitGroupsService.findAllByCompany(apiKey.company.id);
 	}
 	
 	async findOne(apiKey: ApiKeys, id: number) {

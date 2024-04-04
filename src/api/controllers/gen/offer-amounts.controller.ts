@@ -40,7 +40,7 @@ export class GenOfferAmountsController {
 		if(offerIns===null || !(offerIns.product.catalog.id===catalog)){
 			throw new HttpException('Offer not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.offerAmountsService.getAllByOffer(offer);
+		return await this.offerAmountsService.findAllByOffer(offer);
 	}
 	
 	async findOne(apiKey: ApiKeys, catalog: number, offer: bigint, store: number) {

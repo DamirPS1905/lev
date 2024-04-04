@@ -32,7 +32,7 @@ export class GenUnitsController {
 		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===apiKey.company.id)){
 			throw new HttpException('Units group not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.unitsService.getAllByCompany(apiKey.company.id);
+		return await this.unitsService.findAllByCompany(apiKey.company.id);
 	}
 	
 	async findOne(apiKey: ApiKeys, group: number, id: number) {
