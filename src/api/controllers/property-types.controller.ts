@@ -14,26 +14,5 @@ export class PropertyTypesController extends GenPropertyTypesController {
 	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
 		return await super.findAll(apiKey, catalog, offset, limit);
 	}
-	
-	@Get(':id')
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
-		return await super.findOne(apiKey, catalog, id);
-	}
-	
-	@Post()
-	async create(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Body() createDto: CreatePropertyTypeDto) {
-		return await super.create(apiKey, catalog, createDto);
-	}
-	
-	@Patch(':id')
-	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdatePropertyTypeDto) {
-		return await super.update(apiKey, catalog, id, updateDto);
-	}
-	
-	@Delete(':id')
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
-		return await super.delete(apiKey, catalog, id);
-	}
-	
-	
+		
 }

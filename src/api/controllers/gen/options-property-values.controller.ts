@@ -65,9 +65,11 @@ export class GenOptionsPropertyValuesController {
 			if(existed1!==null){
 				throw new HttpException('Duplicate (property, hash)', HttpStatus.CONFLICT);
 			}
-			const propertyIns = await this.catalogPropertiesService.findById(createDto.property);
-			if(propertyIns===null || !(propertyIns.catalog.id===catalog)){
-				throw new HttpException('Property not found', HttpStatus.CONFLICT);
+			if(createDto.property!==undefined){
+				const propertyIns = await this.catalogPropertiesService.findById(createDto.property);
+				if(propertyIns===null || !(propertyIns.catalog.id===catalog)){
+					throw new HttpException('Property not found', HttpStatus.CONFLICT);
+				}
 			}
 			await this.validateCreate(apiKey, catalog, createDto, em);
 			return await this.optionsPropertyValuesService.create(createDto, em);
@@ -83,9 +85,11 @@ export class GenOptionsPropertyValuesController {
 		}
 		return await this.optionsPropertyValuesService.transactional(async (em) => {
 			const entity = await this.optionsPropertyValuesService.findById(id, em);
-			const propertyIns = await this.catalogPropertiesService.findById(updateDto.property);
-			if(propertyIns===null || !(propertyIns.catalog.id===catalog)){
-				throw new HttpException('Property not found', HttpStatus.CONFLICT);
+			if(updateDto.property!==undefined){
+				const propertyIns = await this.catalogPropertiesService.findById(updateDto.property);
+				if(propertyIns===null || !(propertyIns.catalog.id===catalog)){
+					throw new HttpException('Property not found', HttpStatus.CONFLICT);
+				}
 			}
 			if(entity===null){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);

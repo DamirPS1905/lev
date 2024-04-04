@@ -52,9 +52,11 @@ export class GenPriceTypesController {
 			if(existed0!==null){
 				throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 			}
-			const tmp = await this.currenciesService.findById(createDto.displayCurrency, em);
-			if(tmp===null){
-				throw new HttpException('Not found contrainst (displayCurrency)', HttpStatus.CONFLICT);
+			if(createDto.displayCurrency!==undefined){
+				const displayCurrencyIns = await this.currenciesService.findById(createDto.displayCurrency);
+				if(displayCurrencyIns===null){
+					throw new HttpException('Display currency not found', HttpStatus.NOT_FOUND);
+				}
 			}
 			await this.validateCreate(apiKey, createDto, em);
 			return await this.priceTypesService.create(createDto, em);
@@ -66,9 +68,11 @@ export class GenPriceTypesController {
 	async update(apiKey: ApiKeys, id: number, updateDto: UpdatePriceTypeDto) {
 		return await this.priceTypesService.transactional(async (em) => {
 			const entity = await this.priceTypesService.findById(id, em);
-			const tmp = await this.currenciesService.findById(updateDto.displayCurrency, em);
-			if(tmp===null){
-				throw new HttpException('Not found contrainst (displayCurrency)', HttpStatus.CONFLICT);
+			if(updateDto.displayCurrency!==undefined){
+				const displayCurrencyIns = await this.currenciesService.findById(updateDto.displayCurrency);
+				if(displayCurrencyIns===null){
+					throw new HttpException('Display currency not found', HttpStatus.NOT_FOUND);
+				}
 			}
 			if(entity===null || !(entity.company.id===apiKey.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);

@@ -84,9 +84,11 @@ export class GenCatalogPropertiesController {
 		}
 		return await this.catalogPropertiesService.transactional(async (em) => {
 			const entity = await this.catalogPropertiesService.findById(id, em);
-			const tmp = await this.propertyTypesService.findById(updateDto.type, em);
-			if(tmp===null){
-				throw new HttpException('Not found contrainst (type)', HttpStatus.CONFLICT);
+			if(updateDto.type!==undefined){
+				const tmp = await this.propertyTypesService.findById(updateDto.type, em);
+				if(tmp===null){
+					throw new HttpException('Not found contrainst (type)', HttpStatus.CONFLICT);
+				}
 			}
 			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);

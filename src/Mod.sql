@@ -105,3 +105,52 @@ CREATE OR REPLACE TRIGGER rates_after_update
     FOR EACH ROW
 	WHEN (OLD.rate IS DISTINCT FROM NEW.rate)
 	EXECUTE PROCEDURE rates_after_update_insert_fnc();
+
+
+CREATE UNIQUE INDEX unit_groups_title_cuind 
+ON unit_groups (title)
+WHERE company IS NULL;
+
+CREATE UNIQUE INDEX unit_groups_company_title_uind 
+ON unit_groups (company, title)
+WHERE company IS NOT NULL;
+
+CREATE UNIQUE INDEX units_group_title_cuind 
+ON units ("group", title)
+WHERE company IS NULL;
+
+CREATE UNIQUE INDEX units_group_company_title_uind 
+ON units ("group", company, title)
+WHERE company IS NOT NULL;
+
+CREATE UNIQUE INDEX units_group_abbr_cuind 
+ON units ("group", abbr)
+WHERE company IS NULL;
+
+CREATE UNIQUE INDEX units_group_company_abbr_uind 
+ON units ("group", company, abbr)
+WHERE company IS NOT NULL;
+
+
+
+CREATE OR REPLACE FUNCTION public.unit_groups_after_update_fnc()
+RETURNS trigger 
+AS $function$
+	BEGIN
+UPDATE units u
+SET factor = u.factor/nb.factor, "add" = u."add" - u.factor/nb.factor*u."add"
+FROM units AS nb
+WHERE
+	nb.id=NEW.base
+	AND u."group" = NEW.id;
+RETURN NEW;
+	END;
+$function$
+LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE TRIGGER unit_groups_after_update
+    AFTER UPDATE
+    ON public.unit_groups
+    FOR EACH ROW
+	WHEN (OLD.base IS DISTINCT FROM NEW.base AND NEW.base IS NOT NULL AND OLD.base IS NOT NULL)
+	EXECUTE PROCEDURE unit_groups_after_update_fnc();

@@ -36,7 +36,7 @@ export class GenUnitGroupsController {
 	
 	async findOne(apiKey: ApiKeys, id: number) {
 		const entity = await this.unitGroupsService.findById(id);
-		if(entity===null || !(entity.company.id===apiKey.company.id)){
+		if(entity===null || !(entity.company===null || entity.company.id===apiKey.company.id)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
 		await this.validateRead(entity, apiKey, id);
@@ -48,10 +48,6 @@ export class GenUnitGroupsController {
 	async create(apiKey: ApiKeys, createDto: CreateUnitGroupDto) {
 		createDto.company = apiKey.company.id;
 		return await this.unitGroupsService.transactional(async (em) => {
-			const tmp = await this.unitsService.findById(createDto.base, em);
-			if(tmp===null){
-				throw new HttpException('Not found contrainst (base)', HttpStatus.CONFLICT);
-			}
 			await this.validateCreate(apiKey, createDto, em);
 			return await this.unitGroupsService.create(createDto, em);
 		});
@@ -62,11 +58,13 @@ export class GenUnitGroupsController {
 	async update(apiKey: ApiKeys, id: number, updateDto: UpdateUnitGroupDto) {
 		return await this.unitGroupsService.transactional(async (em) => {
 			const entity = await this.unitGroupsService.findById(id, em);
-			const tmp = await this.unitsService.findById(updateDto.base, em);
-			if(tmp===null){
-				throw new HttpException('Not found contrainst (base)', HttpStatus.CONFLICT);
+			if(updateDto.base!==undefined){
+				const baseIns = await this.unitsService.findById(updateDto.base);
+				if(baseIns===null || !(baseIns.group.id===entity.id)){
+					throw new HttpException('Unit not found in group', HttpStatus.NOT_FOUND);
+				}
 			}
-			if(entity===null || !(entity.company.id===apiKey.company.id)){
+			if(entity===null || !(entity.company!==null && entity.company.id===apiKey.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			this.validateUpdate(entity, apiKey, id, updateDto, em);
@@ -79,7 +77,7 @@ export class GenUnitGroupsController {
 	async delete(apiKey: ApiKeys, id: number) {
 		return await this.unitGroupsService.transactional(async (em) => {
 			const entity = await this.unitGroupsService.findById(id, em);
-			if(entity===null || !(entity.company.id===apiKey.company.id)){
+			if(entity===null || !(entity.company!==null && entity.company.id===apiKey.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			await this.validateDelete(entity, apiKey, id, em);

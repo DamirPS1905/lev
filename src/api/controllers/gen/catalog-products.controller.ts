@@ -90,13 +90,17 @@ export class GenCatalogProductsController {
 		}
 		return await this.catalogProductsService.transactional(async (em) => {
 			const entity = await this.catalogProductsService.findById(id, em);
-			const brandIns = await this.catalogBrandsService.findById(updateDto.brand);
-			if(brandIns===null || !(brandIns.catalog.id===catalog)){
-				throw new HttpException('Brand not found', HttpStatus.CONFLICT);
+			if(updateDto.brand!==undefined){
+				const brandIns = await this.catalogBrandsService.findById(updateDto.brand);
+				if(brandIns===null || !(brandIns.catalog.id===catalog)){
+					throw new HttpException('Brand not found', HttpStatus.CONFLICT);
+				}
 			}
-			const typeIns = await this.catalogTypesService.findById(updateDto.type);
-			if(typeIns===null || !(typeIns.catalog.id===catalog)){
-				throw new HttpException('Type not found', HttpStatus.CONFLICT);
+			if(updateDto.type!==undefined){
+				const typeIns = await this.catalogTypesService.findById(updateDto.type);
+				if(typeIns===null || !(typeIns.catalog.id===catalog)){
+					throw new HttpException('Type not found', HttpStatus.CONFLICT);
+				}
 			}
 			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);

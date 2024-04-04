@@ -8,7 +8,7 @@
  */
 import { ApiProperty } from '@nestjs/swagger'
 import { Transform, TransformFnParams } from 'class-transformer'
-import { IsOptional, IsString } from 'class-validator'
+import { IsNumber, IsOptional, IsString } from 'class-validator'
 
 export class GenUpdateUnitDto {
 	
@@ -26,14 +26,12 @@ export class GenUpdateUnitDto {
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	@IsString()
-	@Transform(({ value }: TransformFnParams) => value?.trim())
-	add:string;
+	@IsNumber()
+	add:number;
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	@IsString()
-	@Transform(({ value }: TransformFnParams) => value?.trim())
-	factor:string;
+	@IsNumber()
+	factor:number;
 	
 }

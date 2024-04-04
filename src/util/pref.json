@@ -632,24 +632,36 @@
                     "dtoRequired": "create"
                 },
                 "company": {
-                    "def": "company"
+                    "def": "company",
+                    "readValidate": "@#===null || @@===apiKey.company.id",
+                    "readForWriteValidate": "@#!==null && @@===apiKey.company.id"
                 },
                 "description": {
                     "def": "def"
                 },
                 "base": {
-                    "def": "def"
+                    "def": "def",
+                    "dto": "update",
+                    "load": {
+                        "as": "units",
+                        "validate": "@@.group.id===entity.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Unit not found in group"
+                    }
                 }
             }
         },
         "units": {
             "def": "def",
+            "apiPathName": "unit-group\/:group\/units",
             "fields": {
                 "id": {
                     "def": "id"
                 },
                 "company": {
-                    "def": "company"
+                    "def": "company",
+                    "readValidate": "@#===null || @@===apiKey.company.id",
+                    "readForWriteValidate": "@#!==null && @@===apiKey.company.id"
                 },
                 "title": {
                     "def": "def",
@@ -662,7 +674,13 @@
                 "group": {
                     "def": "def",
                     "dto": "create",
-                    "dtoRequired": "create"
+                    "dtoDisallow": true,
+                    "fillDtoFrom": "group",
+                    "readValidate": "@@===group",
+                    "readForWriteValidate": "@@===group",
+                    "ignoreFk": true,
+                    "from": "path",
+                    "fillDto": "create"
                 },
                 "add": {
                     "def": "def"
@@ -670,7 +688,20 @@
                 "factor": {
                     "def": "def"
                 }
-            }
+            },
+            "extraRouteParams": [
+                {
+                    "key": "group",
+                    "type": "number",
+                    "var": "group",
+                    "load": {
+                        "as": "unit_groups",
+                        "validate": "@@.company===null || @@.company.id===apiKey.company.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Units group not found"
+                    }
+                }
+            ]
         },
         "currencies": {
             "def": "def",
@@ -797,7 +828,12 @@
                     "dtoRequired": "create"
                 },
                 "display_currency": {
-                    "def": "def"
+                    "def": "def",
+                    "load": {
+                        "as": "currencies",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Display currency not found"
+                    }
                 }
             }
         },
