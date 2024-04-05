@@ -33,7 +33,6 @@ export class PropertyTypesService extends GenPropertyTypesService {
 									WHERE "type"=${row.id}`;
 			await conn.execute(qu);
 		}
-		
 	}
 
 	
