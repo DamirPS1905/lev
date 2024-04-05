@@ -7,8 +7,7 @@ export class PropertyTypesService extends GenPropertyTypesService {
 	
   //@Cron('* * * * * *')
 	async processPropertyTypes(){
-		const em = this.em.fork(),
-					conn = em.getConnection(),
+		const conn = this.em.fork().getConnection(),
 					query = `select id,
 										(json_each(scheme)).key AS "key",
 										(((json_each(scheme)).value)->>'kind')::int AS "primitive",
