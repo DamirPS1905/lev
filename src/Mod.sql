@@ -175,3 +175,7 @@ CREATE OR REPLACE TRIGGER catalogs_after_insert
     ON public.catalogs
     FOR EACH ROW
 	EXECUTE PROCEDURE catalogs_after_insert_fnc();
+
+
+CREATE INDEX property_values_1_value ON property_values (((value ->> 'value')::varchar))
+WHERE type = 1;

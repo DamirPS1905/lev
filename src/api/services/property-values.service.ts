@@ -4,6 +4,5 @@ import { Injectable } from '@nestjs/common'
 @Injectable()
 export class PropertyValuesService extends GenPropertyValuesService {
 	
-	// extra code here...
 	
 }
