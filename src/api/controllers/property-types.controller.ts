@@ -15,5 +15,4 @@ export class PropertyTypesController extends GenPropertyTypesController {
 		return await super.findAll(apiKey, catalog);
 	}
 	
-	
 }

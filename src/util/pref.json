@@ -1107,6 +1107,99 @@
                     }
                 }
             ]
+        },
+        "property_primitives": {
+            "def": "def",
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": false,
+            "paginateByMax": 0,
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "title": {
+                    "def": "def"
+                }
+            }
+        },
+        "catalog_metatype_properties": {
+            "def": "def",
+            "apiPathName": "metatype\/:metatype",
+            "create": false,
+            "list": false,
+            "paginateByMax": 0,
+            "apiPrefix": "catalog\/:catalog",
+            "methodPath": "property\/:property",
+            "fields": {
+                "metatype": {
+                    "def": "pk",
+                    "allFilter": true,
+                    "from": "path",
+                    "fillDto": true,
+                    "load": {
+                        "as": "metatypes",
+                        "eCode": "CONFLICT",
+                        "eMessage": "Metatype not found"
+                    }
+                },
+                "catalog": {
+                    "def": "pk",
+                    "allFilter": true,
+                    "from": "path",
+                    "fillDto": true,
+                    "load": {
+                        "as": "catalogs",
+                        "validate": "@@.company.id===apiKey.company.id",
+                        "eCode": "CONFLICT",
+                        "eMessage": "Catalog not found"
+                    }
+                },
+                "property": {
+                    "def": "pk",
+                    "from": "path",
+                    "fillDto": true,
+                    "load": {
+                        "as": "catalog_properties",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "CONFLICT",
+                        "eMessage": "Property not found"
+                    }
+                }
+            }
+        },
+        "type_property_values": {
+            "def": "catDef",
+            "apiPathName": "type\/:type",
+            "create": false,
+            "paginateByMax": 0,
+            "methodPath": "property\/:property",
+            "fields": {
+                "type": {
+                    "def": "pk",
+                    "allFilter": true,
+                    "from": "path",
+                    "load": {
+                        "as": "catalog_types",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "CONFLICT",
+                        "eMessage": "Product type not found"
+                    }
+                },
+                "property": {
+                    "def": "pk",
+                    "load": {
+                        "as": "catalog_properties",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "CONFLICT",
+                        "eMessage": "Property not found"
+                    }
+                },
+                "value": {
+                    "def": "def"
+                }
+            }
         }
     }
 }

@@ -35,5 +35,5 @@ export class PriceTypesController extends GenPriceTypesController {
 		return await super.delete(apiKey, id);
 	}
 	
-	
+
 }

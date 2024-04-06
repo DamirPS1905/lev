@@ -44,14 +44,6 @@ export class UnitGroupsController extends GenUnitGroupsController {
 		if(existedMyT!==null){
 			throw new HttpException('Units group with the same title already exists', HttpStatus.CONFLICT);
 		}
-		/*const existedCommonA = await this.unitGroupsService.findCommonByAbbr(createDto.title);
-		if(existedCommonA!==null){
-			throw new HttpException('Units group with the same abbreviation already exists', HttpStatus.CONFLICT);
-		}
-		const existedMyA = await this.unitGroupsService.findByCompanyAndAbbr(apiKey.company.id, createDto.title);
-		if(existedMyA!==null){
-			throw new HttpException('Units group with the same abbreviation already exists', HttpStatus.CONFLICT);
-		}*/
 	}
 	
 	async validateUpdate(entity, apiKey: ApiKeys, id: number, updateDto: UpdateUnitGroupDto, em: EntityManager) {
@@ -65,16 +57,6 @@ export class UnitGroupsController extends GenUnitGroupsController {
 				throw new HttpException('Units group with the same title already exists', HttpStatus.CONFLICT);
 			}
 		}
-		/*if(updateDto.abbr!==undefined && (updateDto.abbr!==entity.abbr)){
-			const existedCommonA = await this.unitGroupsService.findCommonByAbbr(updateDto.title);
-			if(existedCommonA!==null && (existedCommonA.id!==entity.id)){
-				throw new HttpException('Units group with the same abbreviation already exists', HttpStatus.CONFLICT);
-			}
-			const existedMyA = await this.unitGroupsService.findByCompanyAndAbbr(apiKey.company.id, updateDto.title);
-			if(existedMyA!==null && (existedMyA.id!==entity.id)){
-				throw new HttpException('Units group with the same abbreviation already exists', HttpStatus.CONFLICT);
-			}
-		}*/
 	}
 	
 }

@@ -37,27 +37,12 @@ export class UnitGroupsService extends GenUnitGroupsService {
 			company: { $eq: null }
 		});
   }
-/*
-	findCommonByAbbr(abbr: string, emt: EntityManager = null) {
-		return this.getEm(emt).findOne(UnitGroups, {
-			abbr: abbr,
-			company: { $eq: null }
-		});
-  }
-*/
+
 	findByCompanyAndTitle(company: number, title: string, emt: EntityManager = null) {
 		return this.getEm(emt).findOne(UnitGroups, {
 			title: title,
 			company: company
 		});
   }
-/*
-	async findByCompanyAndAbbr(company: number, abbr: string, emt: EntityManager = null) {
-		return await this.getEm(emt).findOne(UnitGroups, {
-			abbr: abbr,
-			company: company
-		});
-  }
-*/
-	
+
 }

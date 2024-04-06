@@ -7,10 +7,13 @@ import { GenCatalogPropertiesController } from './gen/catalog-properties.control
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
+import { ApiQuery } from '@nestjs/swagger'
 
 export class CatalogPropertiesController extends GenCatalogPropertiesController {
 	
 	@Get('all')
+	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
+	@ApiQuery({ name: 'offset', description: 'Count of skipping entities', required: false})
 	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
 		return await super.findAll(apiKey, catalog, offset, limit);
 	}

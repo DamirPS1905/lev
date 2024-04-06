@@ -7,6 +7,7 @@
  * in a proper way.
  */
 import { CatalogBrandsController } from './controllers/catalog-brands.controller'
+import { CatalogMetatypePropertiesController } from './controllers/catalog-metatype-properties.controller'
 import { CatalogMetatypesController } from './controllers/catalog-metatypes.controller'
 import { CatalogProductOffersController } from './controllers/catalog-product-offers.controller'
 import { CatalogProductsController } from './controllers/catalog-products.controller'
@@ -23,16 +24,19 @@ import { PriceTypesController } from './controllers/price-types.controller'
 import { ProductPricesController } from './controllers/product-prices.controller'
 import { ProductPropertyValuesController } from './controllers/product-property-values.controller'
 import { PropertyInTypesController } from './controllers/property-in-types.controller'
+import { PropertyPrimitivesController } from './controllers/property-primitives.controller'
 import { PropertyTypesController } from './controllers/property-types.controller'
 import { RatesSourcesController } from './controllers/rates-sources.controller'
 import { RatesController } from './controllers/rates.controller'
 import { StoresController } from './controllers/stores.controller'
+import { TypePropertyValuesController } from './controllers/type-property-values.controller'
 import { UnitGroupsController } from './controllers/unit-groups.controller'
 import { UnitsController } from './controllers/units.controller'
 import { ActorTypesService } from './services/actor-types.service'
 import { ActorsService } from './services/actors.service'
 import { ApiKeysService } from './services/api-keys.service'
 import { CatalogBrandsService } from './services/catalog-brands.service'
+import { CatalogMetatypePropertiesService } from './services/catalog-metatype-properties.service'
 import { CatalogMetatypesService } from './services/catalog-metatypes.service'
 import { CatalogProductOffersService } from './services/catalog-product-offers.service'
 import { CatalogProductsService } from './services/catalog-products.service'
@@ -51,20 +55,22 @@ import { PriceTypesService } from './services/price-types.service'
 import { ProductPricesService } from './services/product-prices.service'
 import { ProductPropertyValuesService } from './services/product-property-values.service'
 import { PropertyInTypesService } from './services/property-in-types.service'
+import { PropertyPrimitivesService } from './services/property-primitives.service'
 import { PropertyTypesService } from './services/property-types.service'
 import { PropertyValuesService } from './services/property-values.service'
 import { RatesHistoryService } from './services/rates-history.service'
 import { RatesSourcesService } from './services/rates-sources.service'
 import { RatesService } from './services/rates.service'
 import { StoresService } from './services/stores.service'
+import { TypePropertyValuesService } from './services/type-property-values.service'
 import { UnitGroupsService } from './services/unit-groups.service'
 import { UnitsService } from './services/units.service'
 import { UsersService } from './services/users.service'
 import { Module } from '@nestjs/common'
 
 @Module({
-	controllers: [CatalogBrandsController, CatalogMetatypesController, CatalogProductOffersController, CatalogProductsController, CatalogPropertiesController, CatalogTypesController, CatalogsController, CurrenciesController, MetatypesController, OfferAmountsController, OfferPropertyValuesController, OffersPricesController, OptionsPropertyValuesController, PriceTypesController, ProductPricesController, ProductPropertyValuesController, PropertyInTypesController, PropertyTypesController, RatesController, RatesSourcesController, StoresController, UnitGroupsController, UnitsController],
-	providers: [ActorTypesService, ActorsService, ApiKeysService, CatalogBrandsService, CatalogMetatypesService, CatalogProductOffersService, CatalogProductsService, CatalogPropertiesService, CatalogTypesOverloadService, CatalogTypesService, CatalogsService, CompaniesService, CurrenciesService, MetatypesService, OfferAmountsService, OfferPropertyValuesService, OffersPricesService, OptionsPropertyValuesService, PriceTypesService, ProductPricesService, ProductPropertyValuesService, PropertyInTypesService, PropertyTypesService, PropertyValuesService, RatesHistoryService, RatesService, RatesSourcesService, StoresService, UnitGroupsService, UnitsService, UsersService],
-	exports: [ActorTypesService, ActorsService, ApiKeysService, CatalogBrandsService, CatalogMetatypesService, CatalogProductOffersService, CatalogProductsService, CatalogPropertiesService, CatalogTypesOverloadService, CatalogTypesService, CatalogsService, CompaniesService, CurrenciesService, MetatypesService, OfferAmountsService, OfferPropertyValuesService, OffersPricesService, OptionsPropertyValuesService, PriceTypesService, ProductPricesService, ProductPropertyValuesService, PropertyInTypesService, PropertyTypesService, PropertyValuesService, RatesHistoryService, RatesService, RatesSourcesService, StoresService, UnitGroupsService, UnitsService, UsersService]
+	controllers: [CatalogBrandsController, CatalogMetatypePropertiesController, CatalogMetatypesController, CatalogProductOffersController, CatalogProductsController, CatalogPropertiesController, CatalogTypesController, CatalogsController, CurrenciesController, MetatypesController, OfferAmountsController, OfferPropertyValuesController, OffersPricesController, OptionsPropertyValuesController, PriceTypesController, ProductPricesController, ProductPropertyValuesController, PropertyInTypesController, PropertyPrimitivesController, PropertyTypesController, RatesController, RatesSourcesController, StoresController, TypePropertyValuesController, UnitGroupsController, UnitsController],
+	providers: [ActorTypesService, ActorsService, ApiKeysService, CatalogBrandsService, CatalogMetatypePropertiesService, CatalogMetatypesService, CatalogProductOffersService, CatalogProductsService, CatalogPropertiesService, CatalogTypesOverloadService, CatalogTypesService, CatalogsService, CompaniesService, CurrenciesService, MetatypesService, OfferAmountsService, OfferPropertyValuesService, OffersPricesService, OptionsPropertyValuesService, PriceTypesService, ProductPricesService, ProductPropertyValuesService, PropertyInTypesService, PropertyPrimitivesService, PropertyTypesService, PropertyValuesService, RatesHistoryService, RatesService, RatesSourcesService, StoresService, TypePropertyValuesService, UnitGroupsService, UnitsService, UsersService],
+	exports: [ActorTypesService, ActorsService, ApiKeysService, CatalogBrandsService, CatalogMetatypePropertiesService, CatalogMetatypesService, CatalogProductOffersService, CatalogProductsService, CatalogPropertiesService, CatalogTypesOverloadService, CatalogTypesService, CatalogsService, CompaniesService, CurrenciesService, MetatypesService, OfferAmountsService, OfferPropertyValuesService, OffersPricesService, OptionsPropertyValuesService, PriceTypesService, ProductPricesService, ProductPropertyValuesService, PropertyInTypesService, PropertyPrimitivesService, PropertyTypesService, PropertyValuesService, RatesHistoryService, RatesService, RatesSourcesService, StoresService, TypePropertyValuesService, UnitGroupsService, UnitsService, UsersService]
 })
 export class ExchangeApi { }
