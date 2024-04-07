@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, PrimaryKeyProp } from '@mikro-orm/core';
+import { Entity, ManyToOne, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { CatalogProperties } from './CatalogProperties';
 import { Catalogs } from './Catalogs';
 import { Metatypes } from './Metatypes';
@@ -16,5 +16,8 @@ export class CatalogMetatypeProperties {
 
   @ManyToOne({ entity: () => CatalogProperties, fieldName: 'property', primary: true })
   property!: CatalogProperties;
+
+  @Property({ columnType: 'jsonb' })
+  scheme!: any;
 
 }

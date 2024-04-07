@@ -29,6 +29,15 @@ export class CatalogMetatypePropertiesController extends GenCatalogMetatypePrope
 		return await super.update(apiKey, catalog, property, metatype, updateDto);
 	}
 	
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, property: number, metatype: number, updateDto: UpdateCatalogMetatypePropertyDto, em: EntityManager) {
+		try{
+			const propertyIns = await this.catalogPropertiesService.findById(property);
+			updateDto.scheme = this.propertyTypesService.tunePropertyScheme(apiKey.company.id, propertyIns.scheme, updateDto.scheme, true);
+		}catch(e){
+			throw new HttpException(e.message, HttpStatus.CONFLICT);
+		}
+	}
+	
 	@Delete('property/:property')
 	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property', ParseIntPipe) property: number, @Param('metatype', ParseIntPipe) metatype: number) {
 		return await super.delete(apiKey, catalog, property, metatype);

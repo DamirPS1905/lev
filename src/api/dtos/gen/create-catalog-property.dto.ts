@@ -35,4 +35,8 @@ export class GenCreateCatalogPropertyDto {
 	@ApiProperty({ required: false })
 	options:boolean;
 	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	scheme:any;
+	
 }

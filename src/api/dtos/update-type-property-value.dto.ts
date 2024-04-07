@@ -3,9 +3,5 @@ import { ApiProperty } from '@nestjs/swagger'
 import { IsOptional } from 'class-validator'
 
 export class UpdateTypePropertyValueDto extends GenUpdateTypePropertyValueDto {
-	
-	@IsOptional()
-	@ApiProperty({ required: true })
-	value:any;
-	
+		
 }

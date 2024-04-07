@@ -46,17 +46,17 @@ export class GenOptionsPropertyValuesService {
 	async transactional(cb){ return await this.em.fork().transactional(cb); }
 	
 	
-	findById(id: number, emt: EntityManager = null) {
-		const em = this.getEm(emt);
-		return em.findOne(OptionsPropertyValues, {
-			id: id
-		});
-	}
-	
 	findByPropertyAndHash(property: number, hash: string, emt: EntityManager = null) {
 		const em = this.getEm(emt);
 		return em.findOne(OptionsPropertyValues, {
 			property: property, hash: hash
+		});
+	}
+	
+	findByValue(value: bigint, emt: EntityManager = null) {
+		const em = this.getEm(emt);
+		return em.findOne(OptionsPropertyValues, {
+			value: value
 		});
 	}
 	
@@ -74,7 +74,25 @@ export class GenOptionsPropertyValuesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id: "ASC" },
+			orderBy: { value: "ASC" },
+		});
+	}
+	
+	findAllByValue(value: bigint, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(OptionsPropertyValues, {
+			value: value
+		});
+	}
+	
+	listByValue(value: bigint, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(OptionsPropertyValues, {
+			value: value
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { value: "ASC" },
 		});
 	}
 	
@@ -83,14 +101,14 @@ export class GenOptionsPropertyValuesService {
 		return em.find(OptionsPropertyValues, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { id: "ASC" },
+			orderBy: { value: "ASC" },
 		});
 	}
 	
 	findAll(emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(OptionsPropertyValues, { }, {
-			orderBy: { id: "ASC" },
+			orderBy: { value: "ASC" },
 		});
 	}
 	

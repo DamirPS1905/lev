@@ -14,6 +14,7 @@ import { CatalogPropertiesService } from './../../services/catalog-properties.se
 import { CatalogTypesService } from './../../services/catalog-types.service'
 import { CatalogsService } from './../../services/catalogs.service'
 import { PropertyInTypesService } from './../../services/property-in-types.service'
+import { PropertyTypesService } from './../../services/property-types.service'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
@@ -22,13 +23,14 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Property in types')
-@Controller('catalog/:catalog/type/:type/property')
+@Controller('catalog/:catalog/in-type/:type/property')
 export class GenPropertyInTypesController {
 	constructor(
 		protected readonly catalogPropertiesService: CatalogPropertiesService,
 		protected readonly catalogTypesService: CatalogTypesService,
 		protected readonly catalogsService: CatalogsService,
 		protected readonly propertyInTypesService: PropertyInTypesService,
+		protected readonly propertyTypesService: PropertyTypesService,
 	) { }
 	
 	async findOne(apiKey: ApiKeys, catalog: number, type: number, property: number) {

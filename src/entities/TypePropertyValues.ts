@@ -1,11 +1,11 @@
-import { Entity, ManyToOne, PrimaryKeyProp, Property } from '@mikro-orm/core';
+import { Entity, ManyToOne, PrimaryKey, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { CatalogProperties } from './CatalogProperties';
 import { CatalogTypes } from './CatalogTypes';
 
 @Entity()
 export class TypePropertyValues {
 
-  [PrimaryKeyProp]?: ['type', 'property'];
+  [PrimaryKeyProp]?: ['type', 'property', 'order'];
 
   @ManyToOne({ entity: () => CatalogTypes, fieldName: 'type', deleteRule: 'cascade', primary: true })
   type!: CatalogTypes;
@@ -15,5 +15,8 @@ export class TypePropertyValues {
 
   @Property()
   value!: bigint;
+
+  @PrimaryKey({ columnType: 'smallint' })
+  order!: number;
 
 }

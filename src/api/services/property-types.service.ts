@@ -59,7 +59,7 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		});
 	}
 	
-	async tunePropertyScheme(company: number, sourceScheme: any, tuning: any){
+	async tunePropertyScheme(company: number, sourceScheme: any, tuning: any, end: boolean = false){
 		if(!(tuning instanceof Object)) throw new Error('Scheme assumed to be an object');
 		let resultScheme: {[k: string]: any} = {};
 		for(let key in Object.keys(sourceScheme)){
@@ -97,7 +97,7 @@ export class PropertyTypesService extends GenPropertyTypesService {
 					}
 				}
 			}
-			if(hasUnit && !schemeInfo.hasOwnProperty('unitsGroup')){
+			if(hasUnit && !schemeInfo.hasOwnProperty('unitsGroup') && end){
 				throw new Error(`Units group for field ${key} (${key}.unitsGroup) not provided`);
 			}
 			if(hasUnit){
@@ -110,7 +110,7 @@ export class PropertyTypesService extends GenPropertyTypesService {
 					if(schemeInfo.hasOwnProperty(k)){
 						const unit = await this.getUnit(schemeInfo[k], company, em);
 						if(unit===null || unit.group.id!==unitGroup.id){
-							throw new Error(`Units group for field ${key}.${k} not found in units group`);
+							throw new Error(`Unit for field ${key}.${k} not found in units group`);
 						}
 					}
 				}
@@ -143,10 +143,10 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		}
 	}
 	
-	validateSingleValue(propertyType: PropertyTypes, value: any){
+	async validateSingleValue(company: number, scheme: any, value: any){
 		if(!(value instanceof Object)) throw new Error('Value assumed to be an object');
-		for(let key in Object.keys(propertyType.scheme)){
-			const info = propertyType.scheme[key];
+		for(let key of Object.keys(scheme)){
+			const info = scheme[key];
 			if(!value.hasOwnProperty(key)){
 				if(info.hasOwnProperty('defaultValue')){
 					value[key] = info.defaultValue;
@@ -165,10 +165,18 @@ export class PropertyTypesService extends GenPropertyTypesService {
 						}else{
 							throw new Error(`Required field ${unitKey} not provided`);
 						}
+					}else{
+						const em = this.em.fork(),
+									unitGroup = await this.getUnitGroup(info.unitsGroup, company, em),
+									unit = await this.getUnit(value[unitKey], company, em);
+						if(unit===null || unit.group.id!==unitGroup.id){
+							throw new Error(`Unit for field ${unitKey} not found in units group`);
+						}
 					}
 					break;
 			}
 		}
+		return value;
 	}
 	
 	findAllByCatalog(catalog: number, emt: EntityManager = null) {

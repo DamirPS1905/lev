@@ -46,10 +46,10 @@ export class GenPropertyValuesService {
 	async transactional(cb){ return await this.em.fork().transactional(cb); }
 	
 	
-	findByOrderAndValueKey(order: number, valueKey: bigint, emt: EntityManager = null) {
+	findByValueKey(valueKey: bigint, emt: EntityManager = null) {
 		const em = this.getEm(emt);
 		return em.findOne(PropertyValues, {
-			order: order, valueKey: valueKey
+			valueKey: valueKey
 		});
 	}
 	
@@ -67,7 +67,7 @@ export class GenPropertyValuesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { order: "ASC", valueKey: "ASC" },
+			orderBy: { valueKey: "ASC" },
 		});
 	}
 	
@@ -76,14 +76,14 @@ export class GenPropertyValuesService {
 		return em.find(PropertyValues, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { order: "ASC", valueKey: "ASC" },
+			orderBy: { valueKey: "ASC" },
 		});
 	}
 	
 	findAll(emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(PropertyValues, { }, {
-			orderBy: { order: "ASC", valueKey: "ASC" },
+			orderBy: { valueKey: "ASC" },
 		});
 	}
 	

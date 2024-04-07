@@ -19,7 +19,7 @@ export class GenCreateOptionsPropertyValueDto {
 	
 	@IsNotEmpty()
 	@ApiProperty()
-	value:any;
+	value:bigint;
 	
 	@IsOptional()
 	@ApiProperty({ required: false })

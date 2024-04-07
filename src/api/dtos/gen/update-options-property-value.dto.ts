@@ -19,7 +19,7 @@ export class GenUpdateOptionsPropertyValueDto {
 	
 	@IsNotEmpty()
 	@ApiProperty()
-	value:any;
+	value:bigint;
 	
 	@IsOptional()
 	@ApiProperty({ required: false })

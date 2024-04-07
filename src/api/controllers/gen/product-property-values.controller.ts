@@ -14,6 +14,7 @@ import { CatalogProductsService } from './../../services/catalog-products.servic
 import { CatalogPropertiesService } from './../../services/catalog-properties.service'
 import { CatalogsService } from './../../services/catalogs.service'
 import { ProductPropertyValuesService } from './../../services/product-property-values.service'
+import { PropertyTypesService } from './../../services/property-types.service'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
@@ -29,6 +30,7 @@ export class GenProductPropertyValuesController {
 		protected readonly catalogPropertiesService: CatalogPropertiesService,
 		protected readonly catalogsService: CatalogsService,
 		protected readonly productPropertyValuesService: ProductPropertyValuesService,
+		protected readonly propertyTypesService: PropertyTypesService,
 	) { }
 	
 	async findAll(apiKey: ApiKeys, catalog: number, offset: number, limit: number) {

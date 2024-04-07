@@ -18,11 +18,6 @@ export class GenCreatePropertyValueDto {
 	@IsOptional()
 	@ApiProperty({ required: false })
 	@IsInt()
-	order:number;
-	
-	@IsOptional()
-	@ApiProperty({ required: false })
-	@IsInt()
 	type:number;
 	
 	@IsOptional()

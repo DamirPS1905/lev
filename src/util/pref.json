@@ -348,6 +348,7 @@
             "create": false,
             "apiPrefix": "catalog\/:catalog\/product\/:product",
             "methodPath": "property\/:property",
+            "extraServices": "property_types",
             "fields": {
                 "offer": {
                     "def": "pk",
@@ -405,6 +406,7 @@
         "catalog_properties": {
             "def": "catDef",
             "apiPathName": "properties",
+            "extraServices": "property_types",
             "fields": {
                 "id": {
                     "def": "id"
@@ -424,11 +426,16 @@
                 },
                 "options": {
                     "def": "def"
+                },
+                "scheme": {
+                    "def": "def"
                 }
             }
         },
         "options_property_values": {
             "def": "catDef",
+            "create": false,
+            "extraServices": "property_types",
             "fields": {
                 "id": {
                     "def": "id"
@@ -458,6 +465,7 @@
             "create": false,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": "property\/:property",
+            "extraServices": "property_types",
             "fields": {
                 "product": {
                     "def": "pk",
@@ -1064,11 +1072,12 @@
         },
         "property_in_types": {
             "def": "def",
-            "apiPathName": "type\/:type\/property",
+            "apiPathName": "in-type\/:type\/property",
             "create": false,
             "list": false,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": ":property",
+            "extraServices": "property_types",
             "fields": {
                 "type": {
                     "def": "pk",
@@ -1132,6 +1141,7 @@
             "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": "property\/:property",
+            "extraServices": "property_types",
             "fields": {
                 "metatype": {
                     "def": "pk",
@@ -1166,6 +1176,9 @@
                         "eCode": "CONFLICT",
                         "eMessage": "Property not found"
                     }
+                },
+                "scheme": {
+                    "def": "def"
                 }
             }
         },
@@ -1173,8 +1186,13 @@
             "def": "catDef",
             "apiPathName": "type\/:type",
             "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": false,
+            "list": false,
             "paginateByMax": 0,
             "methodPath": "property\/:property",
+            "extraServices": "catalogs, catalog_types, catalog_properties, property_types, property_values, options_property_values",
             "fields": {
                 "type": {
                     "def": "pk",
@@ -1198,6 +1216,10 @@
                 },
                 "value": {
                     "def": "def"
+                },
+                "order": {
+                    "def": "pk",
+                    "dtoDisallow": true
                 }
             }
         }

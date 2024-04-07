@@ -6,7 +6,8 @@
  * in api/dtos/create-catalog-metatype-property.dto
  * in a proper way.
  */
-
+import { ApiProperty } from '@nestjs/swagger'
+import { IsOptional } from 'class-validator'
 
 export class GenCreateCatalogMetatypePropertyDto {
 	
@@ -15,5 +16,9 @@ export class GenCreateCatalogMetatypePropertyDto {
 	catalog:number;
 	
 	property:number;
+	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	scheme:any;
 	
 }

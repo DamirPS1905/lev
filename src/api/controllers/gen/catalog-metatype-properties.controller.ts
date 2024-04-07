@@ -14,6 +14,7 @@ import { CatalogMetatypePropertiesService } from './../../services/catalog-metat
 import { CatalogPropertiesService } from './../../services/catalog-properties.service'
 import { CatalogsService } from './../../services/catalogs.service'
 import { MetatypesService } from './../../services/metatypes.service'
+import { PropertyTypesService } from './../../services/property-types.service'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
@@ -29,6 +30,7 @@ export class GenCatalogMetatypePropertiesController {
 		protected readonly catalogPropertiesService: CatalogPropertiesService,
 		protected readonly catalogsService: CatalogsService,
 		protected readonly metatypesService: MetatypesService,
+		protected readonly propertyTypesService: PropertyTypesService,
 	) { }
 	
 	async findOne(apiKey: ApiKeys, catalog: number, property: number, metatype: number) {

@@ -19,4 +19,6 @@ export class GenCreateTypePropertyValueDto {
 	@ApiProperty({ required: false })
 	value:bigint;
 	
+	order:number;
+	
 }

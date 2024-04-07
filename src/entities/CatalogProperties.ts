@@ -23,4 +23,7 @@ export class CatalogProperties {
   @Property({ type: 'boolean' })
   options: boolean & Opt = false;
 
+  @Property({ columnType: 'jsonb' })
+  scheme!: any;
+
 }

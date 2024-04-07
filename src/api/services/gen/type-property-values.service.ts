@@ -46,10 +46,10 @@ export class GenTypePropertyValuesService {
 	async transactional(cb){ return await this.em.fork().transactional(cb); }
 	
 	
-	findByTypeAndProperty(type: number, property: number, emt: EntityManager = null) {
+	findByTypeAndPropertyAndOrder(type: number, property: number, order: number, emt: EntityManager = null) {
 		const em = this.getEm(emt);
 		return em.findOne(TypePropertyValues, {
-			type: type, property: property
+			type: type, property: property, order: order
 		});
 	}
 	
@@ -67,7 +67,7 @@ export class GenTypePropertyValuesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { type: "ASC", property: "ASC" },
+			orderBy: { type: "ASC", property: "ASC", order: "ASC" },
 		});
 	}
 	
@@ -85,7 +85,7 @@ export class GenTypePropertyValuesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { type: "ASC", property: "ASC" },
+			orderBy: { type: "ASC", property: "ASC", order: "ASC" },
 		});
 	}
 	
@@ -94,14 +94,14 @@ export class GenTypePropertyValuesService {
 		return em.find(TypePropertyValues, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { type: "ASC", property: "ASC" },
+			orderBy: { type: "ASC", property: "ASC", order: "ASC" },
 		});
 	}
 	
 	findAll(emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(TypePropertyValues, { }, {
-			orderBy: { type: "ASC", property: "ASC" },
+			orderBy: { type: "ASC", property: "ASC", order: "ASC" },
 		});
 	}
 	

@@ -7,13 +7,10 @@ import { PropertyTypes } from './PropertyTypes';
 @Index({ name: 'property_values_7_value', expression: 'CREATE INDEX property_values_7_value ON public.property_values USING btree ((((value ->> \'value\'::text))::double precision)) WHERE (type = 7)' })
 export class PropertyValues {
 
-  [PrimaryKeyProp]?: ['valueKey', 'order'];
+  [PrimaryKeyProp]?: 'valueKey';
 
-  @PrimaryKey()
+  @PrimaryKey({ autoincrement: false })
   valueKey!: bigint;
-
-  @PrimaryKey({ columnType: 'smallint' })
-  order!: number;
 
   @ManyToOne({ entity: () => PropertyTypes, fieldName: 'type' })
   type!: PropertyTypes;

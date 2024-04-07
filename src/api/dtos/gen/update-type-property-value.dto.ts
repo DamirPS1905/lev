@@ -19,4 +19,6 @@ export class GenUpdateTypePropertyValueDto {
 	@ApiProperty({ required: false })
 	value:bigint;
 	
+	order:number;
+	
 }

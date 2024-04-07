@@ -1,17 +1,17 @@
-import { Entity, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { Entity, OneToOne, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { CatalogProperties } from './CatalogProperties';
+import { PropertyValues } from './PropertyValues';
 
 @Entity()
 export class OptionsPropertyValues {
 
-  @PrimaryKey()
-  id!: number;
+  [PrimaryKeyProp]?: 'value';
 
   @OneToOne({ entity: () => CatalogProperties, fieldName: 'property', deleteRule: 'cascade', unique: 'options_property_values_property_hash_uind' })
   property!: CatalogProperties;
 
-  @Property({ columnType: 'jsonb' })
-  value!: any;
+  @OneToOne({ entity: () => PropertyValues, fieldName: 'value', deleteRule: 'cascade', primary: true })
+  value!: PropertyValues;
 
   @Property({ length: 48, nullable: true })
   hash?: string;
