@@ -1192,7 +1192,7 @@
             "list": false,
             "paginateByMax": 0,
             "methodPath": "property\/:property",
-            "extraServices": "catalogs, catalog_types, catalog_properties, property_types, property_values, options_property_values",
+            "extraServices": "catalog_metatype_properties, catalogs, catalog_types, catalog_properties, property_types, property_values, options_property_values",
             "fields": {
                 "type": {
                     "def": "pk",
@@ -1220,6 +1220,31 @@
                 "order": {
                     "def": "pk",
                     "dtoDisallow": true
+                },
+                "instance": {
+                    "def": "def"
+                }
+            }
+        },
+        "brand_property_values": {
+            "def": "def",
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": false,
+            "list": false,
+            "fields": {
+                "instance": {
+                    "def": "def"
+                },
+                "property": {
+                    "def": "def"
+                },
+                "order": {
+                    "def": "def"
+                },
+                "value": {
+                    "def": "def"
                 }
             }
         }

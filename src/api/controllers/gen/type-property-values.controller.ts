@@ -8,6 +8,7 @@
  */
 import { CreateTypePropertyValueDto } from './../../dtos/create-type-property-value.dto'
 import { UpdateTypePropertyValueDto } from './../../dtos/update-type-property-value.dto'
+import { CatalogMetatypePropertiesService } from './../../services/catalog-metatype-properties.service'
 import { CatalogPropertiesService } from './../../services/catalog-properties.service'
 import { CatalogTypesService } from './../../services/catalog-types.service'
 import { CatalogsService } from './../../services/catalogs.service'
@@ -26,6 +27,7 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 @Controller('catalog/:catalog/type/:type')
 export class GenTypePropertyValuesController {
 	constructor(
+		protected readonly catalogMetatypePropertiesService: CatalogMetatypePropertiesService,
 		protected readonly catalogPropertiesService: CatalogPropertiesService,
 		protected readonly catalogTypesService: CatalogTypesService,
 		protected readonly catalogsService: CatalogsService,

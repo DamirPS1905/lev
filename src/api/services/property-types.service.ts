@@ -22,18 +22,19 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		cycle:
 		for(let row of list){
 			if(!row.index) continue;
-			let type = null;
+			let type = null,
+					indexKey = row.key;
 			switch(row.primitive){
 				case 1: type = 'int'; break;
 				case 2: type = 'float8'; break;
 				case 3: type = 'varchar'; break;
 				case 4: type = 'text'; break;
-				case 5: type = 'int'; break;
-				case 6: type = 'float8'; break;
+				case 5: type = 'int'; indexKey += 'Index'; break;
+				case 6: type = 'float8'; indexKey += 'Index'; break;
 				default: continue cycle;
 			}
 			const indexName = `property_values_${row.id}_${row.key}`,
-						qu = `CREATE INDEX IF NOT EXISTS ${indexName} ON property_values (((value ->> '${row.key}')::${type}))
+						qu = `CREATE INDEX IF NOT EXISTS ${indexName} ON property_values (((value ->> '${indexKey}')::${type}))
 									WHERE "type"=${row.id}`;
 			await conn.execute(qu);
 		}
@@ -49,6 +50,11 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		});
 	}
 	
+	public convertValue(from: Units, to: Units, value: number){
+		if(from.id===to.id) return value;
+		return from.factor*(value - from.add)/to.factor + to.add;
+	}
+	
 	private getUnitGroup(id: number, company: number, emt: EntityManager = null){
 		return this.getEm(emt).findOne(UnitGroups, {
 			id: id,
@@ -62,11 +68,14 @@ export class PropertyTypesService extends GenPropertyTypesService {
 	async tunePropertyScheme(company: number, sourceScheme: any, tuning: any, end: boolean = false){
 		if(!(tuning instanceof Object)) throw new Error('Scheme assumed to be an object');
 		let resultScheme: {[k: string]: any} = {};
-		for(let key in Object.keys(sourceScheme)){
+		for(let key of Object.keys(sourceScheme)){
 			let schemeInfo: {[k: string]: any} = {};
 			const info = sourceScheme[key],
 						hasUnit = info.kind==5 || info.kind==6;
-			for(let k of ['kind', 'unitsGroup', 'storageUnit', 'defultUnit', 'displayUnit', 'defultValue']){
+			const fieldsList = hasUnit
+				? ['kind', 'unitsGroup', 'storageUnit', 'defaultUnit', 'displayUnit', 'defaultValue']
+				: ['kind', 'defaultValue'];
+			for(let k of fieldsList){
 				if(info.hasOwnProperty(k)){
 					schemeInfo[k] = info[k];
 				}
@@ -76,37 +85,38 @@ export class PropertyTypesService extends GenPropertyTypesService {
 				if(hasUnit){
 					if(fieldInfo.hasOwnProperty('unitsGroup')){
 						schemeInfo.unitsGroup = fieldInfo.unitsGroup;
-					}else{
-						throw new Error(`Units group for field ${key} (${key}.unitsGroup) not provided`);
 					}
 					if(fieldInfo.hasOwnProperty('storageUnit')){
 						schemeInfo.storageUnit = fieldInfo.storageUnit;
 					}
-					if(fieldInfo.hasOwnProperty('defultUnit')){
-						schemeInfo.defultUnit = fieldInfo.defultUnit;
+					if(fieldInfo.hasOwnProperty('defaultUnit')){
+						schemeInfo.defaultUnit = fieldInfo.defaultUnit;
 					}
 					if(fieldInfo.hasOwnProperty('displayUnit')){
 						schemeInfo.displayUnit = fieldInfo.displayUnit;
 					}
 				}
-				if(fieldInfo.hasOwnProperty('defultValue')){
-					schemeInfo.defultValue = fieldInfo.defultValue;
-					this.validateKindValue(info.kind, schemeInfo.defultValue);
-					if(hasUnit && !schemeInfo.hasOwnProperty('defultUnit')){
-						throw new Error(`When default value is provided, default unit also should be proided for field ${key} (${key}.defultUnit)`);
+				if(fieldInfo.hasOwnProperty('defaultValue')){
+					schemeInfo.defaultValue = fieldInfo.defaultValue;
+					this.validateKindValue(info.kind, schemeInfo.defaultValue);
+					if(hasUnit && !schemeInfo.hasOwnProperty('defaultUnit')){
+						throw new Error(`When default value (${key}.defaultValue) is provided, default unit (${key}.defaultUnit) also should be proided for field ${key} (${key}.defaultUnit)`);
 					}
 				}
 			}
-			if(hasUnit && !schemeInfo.hasOwnProperty('unitsGroup') && end){
+			if(hasUnit && !schemeInfo.hasOwnProperty('unitsGroup')){
 				throw new Error(`Units group for field ${key} (${key}.unitsGroup) not provided`);
+			}
+			if(hasUnit && !schemeInfo.hasOwnProperty('storageUnit') && end){
+				throw new Error(`Storage unit for field ${key} (${key}.storageUnit) not provided`);
 			}
 			if(hasUnit){
 				const em = this.em.fork(),
 							unitGroup = await this.getUnitGroup(schemeInfo.unitsGroup, company, em);
 				if(unitGroup===null){
-					throw new Error(`Units group for field ${key} not found`);
+					throw new Error(`Units group for field ${key} (${key}.unitsGroup) not found`);
 				}
-				for(let k of ['storageUnit', 'defultUnit', 'displayUnit']){
+				for(let k of ['storageUnit', 'defaultUnit', 'displayUnit']){
 					if(schemeInfo.hasOwnProperty(k)){
 						const unit = await this.getUnit(schemeInfo[k], company, em);
 						if(unit===null || unit.group.id!==unitGroup.id){
@@ -158,7 +168,8 @@ export class PropertyTypesService extends GenPropertyTypesService {
 			switch(info.kind){
 				case 5:
 				case 6:
-					const unitKey = `${key}Unit`;
+					const em = this.em.fork(),
+								unitKey = `${key}Unit`;
 					if(!value.hasOwnProperty(unitKey)){
 						if(info.hasOwnProperty('defaultUnit')){
 							value[unitKey] = info.defaultUnit;
@@ -166,13 +177,15 @@ export class PropertyTypesService extends GenPropertyTypesService {
 							throw new Error(`Required field ${unitKey} not provided`);
 						}
 					}else{
-						const em = this.em.fork(),
-									unitGroup = await this.getUnitGroup(info.unitsGroup, company, em),
+						const unitGroup = await this.getUnitGroup(info.unitsGroup, company, em),
 									unit = await this.getUnit(value[unitKey], company, em);
 						if(unit===null || unit.group.id!==unitGroup.id){
 							throw new Error(`Unit for field ${unitKey} not found in units group`);
 						}
 					}
+					const sourceUnit = await this.getUnit(value[unitKey], company, em),
+								targetUnit = await this.getUnit(info.storageUnit, company, em);
+					value[key+'Index'] = this.convertValue(sourceUnit, targetUnit, value[key]);
 					break;
 			}
 		}

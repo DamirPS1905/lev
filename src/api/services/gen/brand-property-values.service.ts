@@ -3,18 +3,18 @@
  * and should not be modifiyed manyally,
  * becouse it can be overwritten in any
  * moment. All modifications are allowed
- * in api/services/type-property-values.service
+ * in api/services/brand-property-values.service
  * in a proper way.
  */
-import { TypePropertyValues } from './../../../entities/TypePropertyValues'
-import { CreateTypePropertyValueDto } from './../../dtos/create-type-property-value.dto'
-import { UpdateTypePropertyValueDto } from './../../dtos/update-type-property-value.dto'
+import { BrandPropertyValues } from './../../../entities/BrandPropertyValues'
+import { CreateBrandPropertyValueDto } from './../../dtos/create-brand-property-value.dto'
+import { UpdateBrandPropertyValueDto } from './../../dtos/update-brand-property-value.dto'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { EntityManager, wrap } from '@mikro-orm/postgresql'
 import { Injectable } from '@nestjs/common'
 
 @Injectable()
-export class GenTypePropertyValuesService {
+export class GenBrandPropertyValuesService {
 	
 	constructor(
 		protected readonly em: EntityManager,
@@ -24,21 +24,21 @@ export class GenTypePropertyValuesService {
 		return emt || this.em.fork();
 	}
 	
-	async create(createDto: CreateTypePropertyValueDto, emt: EntityManager = null) {
+	async create(createDto: CreateBrandPropertyValueDto, emt: EntityManager = null) {
 		const em = this.getEm(emt),
-		      instance = em.create(TypePropertyValues, createDto);
+		      instance = em.create(BrandPropertyValues, createDto);
 		await em.persist(instance).flush();
 		return instance;
 	}
 	
-	async update(instance: TypePropertyValues, updateDto: UpdateTypePropertyValueDto, emt: EntityManager = null) {
+	async update(instance: BrandPropertyValues, updateDto: UpdateBrandPropertyValueDto, emt: EntityManager = null) {
 		const em = this.getEm(emt);
 		wrap(instance).assign(updateDto);
 		await em.persist(instance).flush();
 		return instance;
 	}
 	
-	remove(instance: TypePropertyValues, emt: EntityManager = null) {
+	remove(instance: BrandPropertyValues, emt: EntityManager = null) {
 		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
@@ -48,21 +48,21 @@ export class GenTypePropertyValuesService {
 	
 	findByInstanceAndPropertyAndOrder(instance: number, property: number, order: number, emt: EntityManager = null) {
 		const em = this.getEm(emt);
-		return em.findOne(TypePropertyValues, {
+		return em.findOne(BrandPropertyValues, {
 			instance: instance, property: property, order: order
 		});
 	}
 	
 	findAllByProperty(property: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
-		return em.find(TypePropertyValues, {
+		return em.find(BrandPropertyValues, {
 			property: property
 		});
 	}
 	
 	listByProperty(property: number, offset: number, limit: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
-		return em.find(TypePropertyValues, {
+		return em.find(BrandPropertyValues, {
 			property: property
 		}, {
 			limit: limit,
@@ -73,14 +73,14 @@ export class GenTypePropertyValuesService {
 	
 	findAllByInstance(instance: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
-		return em.find(TypePropertyValues, {
+		return em.find(BrandPropertyValues, {
 			instance: instance
 		});
 	}
 	
 	listByInstance(instance: number, offset: number, limit: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
-		return em.find(TypePropertyValues, {
+		return em.find(BrandPropertyValues, {
 			instance: instance
 		}, {
 			limit: limit,
@@ -91,7 +91,7 @@ export class GenTypePropertyValuesService {
 	
 	listAll(offset: number, limit: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
-		return em.find(TypePropertyValues, { }, {
+		return em.find(BrandPropertyValues, { }, {
 			limit: limit,
 			offset: offset,
 			orderBy: { instance: "ASC", property: "ASC", order: "ASC" },
@@ -100,7 +100,7 @@ export class GenTypePropertyValuesService {
 	
 	findAll(emt: EntityManager = null) {
 		const em = emt || this.em.fork();
-		return em.find(TypePropertyValues, { }, {
+		return em.find(BrandPropertyValues, { }, {
 			orderBy: { instance: "ASC", property: "ASC", order: "ASC" },
 		});
 	}

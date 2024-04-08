@@ -7,18 +7,21 @@
  * in a proper way.
  */
 import { ApiProperty } from '@nestjs/swagger'
-import { IsOptional } from 'class-validator'
+import { IsInt, IsOptional } from 'class-validator'
 
 export class GenCreateTypePropertyValueDto {
 	
-	type:number;
+	@IsOptional()
+	@ApiProperty({ required: false })
+	@IsInt()
+	instance:number;
 	
 	property:number;
+	
+	order:number;
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
 	value:bigint;
-	
-	order:number;
 	
 }

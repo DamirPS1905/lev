@@ -16,7 +16,7 @@ export class CatalogMetatypePropertiesController extends GenCatalogMetatypePrope
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.CONFLICT);
 		}
-		return await this.catalogMetatypePropertiesService.findAllByCatalogAndMetatype(metatype, catalog);
+		return await this.catalogMetatypePropertiesService.findAllByCatalogAndMetatype(catalog, metatype);
 	}
 	
 	@Get('property/:property')
@@ -32,7 +32,7 @@ export class CatalogMetatypePropertiesController extends GenCatalogMetatypePrope
 	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, property: number, metatype: number, updateDto: UpdateCatalogMetatypePropertyDto, em: EntityManager) {
 		try{
 			const propertyIns = await this.catalogPropertiesService.findById(property);
-			updateDto.scheme = this.propertyTypesService.tunePropertyScheme(apiKey.company.id, propertyIns.scheme, updateDto.scheme, true);
+			updateDto.scheme = await this.propertyTypesService.tunePropertyScheme(apiKey.company.id, propertyIns.scheme, updateDto.scheme, true);
 		}catch(e){
 			throw new HttpException(e.message, HttpStatus.CONFLICT);
 		}

@@ -5,7 +5,7 @@ import { UpdateCatalogPropertyDto } from './../dtos/update-catalog-property.dto'
 import { CatalogPropertiesService } from './../services/catalog-properties.service'
 import { GenCatalogPropertiesController } from './gen/catalog-properties.controller'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Body, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common'
+import { Body, DefaultValuePipe, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiQuery } from '@nestjs/swagger'
 
@@ -28,9 +28,31 @@ export class CatalogPropertiesController extends GenCatalogPropertiesController 
 		return await super.create(apiKey, catalog, createDto);
 	}
 	
+	async validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreateCatalogPropertyDto, em: EntityManager) {
+		try{
+			const end = createDto.options===undefined? false: createDto.options,
+						propertyTypeIns = await this.propertyTypesService.findById(createDto.type);
+			createDto.scheme = await this.propertyTypesService.tunePropertyScheme(apiKey.company.id, propertyTypeIns.scheme, createDto.scheme, end);
+		}catch(e){
+			throw new HttpException(e.message, HttpStatus.CONFLICT);
+		}
+	}
+	
 	@Patch(':id')
 	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateCatalogPropertyDto) {
 		return await super.update(apiKey, catalog, id, updateDto);
+	}
+	
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdateCatalogPropertyDto, em: EntityManager) {
+		if(updateDto.scheme instanceof Object){
+			try{
+				const end = createDto.options===undefined? entity.options: createDto.options,
+							propertyTypeIns = await this.propertyTypesService.findById(entity.type.id);
+				updateDto.scheme = await this.propertyTypesService.tunePropertyScheme(apiKey.company.id, propertyTypeIns.scheme, updateDto.scheme, end);
+			}catch(e){
+				throw new HttpException(e.message, HttpStatus.CONFLICT);
+			}
+		}
 	}
 	
 	@Delete(':id')

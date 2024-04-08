@@ -60,7 +60,7 @@ export class RCBService {
 		return currency;
 	}
 	
-  @Cron('* * * * *')
+  @Cron('*/15 * * * *')
   async handleCron() {
 	  const ukey = uid(5);
 	  if(this.loading) {

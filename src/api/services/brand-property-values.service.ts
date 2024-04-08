@@ -1,38 +1,38 @@
-import { GenTypePropertyValuesService } from './gen/type-property-values.service'
+import { GenBrandPropertyValuesService } from './gen/brand-property-values.service'
 import { Injectable } from '@nestjs/common'
-import { TypePropertyValues } from './../../entities/TypePropertyValues'
 import { EntityManager } from '@mikro-orm/postgresql'
+import { BrandPropertyValues } from './../../entities/BrandPropertyValues'
 import { IMetatypeVauesService } from './interface/i-metatype-values.service'
 
 @Injectable()
-export class TypePropertyValuesService extends GenTypePropertyValuesService implements IMetatypeVauesService {
+export class BrandPropertyValuesService extends GenBrandPropertyValuesService implements IMetatypeVauesService {
 	
 	findAllByInstanceAndProperty(instance: number, property: number, emt: EntityManager = null) {
-		return this.getEm(emt).find(TypePropertyValues, {
+		return this.getEm(emt).find(BrandPropertyValues, {
 			property: property,
 			instance: instance
 		});
-	}
-	
-	async readValuesByInstanceAndProperty(instance: number, property: number, emt: EntityManager = null){
-		const conn = this.getEm(emt).getConnection(),
-					qu = `SELECT pv.value 
-								FROM 
-									type_property_values tpv 
-									JOIN property_values pv ON pv.value_key = tpv.value
-								WHERE tpv."instance" =${instance} AND tpv.property =${property}
-								ORDER BY "order" ASC`;
-		return await conn.execute(qu);
 	}
 	
 	async readValuesByInstance(instance: number, emt: EntityManager = null){
 		const conn = this.getEm(emt).getConnection(),
 					qu = `SELECT tpv.property, pv.value 
 								FROM 
-									type_property_values tpv 
+									brand_property_values tpv 
 									JOIN property_values pv ON pv.value_key = tpv.value
 								WHERE tpv."instance" =${instance}
 								ORDER BY property ASC, "order" ASC`;
+		return await conn.execute(qu);
+	}
+	
+	async readValuesByInstanceAndProperty(instance: number, property: number, emt: EntityManager = null){
+		const conn = this.getEm(emt).getConnection(),
+					qu = `SELECT pv.value 
+								FROM 
+									brand_property_values tpv 
+									JOIN property_values pv ON pv.value_key = tpv.value
+								WHERE tpv."instance" =${instance} AND tpv.property =${property}
+								ORDER BY "order" ASC`;
 		return await conn.execute(qu);
 	}
 	
@@ -40,7 +40,7 @@ export class TypePropertyValuesService extends GenTypePropertyValuesService impl
 		const conn = this.getEm(emt).getConnection(),
 					qu = `SELECT pv.value 
 								FROM 
-									type_property_values tpv 
+									brand_property_values tpv 
 									JOIN property_values pv ON pv.value_key = tpv.value
 								WHERE tpv."instance"=${instance} AND tpv.property=${property} AND tpv."order"=0`;
 		const list = await conn.execute(qu);

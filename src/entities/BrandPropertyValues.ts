@@ -1,22 +1,22 @@
 import { Entity, ManyToOne, PrimaryKey, PrimaryKeyProp, Property } from '@mikro-orm/core';
+import { CatalogBrands } from './CatalogBrands';
 import { CatalogProperties } from './CatalogProperties';
-import { CatalogTypes } from './CatalogTypes';
 
 @Entity()
-export class TypePropertyValues {
+export class BrandPropertyValues {
 
   [PrimaryKeyProp]?: ['instance', 'property', 'order'];
 
-  @ManyToOne({ entity: () => CatalogTypes, fieldName: 'instance', deleteRule: 'cascade', primary: true })
-  instance!: CatalogTypes;
+  @ManyToOne({ entity: () => CatalogBrands, fieldName: 'instance', deleteRule: 'cascade', primary: true })
+  instance!: CatalogBrands;
 
   @ManyToOne({ entity: () => CatalogProperties, fieldName: 'property', deleteRule: 'cascade', primary: true })
   property!: CatalogProperties;
 
-  @Property()
-  value!: bigint;
-
   @PrimaryKey({ columnType: 'smallint' })
   order!: number;
+
+  @Property()
+  value!: bigint;
 
 }

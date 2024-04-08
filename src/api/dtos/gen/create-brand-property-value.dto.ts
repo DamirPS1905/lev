@@ -3,21 +3,27 @@
  * and should not be modifiyed manyally,
  * becouse it can be overwritten in any
  * moment. All modifications are allowed
- * in api/dtos/update-type-property-value.dto
+ * in api/dtos/create-brand-property-value.dto
  * in a proper way.
  */
 import { ApiProperty } from '@nestjs/swagger'
 import { IsInt, IsOptional } from 'class-validator'
 
-export class GenUpdateTypePropertyValueDto {
+export class GenCreateBrandPropertyValueDto {
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
 	@IsInt()
 	instance:number;
 	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	@IsInt()
 	property:number;
 	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	@IsInt()
 	order:number;
 	
 	@IsOptional()

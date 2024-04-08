@@ -247,6 +247,20 @@ ALTER SEQUENCE public.api_keys_id_seq OWNED BY public.api_keys.id;
 
 
 --
+-- Name: brand_property_values; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.brand_property_values (
+    instance integer NOT NULL,
+    property integer NOT NULL,
+    "order" smallint NOT NULL,
+    value bigint NOT NULL
+);
+
+
+ALTER TABLE public.brand_property_values OWNER TO dev;
+
+--
 -- Name: catalog_types; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -981,10 +995,10 @@ ALTER SEQUENCE public.stores_id_seq OWNED BY public.stores.id;
 --
 
 CREATE TABLE public.type_property_values (
-    type integer NOT NULL,
+    instance integer NOT NULL,
     property integer NOT NULL,
-    value bigint NOT NULL,
-    "order" smallint NOT NULL
+    "order" smallint NOT NULL,
+    value bigint NOT NULL
 );
 
 
@@ -1281,6 +1295,17 @@ COPY public.api_keys (id, key, company, disposed, created_at, disposed_at, actor
 
 
 --
+-- Data for Name: brand_property_values; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.brand_property_values (instance, property, "order", value) FROM stdin;
+6	1	0	18
+6	3	0	19
+6	4	0	20
+\.
+
+
+--
 -- Data for Name: catalog_brands; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
@@ -1311,6 +1336,8 @@ COPY public.catalog_brands (id, catalog, title, description, logo) FROM stdin;
 
 COPY public.catalog_metatype_properties (metatype, catalog, property, scheme) FROM stdin;
 2	1	1	{"value": {"kind": 3}}
+2	1	3	{"value": {"kind": 6, "unitsGroup": 1, "storageUnit": 1}}
+2	1	4	{"value": {"kind": 5, "unitsGroup": 2, "defaultUnit": 4, "storageUnit": 4}}
 \.
 
 
@@ -1347,6 +1374,8 @@ COPY public.catalog_products (id, catalog, type, brand, title, created) FROM std
 
 COPY public.catalog_properties (id, catalog, title, type, multiple, options, scheme) FROM stdin;
 1	1	Text test	1	f	f	{"value": {"kind": 3}}
+3	1	вес	7	f	f	{"value": {"kind": 6, "unitsGroup": 1}}
+4	1	объем	6	f	f	{"value": {"kind": 5, "unitsGroup": 2}}
 \.
 
 
@@ -1554,7 +1583,9 @@ COPY public.property_types (id, title, scheme, catalog) FROM stdin;
 --
 
 COPY public.property_values (value_key, type, value) FROM stdin;
-8	1	{"value": "test1"}
+18	1	{"value": "test"}
+19	7	{"value": 7.3, "valueUnit": 3, "valueIndex": 0.0073}
+20	6	{"value": 800, "valueUnit": 4, "valueIndex": 800}
 \.
 
 
@@ -1563,92 +1594,92 @@ COPY public.property_values (value_key, type, value) FROM stdin;
 --
 
 COPY public.rates ("from", "to", source, rate, updated_at) FROM stdin;
-3	2	1	60.735500000	2024-04-07 05:32:01.883+03
-2	3	1	0.016464835	2024-04-07 05:32:01.883+03
-4	2	1	54.362100000	2024-04-07 05:32:01.883+03
-2	4	1	0.018395169	2024-04-07 05:32:01.883+03
-5	2	1	117.072000000	2024-04-07 05:32:01.883+03
-2	5	1	0.008541752	2024-04-07 05:32:01.883+03
-6	2	1	0.237896000	2024-04-07 05:32:01.883+03
-2	6	1	4.203517503	2024-04-07 05:32:01.883+03
-7	2	1	28.397100000	2024-04-07 05:32:01.883+03
-2	7	1	0.035214863	2024-04-07 05:32:01.883+03
-8	2	1	51.277000000	2024-04-07 05:32:01.883+03
-2	8	1	0.019501921	2024-04-07 05:32:01.883+03
-9	2	1	18.397000000	2024-04-07 05:32:01.883+03
-2	9	1	0.054356689	2024-04-07 05:32:01.883+03
-10	2	1	0.256439000	2024-04-07 05:32:01.883+03
-2	10	1	3.899562859	2024-04-07 05:32:01.883+03
-11	2	1	0.003844560	2024-04-07 05:32:01.883+03
-2	11	1	260.107788668	2024-04-07 05:32:01.883+03
-12	2	1	11.826900000	2024-04-07 05:32:01.883+03
-2	12	1	0.084553011	2024-04-07 05:32:01.883+03
-13	2	1	34.439700000	2024-04-07 05:32:01.883+03
-2	13	1	0.029036258	2024-04-07 05:32:01.883+03
-14	2	1	13.445600000	2024-04-07 05:32:01.883+03
-2	14	1	0.074373773	2024-04-07 05:32:01.883+03
-15	2	1	25.164200000	2024-04-07 05:32:01.883+03
-2	15	1	0.039738994	2024-04-07 05:32:01.883+03
-16	2	1	92.415500000	2024-04-07 05:32:01.883+03
-2	16	1	0.010820696	2024-04-07 05:32:01.883+03
-17	2	1	100.125900000	2024-04-07 05:32:01.883+03
-2	28	1	0.115790059	2024-04-07 05:32:01.883+03
-29	2	1	23.354400000	2024-04-07 05:32:01.883+03
-2	29	1	0.042818484	2024-04-07 05:32:01.883+03
-30	2	1	20.162600000	2024-04-07 05:32:01.883+03
-2	30	1	0.049596778	2024-04-07 05:32:01.883+03
-31	2	1	122.617800000	2024-04-07 05:32:01.883+03
-2	31	1	0.008155423	2024-04-07 05:32:01.883+03
-32	2	1	68.476200000	2024-04-07 05:32:01.883+03
-2	32	1	0.014603614	2024-04-07 05:32:01.883+03
-33	2	1	8.436150000	2024-04-07 05:32:01.883+03
-2	33	1	0.118537485	2024-04-07 05:32:01.883+03
-34	2	1	2.513200000	2024-04-07 05:32:01.883+03
-2	34	1	0.397899093	2024-04-07 05:32:01.883+03
-44	2	1	0.068314200	2024-04-07 05:32:01.883+03
-2	44	1	14.638245050	2024-04-07 05:32:01.883+03
-45	2	1	0.612348000	2024-04-07 05:32:01.883+03
-2	45	1	1.633058326	2024-04-07 05:32:01.883+03
-2	17	1	0.009987426	2024-04-07 05:32:01.883+03
-18	2	1	1.950570000	2024-04-07 05:32:01.883+03
-2	18	1	0.512670655	2024-04-07 05:32:01.883+03
-19	2	1	1.108000000	2024-04-07 05:32:01.883+03
-2	19	1	0.902527076	2024-04-07 05:32:01.883+03
-20	2	1	0.005809740	2024-04-07 05:32:01.883+03
-2	20	1	172.124742243	2024-04-07 05:32:01.883+03
-21	2	1	0.206982000	2024-04-07 05:32:01.883+03
-2	21	1	4.831337991	2024-04-07 05:32:01.883+03
-22	2	1	68.435600000	2024-04-07 05:32:01.883+03
-2	22	1	0.014612278	2024-04-07 05:32:01.883+03
-23	2	1	25.388900000	2024-04-07 05:32:01.883+03
-2	23	1	0.039387291	2024-04-07 05:32:01.883+03
-24	2	1	1.034480000	2024-04-07 05:32:01.883+03
-2	24	1	0.966669244	2024-04-07 05:32:01.883+03
-25	2	1	12.760200000	2024-04-07 05:32:01.883+03
-2	25	1	0.078368678	2024-04-07 05:32:01.883+03
-26	2	1	5.213000000	2024-04-07 05:32:01.883+03
-2	26	1	0.191828122	2024-04-07 05:32:01.883+03
-27	2	1	55.726500000	2024-04-07 05:32:01.883+03
-2	27	1	0.017944784	2024-04-07 05:32:01.883+03
-28	2	1	8.636320000	2024-04-07 05:32:01.883+03
-35	2	1	2.899920000	2024-04-07 05:32:01.883+03
-2	35	1	0.344837099	2024-04-07 05:32:01.883+03
-36	2	1	26.404400000	2024-04-07 05:32:01.883+03
-2	36	1	0.037872476	2024-04-07 05:32:01.883+03
-37	2	1	0.007288250	2024-04-07 05:32:01.883+03
-2	37	1	137.207148492	2024-04-07 05:32:01.883+03
-38	2	1	2.368410000	2024-04-07 05:32:01.883+03
-2	38	1	0.422224193	2024-04-07 05:32:01.883+03
-39	2	1	3.962250000	2024-04-07 05:32:01.883+03
-2	39	1	0.252381854	2024-04-07 05:32:01.883+03
-40	2	1	8.712850000	2024-04-07 05:32:01.883+03
-2	40	1	0.114773008	2024-04-07 05:32:01.883+03
-41	2	1	102.297400000	2024-04-07 05:32:01.883+03
-2	41	1	0.009775420	2024-04-07 05:32:01.883+03
-42	2	1	0.854495000	2024-04-07 05:32:01.883+03
-2	42	1	1.170281862	2024-04-07 05:32:01.883+03
-43	2	1	4.950790000	2024-04-07 05:32:01.883+03
-2	43	1	0.201987966	2024-04-07 05:32:01.883+03
+3	2	1	60.735500000	2024-04-08 05:22:00.421+03
+2	3	1	0.016464835	2024-04-08 05:22:00.421+03
+4	2	1	54.362100000	2024-04-08 05:22:00.421+03
+2	4	1	0.018395169	2024-04-08 05:22:00.421+03
+5	2	1	117.072000000	2024-04-08 05:22:00.421+03
+2	5	1	0.008541752	2024-04-08 05:22:00.421+03
+6	2	1	0.237896000	2024-04-08 05:22:00.421+03
+2	6	1	4.203517503	2024-04-08 05:22:00.421+03
+7	2	1	28.397100000	2024-04-08 05:22:00.421+03
+2	7	1	0.035214863	2024-04-08 05:22:00.421+03
+8	2	1	51.277000000	2024-04-08 05:22:00.421+03
+2	8	1	0.019501921	2024-04-08 05:22:00.421+03
+9	2	1	18.397000000	2024-04-08 05:22:00.421+03
+2	9	1	0.054356689	2024-04-08 05:22:00.421+03
+10	2	1	0.256439000	2024-04-08 05:22:00.421+03
+2	10	1	3.899562859	2024-04-08 05:22:00.421+03
+11	2	1	0.003844560	2024-04-08 05:22:00.421+03
+2	11	1	260.107788668	2024-04-08 05:22:00.421+03
+12	2	1	11.826900000	2024-04-08 05:22:00.421+03
+2	12	1	0.084553011	2024-04-08 05:22:00.421+03
+13	2	1	34.439700000	2024-04-08 05:22:00.421+03
+2	13	1	0.029036258	2024-04-08 05:22:00.421+03
+14	2	1	13.445600000	2024-04-08 05:22:00.421+03
+2	14	1	0.074373773	2024-04-08 05:22:00.421+03
+15	2	1	25.164200000	2024-04-08 05:22:00.421+03
+2	15	1	0.039738994	2024-04-08 05:22:00.421+03
+16	2	1	92.415500000	2024-04-08 05:22:00.421+03
+2	16	1	0.010820696	2024-04-08 05:22:00.421+03
+17	2	1	100.125900000	2024-04-08 05:22:00.421+03
+2	28	1	0.115790059	2024-04-08 05:22:00.421+03
+29	2	1	23.354400000	2024-04-08 05:22:00.421+03
+2	29	1	0.042818484	2024-04-08 05:22:00.421+03
+30	2	1	20.162600000	2024-04-08 05:22:00.421+03
+2	30	1	0.049596778	2024-04-08 05:22:00.421+03
+31	2	1	122.617800000	2024-04-08 05:22:00.421+03
+2	31	1	0.008155423	2024-04-08 05:22:00.421+03
+32	2	1	68.476200000	2024-04-08 05:22:00.421+03
+2	32	1	0.014603614	2024-04-08 05:22:00.421+03
+33	2	1	8.436150000	2024-04-08 05:22:00.421+03
+2	33	1	0.118537485	2024-04-08 05:22:00.421+03
+34	2	1	2.513200000	2024-04-08 05:22:00.421+03
+2	34	1	0.397899093	2024-04-08 05:22:00.421+03
+44	2	1	0.068314200	2024-04-08 05:22:00.421+03
+2	44	1	14.638245050	2024-04-08 05:22:00.421+03
+45	2	1	0.612348000	2024-04-08 05:22:00.421+03
+2	45	1	1.633058326	2024-04-08 05:22:00.421+03
+2	17	1	0.009987426	2024-04-08 05:22:00.421+03
+18	2	1	1.950570000	2024-04-08 05:22:00.421+03
+2	18	1	0.512670655	2024-04-08 05:22:00.421+03
+19	2	1	1.108000000	2024-04-08 05:22:00.421+03
+2	19	1	0.902527076	2024-04-08 05:22:00.421+03
+20	2	1	0.005809740	2024-04-08 05:22:00.421+03
+2	20	1	172.124742243	2024-04-08 05:22:00.421+03
+21	2	1	0.206982000	2024-04-08 05:22:00.421+03
+2	21	1	4.831337991	2024-04-08 05:22:00.421+03
+22	2	1	68.435600000	2024-04-08 05:22:00.421+03
+2	22	1	0.014612278	2024-04-08 05:22:00.421+03
+23	2	1	25.388900000	2024-04-08 05:22:00.421+03
+2	23	1	0.039387291	2024-04-08 05:22:00.421+03
+24	2	1	1.034480000	2024-04-08 05:22:00.421+03
+2	24	1	0.966669244	2024-04-08 05:22:00.421+03
+25	2	1	12.760200000	2024-04-08 05:22:00.421+03
+2	25	1	0.078368678	2024-04-08 05:22:00.421+03
+26	2	1	5.213000000	2024-04-08 05:22:00.421+03
+2	26	1	0.191828122	2024-04-08 05:22:00.421+03
+27	2	1	55.726500000	2024-04-08 05:22:00.421+03
+2	27	1	0.017944784	2024-04-08 05:22:00.421+03
+28	2	1	8.636320000	2024-04-08 05:22:00.421+03
+35	2	1	2.899920000	2024-04-08 05:22:00.421+03
+2	35	1	0.344837099	2024-04-08 05:22:00.421+03
+36	2	1	26.404400000	2024-04-08 05:22:00.421+03
+2	36	1	0.037872476	2024-04-08 05:22:00.421+03
+37	2	1	0.007288250	2024-04-08 05:22:00.421+03
+2	37	1	137.207148492	2024-04-08 05:22:00.421+03
+38	2	1	2.368410000	2024-04-08 05:22:00.421+03
+2	38	1	0.422224193	2024-04-08 05:22:00.421+03
+39	2	1	3.962250000	2024-04-08 05:22:00.421+03
+2	39	1	0.252381854	2024-04-08 05:22:00.421+03
+40	2	1	8.712850000	2024-04-08 05:22:00.421+03
+2	40	1	0.114773008	2024-04-08 05:22:00.421+03
+41	2	1	102.297400000	2024-04-08 05:22:00.421+03
+2	41	1	0.009775420	2024-04-08 05:22:00.421+03
+42	2	1	0.854495000	2024-04-08 05:22:00.421+03
+2	42	1	1.170281862	2024-04-08 05:22:00.421+03
+43	2	1	4.950790000	2024-04-08 05:22:00.421+03
+2	43	1	0.201987966	2024-04-08 05:22:00.421+03
 \.
 
 
@@ -2095,7 +2126,7 @@ COPY public.rates_history ("from", "to", source, date, rate) FROM stdin;
 --
 
 COPY public.rates_sources (id, title, base_currency, timezone, fine, fine_at, problem_info) FROM stdin;
-1	Rus CB	2	Europe/Moscow	t	2024-04-07 05:32:02.507+03	-3007
+1	Rus CB	2	Europe/Moscow	t	2024-04-08 05:22:01.115+03	-3007
 \.
 
 
@@ -2112,8 +2143,7 @@ COPY public.stores (id, company, title, address, geo_lat, geo_long) FROM stdin;
 -- Data for Name: type_property_values; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.type_property_values (type, property, value, "order") FROM stdin;
-2	1	8	0
+COPY public.type_property_values (instance, property, "order", value) FROM stdin;
 \.
 
 
@@ -2214,7 +2244,7 @@ SELECT pg_catalog.setval('public.catalog_products_id_seq', 1, false);
 -- Name: catalog_properties_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.catalog_properties_id_seq', 1, true);
+SELECT pg_catalog.setval('public.catalog_properties_id_seq', 4, true);
 
 
 --
@@ -2263,7 +2293,7 @@ SELECT pg_catalog.setval('public.property_types_id_seq', 9, true);
 -- Name: property_value_id; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.property_value_id', 8, true);
+SELECT pg_catalog.setval('public.property_value_id', 20, true);
 
 
 --
@@ -2347,6 +2377,14 @@ ALTER TABLE ONLY public.api_keys
 
 ALTER TABLE ONLY public.api_keys
     ADD CONSTRAINT api_keys_pk PRIMARY KEY (id);
+
+
+--
+-- Name: brand_property_values brand_property_values_pk; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.brand_property_values
+    ADD CONSTRAINT brand_property_values_pk PRIMARY KEY (instance, property, "order");
 
 
 --
@@ -2698,7 +2736,7 @@ ALTER TABLE ONLY public.stores
 --
 
 ALTER TABLE ONLY public.type_property_values
-    ADD CONSTRAINT type_property_values_pk PRIMARY KEY (type, property, "order");
+    ADD CONSTRAINT type_property_values_pk PRIMARY KEY (instance, property, "order");
 
 
 --
@@ -2772,14 +2810,14 @@ CREATE INDEX property_values_1_value ON public.property_values USING btree ((((v
 -- Name: property_values_6_value; Type: INDEX; Schema: public; Owner: dev
 --
 
-CREATE INDEX property_values_6_value ON public.property_values USING btree ((((value ->> 'value'::text))::integer)) WHERE (type = 6);
+CREATE INDEX property_values_6_value ON public.property_values USING btree ((((value ->> 'valueIndex'::text))::integer)) WHERE (type = 6);
 
 
 --
 -- Name: property_values_7_value; Type: INDEX; Schema: public; Owner: dev
 --
 
-CREATE INDEX property_values_7_value ON public.property_values USING btree ((((value ->> 'value'::text))::double precision)) WHERE (type = 7);
+CREATE INDEX property_values_7_value ON public.property_values USING btree ((((value ->> 'valueIndex'::text))::double precision)) WHERE (type = 7);
 
 
 --
@@ -2888,6 +2926,22 @@ ALTER TABLE ONLY public.api_keys
 
 ALTER TABLE ONLY public.api_keys
     ADD CONSTRAINT api_keys_companies_fk FOREIGN KEY (company) REFERENCES public.companies(id);
+
+
+--
+-- Name: brand_property_values brand_property_values_catalog_brands_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.brand_property_values
+    ADD CONSTRAINT brand_property_values_catalog_brands_fk FOREIGN KEY (instance) REFERENCES public.catalog_brands(id) ON DELETE CASCADE;
+
+
+--
+-- Name: brand_property_values brand_property_values_catalog_properties_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.brand_property_values
+    ADD CONSTRAINT brand_property_values_catalog_properties_fk FOREIGN KEY (property) REFERENCES public.catalog_properties(id) ON DELETE CASCADE;
 
 
 --
@@ -3231,7 +3285,7 @@ ALTER TABLE ONLY public.type_property_values
 --
 
 ALTER TABLE ONLY public.type_property_values
-    ADD CONSTRAINT type_property_values_catalog_types_fk FOREIGN KEY (type) REFERENCES public.catalog_types(id) ON DELETE CASCADE;
+    ADD CONSTRAINT type_property_values_catalog_types_fk FOREIGN KEY (instance) REFERENCES public.catalog_types(id) ON DELETE CASCADE;
 
 
 --
