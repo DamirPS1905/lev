@@ -50,6 +50,7 @@ export class MetatypeValuesController<E, S extends IMetatypeVauesService> {
 			throw new HttpException('Property not found', HttpStatus.NOT_FOUND);			
 		}
 		this.validateInstance(catalog, instance);
+		await wrap(metaProperty.property).init();
 		if(metaProperty.property.multiple){
 			return (await this.valuesService.readValuesByInstanceAndProperty(instance, property))
 				.map(p => p.value);
@@ -75,12 +76,14 @@ export class MetatypeValuesController<E, S extends IMetatypeVauesService> {
 			if(metaProperty===null){
 				throw new HttpException('Property not found', HttpStatus.NOT_FOUND);			
 			}
+			await wrap(metaProperty.property).init();
 			if(metaProperty.property.options){
 				if(metaProperty.property.multiple){
 					if(updateDto instanceof Array){
 						for(let i = 0; i<updateDto.length; i++){
 							await this.writeOneOption(instance, metaProperty, updateDto[i], i, em);
 						}
+						await this.valuesService.removeExtraByInstanceAndPropertyAndMaxOrder(instance, metaProperty.property.id, updateDto.length, false, em);
 					}else{
 						throw new HttpException('You should provide array for multiple properties', HttpStatus.CONFLICT);
 					}
@@ -93,6 +96,7 @@ export class MetatypeValuesController<E, S extends IMetatypeVauesService> {
 						for(let i = 0; i<updateDto.length; i++){
 							await this.writeOne(apiKey.company.id, instance, metaProperty, updateDto[i], i, em);
 						}
+						await this.valuesService.removeExtraByInstanceAndPropertyAndMaxOrder(instance, metaProperty.property.id, updateDto.length, true, em);
 					}else{
 						throw new HttpException('You should provide array for multiple properties', HttpStatus.CONFLICT);
 					}
@@ -112,7 +116,6 @@ export class MetatypeValuesController<E, S extends IMetatypeVauesService> {
 				const conn = em.getConnection();
 				valKey = (await conn.execute(`SELECT nextval('property_value_id')::int8 as res`))[0].res;
 			}
-			await wrap(metaProperty.property).init();
 			await em.upsert(PropertyValues, {
 				valueKey: valKey,
 				type: metaProperty.property.type.id,
@@ -162,13 +165,8 @@ export class MetatypeValuesController<E, S extends IMetatypeVauesService> {
 			if(metaProperty===null){
 				throw new HttpException('Property not found', HttpStatus.NOT_FOUND);			
 			}
-			const list = await this.valuesService.findAllByInstanceAndProperty(instance, property, em);
-			if(!metaProperty.property.options){
-				for(let item of list){
-					em.remove(em.getReference(PropertyValues, item.value));
-				}
-			}
-			await em.remove(list).flush();
+			await wrap(metaProperty.property).init();
+			await this.valuesService.removeExtraByInstanceAndPropertyAndMaxOrder(instance, metaProperty.property.id, 0, !metaProperty.property.options, em);
 		});	
 	}
 	

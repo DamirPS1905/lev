@@ -1302,6 +1302,8 @@ COPY public.brand_property_values (instance, property, "order", value) FROM stdi
 6	1	0	18
 6	3	0	19
 6	4	0	20
+6	5	0	21
+6	5	1	22
 \.
 
 
@@ -1338,6 +1340,7 @@ COPY public.catalog_metatype_properties (metatype, catalog, property, scheme) FR
 2	1	1	{"value": {"kind": 3}}
 2	1	3	{"value": {"kind": 6, "unitsGroup": 1, "storageUnit": 1}}
 2	1	4	{"value": {"kind": 5, "unitsGroup": 2, "defaultUnit": 4, "storageUnit": 4}}
+2	1	5	{"value": {"kind": 3}}
 \.
 
 
@@ -1376,6 +1379,7 @@ COPY public.catalog_properties (id, catalog, title, type, multiple, options, sch
 1	1	Text test	1	f	f	{"value": {"kind": 3}}
 3	1	вес	7	f	f	{"value": {"kind": 6, "unitsGroup": 1}}
 4	1	объем	6	f	f	{"value": {"kind": 5, "unitsGroup": 2}}
+5	1	test multi	1	t	f	{"value": {"kind": 3}}
 \.
 
 
@@ -1586,6 +1590,8 @@ COPY public.property_values (value_key, type, value) FROM stdin;
 18	1	{"value": "test"}
 19	7	{"value": 7.3, "valueUnit": 3, "valueIndex": 0.0073}
 20	6	{"value": 800, "valueUnit": 4, "valueIndex": 800}
+21	1	{"value": "abc"}
+22	1	{"value": "def"}
 \.
 
 
@@ -2244,7 +2250,7 @@ SELECT pg_catalog.setval('public.catalog_products_id_seq', 1, false);
 -- Name: catalog_properties_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.catalog_properties_id_seq', 4, true);
+SELECT pg_catalog.setval('public.catalog_properties_id_seq', 5, true);
 
 
 --
@@ -2293,7 +2299,7 @@ SELECT pg_catalog.setval('public.property_types_id_seq', 9, true);
 -- Name: property_value_id; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.property_value_id', 20, true);
+SELECT pg_catalog.setval('public.property_value_id', 23, true);
 
 
 --

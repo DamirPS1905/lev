@@ -157,6 +157,9 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		if(!(value instanceof Object)) throw new Error('Value assumed to be an object');
 		for(let key of Object.keys(scheme)){
 			const info = scheme[key];
+			console.log(key);
+			console.log(info);
+			console.log(value);
 			if(!value.hasOwnProperty(key)){
 				if(info.hasOwnProperty('defaultValue')){
 					value[key] = info.defaultValue;

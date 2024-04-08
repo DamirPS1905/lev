@@ -48,4 +48,17 @@ export class BrandPropertyValuesService extends GenBrandPropertyValuesService im
 		return null;
 	}
 	
+	async removeExtraByInstanceAndPropertyAndMaxOrder(instance: number, property: number, maxOrder: number, andValues: boolean, emt: EntityManager = null){
+		const conn = this.getEm(emt).getConnection();
+		if(andValues){
+			const qu = `DELETE FROM property_values pv
+									USING brand_property_values tpv 
+									WHERE pv.value_key = tpv.value AND tpv."instance"=${instance} AND tpv.property=${property} AND tpv."order">=${maxOrder}`;
+			await conn.execute(qu);
+		}
+		const qu = `DELETE FROM brand_property_values tpv
+								WHERE tpv."instance"=${instance} AND tpv.property=${property} AND tpv."order">=${maxOrder}`;
+		await conn.execute(qu);
+	}
+	
 }
