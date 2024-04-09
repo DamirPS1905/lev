@@ -158,7 +158,7 @@ export class MetatypeValuesController<E, S extends IMetatypeVauesService> {
 	
 	async writeOneOption(instance, metaProperty, value, order, em){
 		try{
-			const option = await this.optionsPropertyValuesService.findByValue(value);
+			const option = await this.optionsPropertyValuesService.findByValue(value.option);
 			if(option===null || option.property.id!==metaProperty.property.id){
 				throw new Error(`Option ${value} not found`);
 			}

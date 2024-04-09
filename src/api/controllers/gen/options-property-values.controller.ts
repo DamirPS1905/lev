@@ -44,6 +44,49 @@ export class GenOptionsPropertyValuesController {
 		return await this.optionsPropertyValuesService.listAll(offset, limit);
 	}
 	
+	async findOne(apiKey: ApiKeys, catalog: number, value: bigint) {
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		const entity = await this.optionsPropertyValuesService.findByValue(value);
+		if(entity===null){
+			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
+		}
+		await this.validateRead(entity, apiKey, catalog, value);
+		return entity;
+	}
+	
+	async validateRead(entity, apiKey: ApiKeys, catalog: number, value: bigint) { }
+	
+	async create(apiKey: ApiKeys, catalog: number, createDto: CreateOptionsPropertyValueDto) {
+		createDto.value = value;
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		return await this.optionsPropertyValuesService.transactional(async (em) => {
+			const existed0 = await this.optionsPropertyValuesService.findByPropertyAndHash(createDto.property, createDto.hash, em);
+			if(existed0!==null){
+				throw new HttpException('Duplicate (property, hash)', HttpStatus.CONFLICT);
+			}
+			if(createDto.property!==undefined){
+				const propertyIns = await this.catalogPropertiesService.findById(createDto.property);
+				if(propertyIns===null || !(propertyIns.catalog.id===catalog)){
+					throw new HttpException('Property not found', HttpStatus.CONFLICT);
+				}
+			}
+			const tmp = await this.propertyValuesService.findByValueKey(createDto.value, em);
+			if(tmp===null){
+				throw new HttpException('Not found contrainst (value)', HttpStatus.CONFLICT);
+			}
+			await this.validateCreate(apiKey, catalog, createDto, em);
+			return await this.optionsPropertyValuesService.create(createDto, em);
+		});
+	}
+	
+	async validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreateOptionsPropertyValueDto, em: EntityManager) { }
+	
 	async update(apiKey: ApiKeys, catalog: number, value: bigint, updateDto: UpdateOptionsPropertyValueDto) {
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){

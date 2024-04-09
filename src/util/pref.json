@@ -435,7 +435,10 @@
         "options_property_values": {
             "def": "catDef",
             "create": false,
+            "update": false,
+            "delete": false,
             "getOne": false,
+            "list": false,
             "extraServices": "property_types",
             "fields": {
                 "id": {
@@ -1065,7 +1068,8 @@
                     "def": "def"
                 },
                 "type": {
-                    "def": "def"
+                    "def": "def",
+                    "hidden": true
                 },
                 "value": {
                     "def": "def"

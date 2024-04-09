@@ -1,4 +1,4 @@
-import { Entity, Index, ManyToOne, PrimaryKey, PrimaryKeyProp, Property } from '@mikro-orm/core';
+import { Entity, type Hidden,  Index, ManyToOne, PrimaryKey, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { PropertyTypes } from './PropertyTypes';
 
 @Entity()
@@ -12,8 +12,8 @@ export class PropertyValues {
   @PrimaryKey({ autoincrement: false })
   valueKey!: bigint;
 
-  @ManyToOne({ entity: () => PropertyTypes, fieldName: 'type' })
-  type!: PropertyTypes;
+  @ManyToOne({ entity: () => PropertyTypes, hidden: true, fieldName: 'type' })
+  type!: PropertyTypes & Hidden;
 
   @Property({ columnType: 'jsonb' })
   value!: any;
