@@ -44,21 +44,6 @@ export class GenOptionsPropertyValuesController {
 		return await this.optionsPropertyValuesService.listAll(offset, limit);
 	}
 	
-	async findOne(apiKey: ApiKeys, catalog: number, value: bigint) {
-		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
-			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
-		}
-		const entity = await this.optionsPropertyValuesService.findByValue(value);
-		if(entity===null){
-			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
-		}
-		await this.validateRead(entity, apiKey, catalog, value);
-		return entity;
-	}
-	
-	async validateRead(entity, apiKey: ApiKeys, catalog: number, value: bigint) { }
-	
 	async update(apiKey: ApiKeys, catalog: number, value: bigint, updateDto: UpdateOptionsPropertyValueDto) {
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){

@@ -33,11 +33,32 @@ export class MetatypeValuesController<E, S extends IMetatypeVauesService> {
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		this.validateInstance(catalog, instance);
-		return (await this.valuesService.readValuesByInstance(instance))
-			.map(p => {
-				p.value.property = p.property;
-				return p.value;
+		let tmp = null, prop = null, mul = null;
+		const result = [],
+					raw = (await this.valuesService.readValuesByInstance(instance));
+		console.log(raw);
+		for(let p of raw){
+			if(prop!==p.property){
+				if(tmp!==null){
+					result.push({
+						property: prop,
+						value: mul? tmp: tmp[0]
+					});
+				}
+				tmp = [p.value];
+				prop = p.property;
+				mul = p.multiple;
+			}else{
+				tmp.push(p.value);
+			}
+		}
+		if(tmp!==null){
+			result.push({
+				property: prop,
+				value: mul? tmp: tmp[0]
 			});
+		}
+		return result;
 	}
 	
 	async findOne(apiKey: ApiKeys, catalog: number, instance: number, property: number) {

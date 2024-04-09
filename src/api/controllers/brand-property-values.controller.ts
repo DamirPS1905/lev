@@ -65,7 +65,7 @@ export class BrandPropertyValuesController extends MetatypeValuesController<Bran
 	      },
 	    ],
 	  },
-	})	
+	})
 	@Patch('property/:property')
 	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('brand', ParseIntPipe) brand: number, @Param('property', ParseIntPipe) property: number, @Body() updateDto: Object | Array<Object>) {
 		return super.update(apiKey, catalog, brand, property, updateDto);

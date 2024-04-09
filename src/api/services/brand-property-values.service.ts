@@ -16,10 +16,11 @@ export class BrandPropertyValuesService extends GenBrandPropertyValuesService im
 	
 	async readValuesByInstance(instance: number, emt: EntityManager = null){
 		const conn = this.getEm(emt).getConnection(),
-					qu = `SELECT tpv.property, pv.value 
+					qu = `SELECT tpv.property, pv.value, p.multiple
 								FROM 
 									brand_property_values tpv 
 									JOIN property_values pv ON pv.value_key = tpv.value
+									JOIN catalog_properties p ON p.id = tpv.property
 								WHERE tpv."instance" =${instance}
 								ORDER BY property ASC, "order" ASC`;
 		return await conn.execute(qu);

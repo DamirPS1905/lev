@@ -5,6 +5,7 @@ import { PropertyTypes } from './../../entities/PropertyTypes'
 import { Units } from './../../entities/Units'
 import { UnitGroups } from './../../entities/UnitGroups'
 import { EntityManager } from '@mikro-orm/postgresql'
+import { PropertyTuningDto } from './../dtos/property-tuning.dto'
 
 @Injectable()
 export class PropertyTypesService extends GenPropertyTypesService {
@@ -65,11 +66,10 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		});
 	}
 	
-	async tunePropertyScheme(company: number, sourceScheme: any, tuning: any, end: boolean = false){
-		if(!(tuning instanceof Object)) throw new Error('Scheme assumed to be an object');
-		let resultScheme: {[k: string]: any} = {};
+	async tunePropertyScheme(company: number, sourceScheme: any, tuning: Map<string, PropertyTuningDto>, end: boolean = false){
+		const resultScheme = new Map<string, PropertyTuningDto>();
 		for(let key of Object.keys(sourceScheme)){
-			let schemeInfo: {[k: string]: any} = {};
+			let schemeInfo = new PropertyTuningDto();
 			const info = sourceScheme[key],
 						hasUnit = info.kind==5 || info.kind==6;
 			const fieldsList = hasUnit
@@ -80,34 +80,34 @@ export class PropertyTypesService extends GenPropertyTypesService {
 					schemeInfo[k] = info[k];
 				}
 			}
-			if(tuning.hasOwnProperty(key)){
-				const fieldInfo = tuning[key];
+			if(tuning.has(key)){
+				const fieldInfo = tuning.get(key);
 				if(hasUnit){
-					if(fieldInfo.hasOwnProperty('unitsGroup')){
+					if(fieldInfo.unitsGroup!==undefined){
 						schemeInfo.unitsGroup = fieldInfo.unitsGroup;
 					}
-					if(fieldInfo.hasOwnProperty('storageUnit')){
+					if(fieldInfo.storageUnit!==undefined){
 						schemeInfo.storageUnit = fieldInfo.storageUnit;
 					}
-					if(fieldInfo.hasOwnProperty('defaultUnit')){
+					if(fieldInfo.defaultUnit!==undefined){
 						schemeInfo.defaultUnit = fieldInfo.defaultUnit;
 					}
-					if(fieldInfo.hasOwnProperty('displayUnit')){
+					if(fieldInfo.displayUnit!==undefined){
 						schemeInfo.displayUnit = fieldInfo.displayUnit;
 					}
 				}
-				if(fieldInfo.hasOwnProperty('defaultValue')){
+				if(fieldInfo.defaultValue!==undefined){
 					schemeInfo.defaultValue = fieldInfo.defaultValue;
 					this.validateKindValue(info.kind, schemeInfo.defaultValue);
-					if(hasUnit && !schemeInfo.hasOwnProperty('defaultUnit')){
+					if(hasUnit && schemeInfo.defaultUnit===undefined){
 						throw new Error(`When default value (${key}.defaultValue) is provided, default unit (${key}.defaultUnit) also should be proided for field ${key} (${key}.defaultUnit)`);
 					}
 				}
 			}
-			if(hasUnit && !schemeInfo.hasOwnProperty('unitsGroup')){
+			if(hasUnit && schemeInfo.unitsGroup===undefined){
 				throw new Error(`Units group for field ${key} (${key}.unitsGroup) not provided`);
 			}
-			if(hasUnit && !schemeInfo.hasOwnProperty('storageUnit') && end){
+			if(hasUnit && schemeInfo.storageUnit===undefined && end){
 				throw new Error(`Storage unit for field ${key} (${key}.storageUnit) not provided`);
 			}
 			if(hasUnit){
@@ -117,7 +117,7 @@ export class PropertyTypesService extends GenPropertyTypesService {
 					throw new Error(`Units group for field ${key} (${key}.unitsGroup) not found`);
 				}
 				for(let k of ['storageUnit', 'defaultUnit', 'displayUnit']){
-					if(schemeInfo.hasOwnProperty(k)){
+					if(schemeInfo[k]!==undefined){
 						const unit = await this.getUnit(schemeInfo[k], company, em);
 						if(unit===null || unit.group.id!==unitGroup.id){
 							throw new Error(`Unit for field ${key}.${k} not found in units group`);
@@ -157,9 +157,6 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		if(!(value instanceof Object)) throw new Error('Value assumed to be an object');
 		for(let key of Object.keys(scheme)){
 			const info = scheme[key];
-			console.log(key);
-			console.log(info);
-			console.log(value);
 			if(!value.hasOwnProperty(key)){
 				if(info.hasOwnProperty('defaultValue')){
 					value[key] = info.defaultValue;

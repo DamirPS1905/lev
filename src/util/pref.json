@@ -435,6 +435,7 @@
         "options_property_values": {
             "def": "catDef",
             "create": false,
+            "getOne": false,
             "extraServices": "property_types",
             "fields": {
                 "id": {
@@ -455,7 +456,8 @@
                 },
                 "hash": {
                     "def": "def",
-                    "dtoDisallow": false
+                    "dtoDisallow": false,
+                    "hidden": true
                 }
             }
         },
