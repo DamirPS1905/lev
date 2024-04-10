@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { Entity, ManyToOne, OneToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
 import { CatalogBrands } from './CatalogBrands';
 import { CatalogTypes } from './CatalogTypes';
 import { Catalogs } from './Catalogs';
@@ -21,7 +21,7 @@ export class CatalogProducts {
   @Property()
   title!: string;
 
-  @Property({ length: 6 })
-  created!: Date;
+  @Property({ type: 'Date', length: 6, defaultRaw: `CURRENT_TIMESTAMP` })
+  created!: Date & Opt;
 
 }

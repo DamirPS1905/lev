@@ -11,6 +11,7 @@ import { ApiKeys } from './../../../entities/ApiKeys'
 import { CreatePropertyInTypeDto } from './../../dtos/create-property-in-type.dto'
 import { UpdatePropertyInTypeDto } from './../../dtos/update-property-in-type.dto'
 import { CatalogPropertiesService } from './../../services/catalog-properties.service'
+import { CatalogTypesOverloadService } from './../../services/catalog-types-overload.service'
 import { CatalogTypesService } from './../../services/catalog-types.service'
 import { CatalogsService } from './../../services/catalogs.service'
 import { PropertyInTypesService } from './../../services/property-in-types.service'
@@ -27,6 +28,7 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 export class GenPropertyInTypesController {
 	constructor(
 		protected readonly catalogPropertiesService: CatalogPropertiesService,
+		protected readonly catalogTypesOverloadService: CatalogTypesOverloadService,
 		protected readonly catalogTypesService: CatalogTypesService,
 		protected readonly catalogsService: CatalogsService,
 		protected readonly propertyInTypesService: PropertyInTypesService,

@@ -13,10 +13,10 @@ export class TypePropertyValues {
   @ManyToOne({ entity: () => CatalogProperties, fieldName: 'property', deleteRule: 'cascade', primary: true })
   property!: CatalogProperties;
 
-  @Property()
-  value!: bigint;
-
   @PrimaryKey({ columnType: 'smallint' })
   order!: number;
+
+  @Property()
+  value!: bigint;
 
 }

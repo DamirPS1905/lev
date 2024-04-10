@@ -23,6 +23,12 @@ export class CatalogPropertiesController extends GenCatalogPropertiesController 
 		return await super.findOne(apiKey, catalog, id);
 	}
 	
+	@Get(':id/value-scheme')
+	async getScheme(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
+		const propertyIns = await super.findOne(apiKey, catalog, id);
+		return this.propertyTypesService.getValueScheme(propertyIns.scheme);
+	}
+	
 	@Post()
 	async create(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Body() createDto: CreateCatalogPropertyDto) {
 		return await super.create(apiKey, catalog, createDto);

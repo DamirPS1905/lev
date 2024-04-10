@@ -15,4 +15,9 @@ export class PropertyTypesController extends GenPropertyTypesController {
 		return await super.findAll(apiKey, catalog);
 	}
 	
+	@Get(':id/value-scheme')
+	async getScheme(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
+		const propertyTypeIns = await super.findOne(apiKey, catalog, id);
+		return this.propertyTypesService.getValueScheme(propertyTypeIns.scheme);
+	}
 }

@@ -35,4 +35,19 @@ export class GenPropertyTypesController {
 		return await this.propertyTypesService.findAllByCatalog(catalog);
 	}
 	
+	async findOne(apiKey: ApiKeys, catalog: number, id: number) {
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		const entity = await this.propertyTypesService.findById(id);
+		if(entity===null || !(entity.catalog===null || entity.catalog.id===catalog)){
+			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
+		}
+		await this.validateRead(entity, apiKey, catalog, id);
+		return entity;
+	}
+	
+	async validateRead(entity, apiKey: ApiKeys, catalog: number, id: number) { }
+	
 }

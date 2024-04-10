@@ -1,4 +1,4 @@
-import { Entity, OneToOne, PrimaryKeyProp, Property } from '@mikro-orm/core';
+import { Entity, type Hidden, OneToOne, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { CatalogProperties } from './CatalogProperties';
 import { PropertyValues } from './PropertyValues';
 
@@ -13,7 +13,7 @@ export class OptionsPropertyValues {
   @OneToOne({ entity: () => PropertyValues, fieldName: 'value', deleteRule: 'cascade', primary: true })
   value!: PropertyValues;
 
-  @Property({ length: 48, nullable: true })
-  hash?: string;
+  @Property({ type: 'string', length: 48, nullable: true, hidden: true })
+  hash?: string & Hidden;
 
 }

@@ -310,7 +310,7 @@
             "create": false,
             "update": false,
             "delete": false,
-            "getOne": false,
+            "getOne": true,
             "paginateByMax": 0,
             "fields": {
                 "id": {
@@ -323,7 +323,8 @@
                     "def": "def"
                 },
                 "catalog": {
-                    "def": "catalog"
+                    "def": "catalog",
+                    "readValidate": "@#===null || @@===catalog"
                 }
             }
         },
@@ -1083,7 +1084,7 @@
             "list": false,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": ":property",
-            "extraServices": "property_types",
+            "extraServices": "catalog_types_overload, property_types",
             "fields": {
                 "type": {
                     "def": "pk",
@@ -1107,6 +1108,9 @@
                         "eCode": "NOT_FOUND",
                         "eMessage": "Property not found"
                     }
+                },
+                "scheme": {
+                    "def": "def"
                 }
             },
             "extraRouteParams": [

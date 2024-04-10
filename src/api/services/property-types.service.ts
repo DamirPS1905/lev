@@ -10,7 +10,7 @@ import { PropertyTuningDto } from './../dtos/property-tuning.dto'
 @Injectable()
 export class PropertyTypesService extends GenPropertyTypesService {
 	
-  //@Cron('* * * * * *')
+  @Cron('* * * * * *')
 	async processPropertyTypes(){
 		const conn = this.em.fork().getConnection(),
 					query = `select id,
@@ -32,6 +32,7 @@ export class PropertyTypesService extends GenPropertyTypesService {
 				case 4: type = 'text'; break;
 				case 5: type = 'int'; indexKey += 'Index'; break;
 				case 6: type = 'float8'; indexKey += 'Index'; break;
+				case 8: type = 'bool'; break;
 				default: continue cycle;
 			}
 			const indexName = `property_values_${row.id}_${row.key}`,
@@ -40,6 +41,8 @@ export class PropertyTypesService extends GenPropertyTypesService {
 			await conn.execute(qu);
 		}
 	}
+	
+	
 	
 	private getUnit(id: number, company: number, emt: EntityManager = null){
 		return this.getEm(emt).findOne(Units, {
@@ -64,6 +67,41 @@ export class PropertyTypesService extends GenPropertyTypesService {
 				{ company: { $eq: null } }
 			]
 		});
+	}
+	
+	getValueScheme(scheme: any){
+		let result: Object = {};
+		for(let key of Object.keys(scheme)){
+			const info = scheme[key],
+						hasUnit = info.kind==5 || info.kind==6;
+			switch(info.kind){
+				case 1:
+					result[key] = "integer";
+					break;
+				case 2:
+					result[key] = "number";
+					break;
+				case 3:
+				case 4:
+					result[key] = "string";
+					break;
+				case 5:
+					result[key] = "integer";
+					result[key+"Unit"] = "integer (id of unit)";
+					break;
+				case 6:
+					result[key] = "number";
+					result[key+"Unit"] = "integer (id of unit)";
+					break;
+				case 7:
+					result[key] = "string (publically available url)";
+					break;
+				case 8:
+					result[key] = "boolean";
+					break;
+			}
+		}
+		return result;
 	}
 	
 	async tunePropertyScheme(company: number, sourceScheme: any, tuning: Map<string, PropertyTuningDto>, end: boolean = false){
@@ -144,8 +182,14 @@ export class PropertyTypesService extends GenPropertyTypesService {
 					throw new Error('Value field ${key} assumed to be number');
 				}
 				break;
+			case 8:
+				if(typeof val!=="boolean"){
+					throw new Error('Value field ${key} assumed to be boolean');
+				}
+				break;
 			case 3:
 			case 4:
+			case 7:
 				if(typeof val!=="string"){
 					throw new Error('Value field ${key} assumed to be string');
 				}
@@ -198,6 +242,8 @@ export class PropertyTypesService extends GenPropertyTypesService {
 				{ catalog: catalog },
 				{ catalog: { $eq: null } }
 			]
+		}, {
+			orderBy: { id: "ASC" },
 		});
 	}
 	
