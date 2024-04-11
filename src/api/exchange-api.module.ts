@@ -18,8 +18,8 @@ import { CatalogsController } from './controllers/catalogs.controller'
 import { CurrenciesController } from './controllers/currencies.controller'
 import { MetatypesController } from './controllers/metatypes.controller'
 import { OfferAmountsController } from './controllers/offer-amounts.controller'
+import { OfferPricesController } from './controllers/offer-prices.controller'
 import { OfferPropertyValuesController } from './controllers/offer-property-values.controller'
-import { OffersPricesController } from './controllers/offers-prices.controller'
 import { OptionsPropertyValuesController } from './controllers/options-property-values.controller'
 import { PriceTypesController } from './controllers/price-types.controller'
 import { ProductPricesController } from './controllers/product-prices.controller'
@@ -50,8 +50,8 @@ import { CompaniesService } from './services/companies.service'
 import { CurrenciesService } from './services/currencies.service'
 import { MetatypesService } from './services/metatypes.service'
 import { OfferAmountsService } from './services/offer-amounts.service'
+import { OfferPricesService } from './services/offer-prices.service'
 import { OfferPropertyValuesService } from './services/offer-property-values.service'
-import { OffersPricesService } from './services/offers-prices.service'
 import { OptionsPropertyValuesService } from './services/options-property-values.service'
 import { PriceTypesService } from './services/price-types.service'
 import { ProductPricesService } from './services/product-prices.service'
@@ -71,8 +71,8 @@ import { UsersService } from './services/users.service'
 import { Module } from '@nestjs/common'
 
 @Module({
-	controllers: [BrandPropertyValuesController, CatalogBrandsController, CatalogMetatypePropertiesController, CatalogMetatypesController, CatalogProductOffersController, CatalogProductsController, CatalogPropertiesController, CatalogTypesController, CatalogsController, CurrenciesController, MetatypesController, OfferAmountsController, OfferPropertyValuesController, OffersPricesController, OptionsPropertyValuesController, PriceTypesController, ProductPricesController, ProductPropertyValuesController, PropertyInTypesController, PropertyPrimitivesController, PropertyTypesController, RatesController, RatesSourcesController, StoresController, TypePropertyValuesController, UnitGroupsController, UnitsController],
-	providers: [ActorTypesService, ActorsService, ApiKeysService, BrandPropertyValuesService, CatalogBrandsService, CatalogMetatypePropertiesService, CatalogMetatypesService, CatalogProductOffersService, CatalogProductsService, CatalogPropertiesService, CatalogTypesOverloadService, CatalogTypesService, CatalogsService, CompaniesService, CurrenciesService, MetatypesService, OfferAmountsService, OfferPropertyValuesService, OffersPricesService, OptionsPropertyValuesService, PriceTypesService, ProductPricesService, ProductPropertyValuesService, PropertyInTypesService, PropertyPrimitivesService, PropertyTypesService, PropertyValuesService, RatesHistoryService, RatesService, RatesSourcesService, StoresService, TypePropertyValuesService, UnitGroupsService, UnitsService, UsersService],
-	exports: [ActorTypesService, ActorsService, ApiKeysService, BrandPropertyValuesService, CatalogBrandsService, CatalogMetatypePropertiesService, CatalogMetatypesService, CatalogProductOffersService, CatalogProductsService, CatalogPropertiesService, CatalogTypesOverloadService, CatalogTypesService, CatalogsService, CompaniesService, CurrenciesService, MetatypesService, OfferAmountsService, OfferPropertyValuesService, OffersPricesService, OptionsPropertyValuesService, PriceTypesService, ProductPricesService, ProductPropertyValuesService, PropertyInTypesService, PropertyPrimitivesService, PropertyTypesService, PropertyValuesService, RatesHistoryService, RatesService, RatesSourcesService, StoresService, TypePropertyValuesService, UnitGroupsService, UnitsService, UsersService]
+	controllers: [BrandPropertyValuesController, CatalogBrandsController, CatalogMetatypePropertiesController, CatalogMetatypesController, CatalogProductOffersController, CatalogProductsController, CatalogPropertiesController, CatalogTypesController, CatalogsController, CurrenciesController, MetatypesController, OfferAmountsController, OfferPricesController, OfferPropertyValuesController, OptionsPropertyValuesController, PriceTypesController, ProductPricesController, ProductPropertyValuesController, PropertyInTypesController, PropertyPrimitivesController, PropertyTypesController, RatesController, RatesSourcesController, StoresController, TypePropertyValuesController, UnitGroupsController, UnitsController],
+	providers: [ActorTypesService, ActorsService, ApiKeysService, BrandPropertyValuesService, CatalogBrandsService, CatalogMetatypePropertiesService, CatalogMetatypesService, CatalogProductOffersService, CatalogProductsService, CatalogPropertiesService, CatalogTypesOverloadService, CatalogTypesService, CatalogsService, CompaniesService, CurrenciesService, MetatypesService, OfferAmountsService, OfferPricesService, OfferPropertyValuesService, OptionsPropertyValuesService, PriceTypesService, ProductPricesService, ProductPropertyValuesService, PropertyInTypesService, PropertyPrimitivesService, PropertyTypesService, PropertyValuesService, RatesHistoryService, RatesService, RatesSourcesService, StoresService, TypePropertyValuesService, UnitGroupsService, UnitsService, UsersService],
+	exports: [ActorTypesService, ActorsService, ApiKeysService, BrandPropertyValuesService, CatalogBrandsService, CatalogMetatypePropertiesService, CatalogMetatypesService, CatalogProductOffersService, CatalogProductsService, CatalogPropertiesService, CatalogTypesOverloadService, CatalogTypesService, CatalogsService, CompaniesService, CurrenciesService, MetatypesService, OfferAmountsService, OfferPricesService, OfferPropertyValuesService, OptionsPropertyValuesService, PriceTypesService, ProductPricesService, ProductPropertyValuesService, PropertyInTypesService, PropertyPrimitivesService, PropertyTypesService, PropertyValuesService, RatesHistoryService, RatesService, RatesSourcesService, StoresService, TypePropertyValuesService, UnitGroupsService, UnitsService, UsersService]
 })
 export class ExchangeApi { }

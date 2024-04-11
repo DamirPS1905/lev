@@ -15,7 +15,7 @@ export class OptionsPropertyValuesService extends GenOptionsPropertyValuesServic
 								WHERE opv.property=${property}
 								ORDER BY value_key ASC
 								LIMIT ${limit} OFFSET ${offset}`;
-		return (await conn.execute(qu)).map(p => em.map(PropertyValues, p));
+		return await conn.execute<PropertyValues[]>(qu);
 	}
 	
 }

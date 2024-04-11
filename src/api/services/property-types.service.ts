@@ -104,7 +104,7 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		return result;
 	}
 	
-	async tunePropertyScheme(company: number, sourceScheme: any, tuning: Map<string, PropertyTuningDto>, end: boolean = false){
+	async tunePropertyScheme(company: number, sourceScheme: any, tuning: Map<string, PropertyTuningDto>, create: boolean = false){
 		const resultScheme = new Map<string, PropertyTuningDto>();
 		for(let key of Object.keys(sourceScheme)){
 			let schemeInfo = new PropertyTuningDto();
@@ -121,11 +121,13 @@ export class PropertyTypesService extends GenPropertyTypesService {
 			if(tuning.has(key)){
 				const fieldInfo = tuning.get(key);
 				if(hasUnit){
-					if(fieldInfo.unitsGroup!==undefined){
-						schemeInfo.unitsGroup = fieldInfo.unitsGroup;
-					}
-					if(fieldInfo.storageUnit!==undefined){
-						schemeInfo.storageUnit = fieldInfo.storageUnit;
+					if(create){
+						if(fieldInfo.unitsGroup!==undefined){
+							schemeInfo.unitsGroup = fieldInfo.unitsGroup;
+						}
+						if(fieldInfo.storageUnit!==undefined){
+							schemeInfo.storageUnit = fieldInfo.storageUnit;
+						}
 					}
 					if(fieldInfo.defaultUnit!==undefined){
 						schemeInfo.defaultUnit = fieldInfo.defaultUnit;
@@ -142,10 +144,10 @@ export class PropertyTypesService extends GenPropertyTypesService {
 					}
 				}
 			}
-			if(hasUnit && schemeInfo.unitsGroup===undefined){
+			if(hasUnit && schemeInfo.unitsGroup===undefined && create){
 				throw new Error(`Units group for field ${key} (${key}.unitsGroup) not provided`);
 			}
-			if(hasUnit && schemeInfo.storageUnit===undefined && end){
+			if(hasUnit && schemeInfo.storageUnit===undefined && create){
 				throw new Error(`Storage unit for field ${key} (${key}.storageUnit) not provided`);
 			}
 			if(hasUnit){

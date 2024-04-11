@@ -84,12 +84,6 @@ export class GenCatalogPropertiesController {
 		}
 		return await this.catalogPropertiesService.transactional(async (em) => {
 			const entity = await this.catalogPropertiesService.findById(id, em);
-			if(updateDto.type!==undefined){
-				const tmp = await this.propertyTypesService.findById(updateDto.type, em);
-				if(tmp===null){
-					throw new HttpException('Not found contrainst (type)', HttpStatus.CONFLICT);
-				}
-			}
 			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
@@ -99,7 +93,7 @@ export class GenCatalogPropertiesController {
 					throw new HttpException('Duplicate (catalog, title)', HttpStatus.CONFLICT);
 				}
 			}
-			this.validateUpdate(entity, apiKey, catalog, id, updateDto, em);
+			await this.validateUpdate(entity, apiKey, catalog, id, updateDto, em);
 			return await this.catalogPropertiesService.update(entity, updateDto, em);
 		});
 	}

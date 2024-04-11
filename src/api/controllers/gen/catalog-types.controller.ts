@@ -101,7 +101,7 @@ export class GenCatalogTypesController {
 					throw new HttpException('Duplicate (title, parent)', HttpStatus.CONFLICT);
 				}
 			}
-			this.validateUpdate(entity, apiKey, catalog, id, updateDto, em);
+			await this.validateUpdate(entity, apiKey, catalog, id, updateDto, em);
 			return await this.catalogTypesService.update(entity, updateDto, em);
 		});
 	}

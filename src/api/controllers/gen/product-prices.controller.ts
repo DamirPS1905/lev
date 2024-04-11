@@ -14,6 +14,7 @@ import { CatalogProductsService } from './../../services/catalog-products.servic
 import { CatalogsService } from './../../services/catalogs.service'
 import { PriceTypesService } from './../../services/price-types.service'
 import { ProductPricesService } from './../../services/product-prices.service'
+import { RatesService } from './../../services/rates.service'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
@@ -29,14 +30,19 @@ export class GenProductPricesController {
 		protected readonly catalogsService: CatalogsService,
 		protected readonly priceTypesService: PriceTypesService,
 		protected readonly productPricesService: ProductPricesService,
+		protected readonly ratesService: RatesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, catalog: number) {
+	async findAll(apiKey: ApiKeys, catalog: number, product: bigint) {
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.productPricesService.findAll();
+		const productIns = await this.catalogProductsService.findById(product);
+		if(productIns===null || !(productIns.catalog.id===catalog)){
+			throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+		}
+		return await this.productPricesService.findAllByProduct(product);
 	}
 	
 	async findOne(apiKey: ApiKeys, catalog: number, product: bigint, priceType: number) {
@@ -55,6 +61,8 @@ export class GenProductPricesController {
 	async validateRead(entity, apiKey: ApiKeys, catalog: number, product: bigint, priceType: number) { }
 	
 	async update(apiKey: ApiKeys, catalog: number, product: bigint, priceType: number, updateDto: UpdateProductPriceDto) {
+		updateDto.product = product;
+		updateDto.priceType = priceType;
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);

@@ -55,6 +55,10 @@ export class GenPriceTypesController {
 					throw new HttpException('Display currency not found', HttpStatus.NOT_FOUND);
 				}
 			}
+			const baseCurrencyIns = await this.currenciesService.findById(createDto.baseCurrency);
+			if(baseCurrencyIns===null){
+				throw new HttpException('Store currency not found', HttpStatus.NOT_FOUND);
+			}
 			await this.validateCreate(apiKey, createDto, em);
 			return await this.priceTypesService.create(createDto, em);
 		});
@@ -80,7 +84,7 @@ export class GenPriceTypesController {
 					throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 				}
 			}
-			this.validateUpdate(entity, apiKey, id, updateDto, em);
+			await this.validateUpdate(entity, apiKey, id, updateDto, em);
 			return await this.priceTypesService.update(entity, updateDto, em);
 		});
 	}

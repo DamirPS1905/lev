@@ -17,4 +17,7 @@ export class PriceTypes {
   @ManyToOne({ entity: () => Currencies, fieldName: 'display_currency', deleteRule: 'set null', nullable: true })
   displayCurrency?: Currencies;
 
+  @ManyToOne({ entity: () => Currencies, fieldName: 'base_currency' })
+  baseCurrency!: Currencies;
+
 }

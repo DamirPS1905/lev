@@ -96,6 +96,23 @@ $$;
 ALTER FUNCTION public.catalogs_after_insert_fnc() OWNER TO dev;
 
 --
+-- Name: prices_before_update_fnc(); Type: FUNCTION; Schema: public; Owner: dev
+--
+
+CREATE FUNCTION public.prices_before_update_fnc() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+	BEGIN
+NEW.last_change = NEW."index" - OLD."index";
+NEW.changed_at = CURRENT_TIMESTAMP;
+RETURN NEW;
+	END;
+$$;
+
+
+ALTER FUNCTION public.prices_before_update_fnc() OWNER TO dev;
+
+--
 -- Name: rates_after_update_insert_fnc(); Type: FUNCTION; Schema: public; Owner: dev
 --
 
@@ -666,6 +683,25 @@ CREATE TABLE public.offer_amounts (
 ALTER TABLE public.offer_amounts OWNER TO dev;
 
 --
+-- Name: offer_prices; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.offer_prices (
+    offer bigint NOT NULL,
+    price_type integer NOT NULL,
+    value numeric(18,2) NOT NULL,
+    currency integer NOT NULL,
+    last_change numeric(18,2) DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    index numeric(18,2) NOT NULL,
+    changed_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT offer_prices_value_check CHECK ((value >= (0)::numeric))
+);
+
+
+ALTER TABLE public.offer_prices OWNER TO dev;
+
+--
 -- Name: offer_property_values; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -677,23 +713,6 @@ CREATE TABLE public.offer_property_values (
 
 
 ALTER TABLE public.offer_property_values OWNER TO dev;
-
---
--- Name: offers_prices; Type: TABLE; Schema: public; Owner: dev
---
-
-CREATE TABLE public.offers_prices (
-    offer bigint NOT NULL,
-    price_type integer NOT NULL,
-    value numeric(18,2) NOT NULL,
-    currency integer NOT NULL,
-    updated_at time with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    last_change numeric DEFAULT 0 NOT NULL,
-    CONSTRAINT offers_prices_value_check CHECK ((value >= (0)::numeric))
-);
-
-
-ALTER TABLE public.offers_prices OWNER TO dev;
 
 --
 -- Name: options_property_values; Type: TABLE; Schema: public; Owner: dev
@@ -716,7 +735,8 @@ CREATE TABLE public.price_types (
     id integer NOT NULL,
     company integer NOT NULL,
     title character varying NOT NULL,
-    display_currency integer
+    display_currency integer,
+    base_currency integer NOT NULL
 );
 
 
@@ -753,8 +773,10 @@ CREATE TABLE public.product_prices (
     price_type integer NOT NULL,
     value numeric(18,2) NOT NULL,
     currency integer NOT NULL,
-    updated_at time with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    last_change numeric DEFAULT 0 NOT NULL,
+    last_change numeric(18,2) DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    index numeric(18,2) NOT NULL,
+    changed_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     CONSTRAINT product_prices_value_check CHECK ((value >= (0)::numeric))
 );
 
@@ -1383,11 +1405,11 @@ COPY public.catalog_products (id, catalog, type, brand, title, created) FROM std
 
 COPY public.catalog_properties (id, catalog, title, type, multiple, options, scheme) FROM stdin;
 1	1	Text test	1	f	f	{"value": {"kind": 3}}
-3	1	вес	7	f	f	{"value": {"kind": 6, "unitsGroup": 1}}
-4	1	объем	6	f	f	{"value": {"kind": 5, "unitsGroup": 2}}
 5	1	test multi	1	t	f	{"value": {"kind": 3}}
 6	1	test opt	1	f	t	{"value": {"kind": 3}}
 7	1	test bool	2	f	f	{"value": {"kind": 8}}
+4	1	объем	6	f	f	{"value": {"kind": 5, "unitsGroup": 2, "storageUnit": 4}}
+3	1	вес	7	f	f	{"value": {"kind": 6, "unitsGroup": 1, "storageUnit": 1}}
 \.
 
 
@@ -1505,18 +1527,18 @@ COPY public.offer_amounts (offer, store, amount, changed_at) FROM stdin;
 
 
 --
--- Data for Name: offer_property_values; Type: TABLE DATA; Schema: public; Owner: dev
+-- Data for Name: offer_prices; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.offer_property_values (offer, property, value_key) FROM stdin;
+COPY public.offer_prices (offer, price_type, value, currency, last_change, updated_at, index, changed_at) FROM stdin;
 \.
 
 
 --
--- Data for Name: offers_prices; Type: TABLE DATA; Schema: public; Owner: dev
+-- Data for Name: offer_property_values; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.offers_prices (offer, price_type, value, currency, updated_at, last_change) FROM stdin;
+COPY public.offer_property_values (offer, property, value_key) FROM stdin;
 \.
 
 
@@ -1534,8 +1556,8 @@ COPY public.options_property_values (property, value, hash) FROM stdin;
 -- Data for Name: price_types; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.price_types (id, company, title, display_currency) FROM stdin;
-1	1	Оптовая	3
+COPY public.price_types (id, company, title, display_currency, base_currency) FROM stdin;
+1	1	Оптовая	3	2
 \.
 
 
@@ -1543,7 +1565,8 @@ COPY public.price_types (id, company, title, display_currency) FROM stdin;
 -- Data for Name: product_prices; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.product_prices (product, price_type, value, currency, updated_at, last_change) FROM stdin;
+COPY public.product_prices (product, price_type, value, currency, last_change, updated_at, index, changed_at) FROM stdin;
+1	1	2.00	16	130.64	2024-04-11 04:27:45.017+03	186.44	2024-04-11 04:27:44.839267+03
 \.
 
 
@@ -1560,6 +1583,9 @@ COPY public.product_property_values (product, property, value_key) FROM stdin;
 --
 
 COPY public.property_in_types (type, property, scheme) FROM stdin;
+8	6	{"value": {"kind": 3}}
+8	5	{"value": {"kind": 3}}
+9	4	{"value": {"kind": 5, "unitsGroup": 2, "storageUnit": 4}}
 \.
 
 
@@ -1616,92 +1642,92 @@ COPY public.property_values (value_key, type, value) FROM stdin;
 --
 
 COPY public.rates ("from", "to", source, rate, updated_at) FROM stdin;
-3	2	1	61.286800000	2024-04-10 04:00:02.98+03
-2	3	1	0.016316727	2024-04-10 04:00:02.98+03
-4	2	1	54.556600000	2024-04-10 04:00:02.98+03
-2	4	1	0.018329588	2024-04-10 04:00:02.98+03
-5	2	1	117.296200000	2024-04-10 04:00:02.98+03
-2	5	1	0.008525425	2024-04-10 04:00:02.98+03
-6	2	1	0.238049000	2024-04-10 04:00:02.98+03
-2	6	1	4.200815798	2024-04-10 04:00:02.98+03
-7	2	1	28.492600000	2024-04-10 04:00:02.98+03
-2	7	1	0.035096832	2024-04-10 04:00:02.98+03
-8	2	1	51.323000000	2024-04-10 04:00:02.98+03
-2	8	1	0.019484442	2024-04-10 04:00:02.98+03
-9	2	1	18.395500000	2024-04-10 04:00:02.98+03
-2	9	1	0.054361121	2024-04-10 04:00:02.98+03
-10	2	1	0.259010000	2024-04-10 04:00:02.98+03
-2	10	1	3.860854793	2024-04-10 04:00:02.98+03
-11	2	1	0.003858480	2024-04-10 04:00:02.98+03
-2	11	1	259.169413862	2024-04-10 04:00:02.98+03
-12	2	1	11.864700000	2024-04-10 04:00:02.98+03
-2	12	1	0.084283631	2024-04-10 04:00:02.98+03
-13	2	1	34.636600000	2024-04-10 04:00:02.98+03
-2	13	1	0.028871194	2024-04-10 04:00:02.98+03
-14	2	1	13.457900000	2024-04-10 04:00:02.98+03
-2	14	1	0.074305798	2024-04-10 04:00:02.98+03
-15	2	1	25.254300000	2024-04-10 04:00:02.98+03
-2	15	1	0.039597217	2024-04-10 04:00:02.98+03
-16	2	1	92.746300000	2024-04-10 04:00:02.98+03
-2	16	1	0.010782101	2024-04-10 04:00:02.98+03
-17	2	1	100.747300000	2024-04-10 04:00:02.98+03
-2	28	1	0.115466641	2024-04-10 04:00:02.98+03
-29	2	1	23.645900000	2024-04-10 04:00:02.98+03
-2	29	1	0.042290630	2024-04-10 04:00:02.98+03
-30	2	1	20.281700000	2024-04-10 04:00:02.98+03
-2	30	1	0.049305532	2024-04-10 04:00:02.98+03
-31	2	1	122.940800000	2024-04-10 04:00:02.98+03
-2	31	1	0.008133996	2024-04-10 04:00:02.98+03
-32	2	1	68.813100000	2024-04-10 04:00:02.98+03
-2	32	1	0.014532117	2024-04-10 04:00:02.98+03
-33	2	1	8.474780000	2024-04-10 04:00:02.98+03
-2	33	1	0.117997163	2024-04-10 04:00:02.98+03
-34	2	1	2.536960000	2024-04-10 04:00:02.98+03
-2	34	1	0.394172553	2024-04-10 04:00:02.98+03
-44	2	1	0.068452500	2024-04-10 04:00:02.98+03
-2	44	1	14.608670246	2024-04-10 04:00:02.98+03
-45	2	1	0.610535000	2024-04-10 04:00:02.98+03
-2	45	1	1.637907737	2024-04-10 04:00:02.98+03
-2	17	1	0.009925824	2024-04-10 04:00:02.98+03
-18	2	1	1.948820000	2024-04-10 04:00:02.98+03
-2	18	1	0.513131023	2024-04-10 04:00:02.98+03
-19	2	1	1.113170000	2024-04-10 04:00:02.98+03
-2	19	1	0.898335385	2024-04-10 04:00:02.98+03
-20	2	1	0.005830530	2024-04-10 04:00:02.98+03
-2	20	1	171.510994712	2024-04-10 04:00:02.98+03
-21	2	1	0.207975000	2024-04-10 04:00:02.98+03
-2	21	1	4.808270225	2024-04-10 04:00:02.98+03
-22	2	1	68.286200000	2024-04-10 04:00:02.98+03
-2	22	1	0.014644247	2024-04-10 04:00:02.98+03
-23	2	1	25.479800000	2024-04-10 04:00:02.98+03
-2	23	1	0.039246776	2024-04-10 04:00:02.98+03
-24	2	1	1.040690000	2024-04-10 04:00:02.98+03
-2	24	1	0.960900941	2024-04-10 04:00:02.98+03
-25	2	1	12.800400000	2024-04-10 04:00:02.98+03
-2	25	1	0.078122559	2024-04-10 04:00:02.98+03
-26	2	1	5.241210000	2024-04-10 04:00:02.98+03
-2	26	1	0.190795637	2024-04-10 04:00:02.98+03
-27	2	1	56.074400000	2024-04-10 04:00:02.98+03
-2	27	1	0.017833450	2024-04-10 04:00:02.98+03
-28	2	1	8.660510000	2024-04-10 04:00:02.98+03
-35	2	1	2.895170000	2024-04-10 04:00:02.98+03
-2	35	1	0.345402861	2024-04-10 04:00:02.98+03
-36	2	1	26.498900000	2024-04-10 04:00:02.98+03
-2	36	1	0.037737416	2024-04-10 04:00:02.98+03
-37	2	1	0.007316750	2024-04-10 04:00:02.98+03
-2	37	1	136.672703044	2024-04-10 04:00:02.98+03
-38	2	1	2.378830000	2024-04-10 04:00:02.98+03
-2	38	1	0.420374722	2024-04-10 04:00:02.98+03
-39	2	1	3.971490000	2024-04-10 04:00:02.98+03
-2	39	1	0.251794666	2024-04-10 04:00:02.98+03
-40	2	1	8.753380000	2024-04-10 04:00:02.98+03
-2	40	1	0.114241584	2024-04-10 04:00:02.98+03
-41	2	1	102.538800000	2024-04-10 04:00:02.98+03
-2	41	1	0.009752406	2024-04-10 04:00:02.98+03
-42	2	1	0.860003000	2024-04-10 04:00:02.98+03
-2	42	1	1.162786641	2024-04-10 04:00:02.98+03
-43	2	1	5.006300000	2024-04-10 04:00:02.98+03
-2	43	1	0.199748317	2024-04-10 04:00:02.98+03
+3	2	1	61.720800000	2024-04-11 02:30:00.439+03
+2	3	1	0.016201993	2024-04-11 02:30:00.439+03
+4	2	1	54.835200000	2024-04-11 02:30:00.439+03
+2	4	1	0.018236461	2024-04-11 02:30:00.439+03
+5	2	1	118.156100000	2024-04-11 02:30:00.439+03
+2	5	1	0.008463380	2024-04-11 02:30:00.439+03
+6	2	1	0.238799000	2024-04-11 02:30:00.439+03
+2	6	1	4.187622226	2024-04-11 02:30:00.439+03
+7	2	1	28.582800000	2024-04-11 02:30:00.439+03
+2	7	1	0.034986076	2024-04-11 02:30:00.439+03
+8	2	1	51.794800000	2024-04-11 02:30:00.439+03
+2	8	1	0.019306957	2024-04-11 02:30:00.439+03
+9	2	1	18.615300000	2024-04-11 02:30:00.439+03
+2	9	1	0.053719252	2024-04-11 02:30:00.439+03
+10	2	1	0.259318000	2024-04-11 02:30:00.439+03
+2	10	1	3.856269137	2024-04-11 02:30:00.439+03
+11	2	1	0.003878340	2024-04-11 02:30:00.439+03
+2	11	1	257.842272725	2024-04-11 02:30:00.439+03
+12	2	1	11.922200000	2024-04-11 02:30:00.439+03
+2	12	1	0.083877137	2024-04-11 02:30:00.439+03
+13	2	1	34.813400000	2024-04-11 02:30:00.439+03
+2	13	1	0.028724572	2024-04-11 02:30:00.439+03
+14	2	1	13.581200000	2024-04-11 02:30:00.439+03
+2	14	1	0.073631196	2024-04-11 02:30:00.439+03
+15	2	1	25.383200000	2024-04-11 02:30:00.439+03
+2	15	1	0.039396136	2024-04-11 02:30:00.439+03
+16	2	1	93.219800000	2024-04-11 02:30:00.439+03
+2	16	1	0.010727335	2024-04-11 02:30:00.439+03
+17	2	1	101.233300000	2024-04-11 02:30:00.439+03
+2	28	1	0.114440307	2024-04-11 02:30:00.439+03
+29	2	1	23.741800000	2024-04-11 02:30:00.439+03
+2	29	1	0.042119806	2024-04-11 02:30:00.439+03
+30	2	1	20.376800000	2024-04-11 02:30:00.439+03
+2	30	1	0.049075419	2024-04-11 02:30:00.439+03
+31	2	1	123.737200000	2024-04-11 02:30:00.439+03
+2	31	1	0.008081644	2024-04-11 02:30:00.439+03
+32	2	1	69.164400000	2024-04-11 02:30:00.439+03
+2	32	1	0.014458305	2024-04-11 02:30:00.439+03
+33	2	1	8.518050000	2024-04-11 02:30:00.439+03
+2	33	1	0.117397761	2024-04-11 02:30:00.439+03
+34	2	1	2.566060000	2024-04-11 02:30:00.439+03
+2	34	1	0.389702501	2024-04-11 02:30:00.439+03
+44	2	1	0.068802000	2024-04-11 02:30:00.439+03
+2	44	1	14.534461208	2024-04-11 02:30:00.439+03
+45	2	1	0.614299000	2024-04-11 02:30:00.439+03
+2	45	1	1.627871769	2024-04-11 02:30:00.439+03
+2	35	1	0.343648516	2024-04-11 02:30:00.439+03
+36	2	1	26.634200000	2024-04-11 02:30:00.439+03
+2	36	1	0.037545712	2024-04-11 02:30:00.439+03
+37	2	1	0.007354110	2024-04-11 02:30:00.439+03
+2	37	1	135.978384876	2024-04-11 02:30:00.439+03
+38	2	1	2.390590000	2024-04-11 02:30:00.439+03
+2	38	1	0.418306778	2024-04-11 02:30:00.439+03
+39	2	1	3.991600000	2024-04-11 02:30:00.439+03
+2	39	1	0.250526105	2024-04-11 02:30:00.439+03
+40	2	1	8.843080000	2024-04-11 02:30:00.439+03
+2	40	1	0.113082772	2024-04-11 02:30:00.439+03
+41	2	1	103.142100000	2024-04-11 02:30:00.439+03
+2	41	1	0.009695362	2024-04-11 02:30:00.439+03
+42	2	1	0.863993000	2024-04-11 02:30:00.439+03
+2	42	1	1.157416785	2024-04-11 02:30:00.439+03
+43	2	1	5.019210000	2024-04-11 02:30:00.439+03
+2	43	1	0.199234541	2024-04-11 02:30:00.439+03
+2	17	1	0.009878172	2024-04-11 02:30:00.439+03
+18	2	1	1.958770000	2024-04-11 02:30:00.439+03
+2	18	1	0.510524462	2024-04-11 02:30:00.439+03
+19	2	1	1.120090000	2024-04-11 02:30:00.439+03
+2	19	1	0.892785401	2024-04-11 02:30:00.439+03
+20	2	1	0.005860300	2024-04-11 02:30:00.439+03
+2	20	1	170.639728342	2024-04-11 02:30:00.439+03
+21	2	1	0.208947000	2024-04-11 02:30:00.439+03
+2	21	1	4.785902645	2024-04-11 02:30:00.439+03
+22	2	1	68.655000000	2024-04-11 02:30:00.439+03
+2	22	1	0.014565582	2024-04-11 02:30:00.439+03
+23	2	1	25.609800000	2024-04-11 02:30:00.439+03
+2	23	1	0.039047552	2024-04-11 02:30:00.439+03
+24	2	1	1.046000000	2024-04-11 02:30:00.439+03
+2	24	1	0.956022945	2024-04-11 02:30:00.439+03
+25	2	1	12.873000000	2024-04-11 02:30:00.439+03
+2	25	1	0.077681970	2024-04-11 02:30:00.439+03
+26	2	1	5.277330000	2024-04-11 02:30:00.439+03
+2	26	1	0.189489761	2024-04-11 02:30:00.439+03
+27	2	1	56.486500000	2024-04-11 02:30:00.439+03
+2	27	1	0.017703345	2024-04-11 02:30:00.439+03
+28	2	1	8.738180000	2024-04-11 02:30:00.439+03
+35	2	1	2.909950000	2024-04-11 02:30:00.439+03
 \.
 
 
@@ -2226,6 +2252,92 @@ COPY public.rates_history ("from", "to", source, date, rate) FROM stdin;
 2	44	1	2024-04-09	14.608670246
 45	2	1	2024-04-09	0.610535000
 2	45	1	2024-04-09	1.637907737
+3	2	1	2024-04-11	61.720800000
+2	3	1	2024-04-11	0.016201993
+4	2	1	2024-04-11	54.835200000
+2	4	1	2024-04-11	0.018236461
+5	2	1	2024-04-11	118.156100000
+2	5	1	2024-04-11	0.008463380
+6	2	1	2024-04-11	0.238799000
+2	6	1	2024-04-11	4.187622226
+7	2	1	2024-04-11	28.582800000
+2	7	1	2024-04-11	0.034986076
+8	2	1	2024-04-11	51.794800000
+2	8	1	2024-04-11	0.019306957
+9	2	1	2024-04-11	18.615300000
+2	9	1	2024-04-11	0.053719252
+10	2	1	2024-04-11	0.259318000
+2	10	1	2024-04-11	3.856269137
+11	2	1	2024-04-11	0.003878340
+2	11	1	2024-04-11	257.842272725
+12	2	1	2024-04-11	11.922200000
+2	12	1	2024-04-11	0.083877137
+13	2	1	2024-04-11	34.813400000
+2	13	1	2024-04-11	0.028724572
+14	2	1	2024-04-11	13.581200000
+2	14	1	2024-04-11	0.073631196
+15	2	1	2024-04-11	25.383200000
+2	15	1	2024-04-11	0.039396136
+16	2	1	2024-04-11	93.219800000
+2	16	1	2024-04-11	0.010727335
+17	2	1	2024-04-11	101.233300000
+2	17	1	2024-04-11	0.009878172
+18	2	1	2024-04-11	1.958770000
+2	18	1	2024-04-11	0.510524462
+19	2	1	2024-04-11	1.120090000
+2	19	1	2024-04-11	0.892785401
+20	2	1	2024-04-11	0.005860300
+2	20	1	2024-04-11	170.639728342
+21	2	1	2024-04-11	0.208947000
+2	21	1	2024-04-11	4.785902645
+22	2	1	2024-04-11	68.655000000
+2	22	1	2024-04-11	0.014565582
+23	2	1	2024-04-11	25.609800000
+2	23	1	2024-04-11	0.039047552
+24	2	1	2024-04-11	1.046000000
+2	24	1	2024-04-11	0.956022945
+25	2	1	2024-04-11	12.873000000
+2	25	1	2024-04-11	0.077681970
+26	2	1	2024-04-11	5.277330000
+2	26	1	2024-04-11	0.189489761
+27	2	1	2024-04-11	56.486500000
+2	27	1	2024-04-11	0.017703345
+28	2	1	2024-04-11	8.738180000
+2	28	1	2024-04-11	0.114440307
+29	2	1	2024-04-11	23.741800000
+2	29	1	2024-04-11	0.042119806
+30	2	1	2024-04-11	20.376800000
+2	30	1	2024-04-11	0.049075419
+31	2	1	2024-04-11	123.737200000
+2	31	1	2024-04-11	0.008081644
+32	2	1	2024-04-11	69.164400000
+2	32	1	2024-04-11	0.014458305
+33	2	1	2024-04-11	8.518050000
+2	33	1	2024-04-11	0.117397761
+34	2	1	2024-04-11	2.566060000
+2	34	1	2024-04-11	0.389702501
+35	2	1	2024-04-11	2.909950000
+2	35	1	2024-04-11	0.343648516
+36	2	1	2024-04-11	26.634200000
+2	36	1	2024-04-11	0.037545712
+37	2	1	2024-04-11	0.007354110
+2	37	1	2024-04-11	135.978384876
+38	2	1	2024-04-11	2.390590000
+2	38	1	2024-04-11	0.418306778
+39	2	1	2024-04-11	3.991600000
+2	39	1	2024-04-11	0.250526105
+40	2	1	2024-04-11	8.843080000
+2	40	1	2024-04-11	0.113082772
+41	2	1	2024-04-11	103.142100000
+2	41	1	2024-04-11	0.009695362
+42	2	1	2024-04-11	0.863993000
+2	42	1	2024-04-11	1.157416785
+43	2	1	2024-04-11	5.019210000
+2	43	1	2024-04-11	0.199234541
+44	2	1	2024-04-11	0.068802000
+2	44	1	2024-04-11	14.534461208
+45	2	1	2024-04-11	0.614299000
+2	45	1	2024-04-11	1.627871769
 \.
 
 
@@ -2234,7 +2346,7 @@ COPY public.rates_history ("from", "to", source, date, rate) FROM stdin;
 --
 
 COPY public.rates_sources (id, title, base_currency, timezone, fine, fine_at, problem_info) FROM stdin;
-1	Rus CB	2	Europe/Moscow	f	2024-04-10 04:00:03.938+03	-3007
+1	Rus CB	2	Europe/Moscow	f	2024-04-11 02:30:01.254+03	-3007
 \.
 
 
@@ -2688,19 +2800,19 @@ ALTER TABLE ONLY public.offer_amounts
 
 
 --
+-- Name: offer_prices offer_prices_pk; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.offer_prices
+    ADD CONSTRAINT offer_prices_pk PRIMARY KEY (offer, price_type);
+
+
+--
 -- Name: offer_property_values offer_property_values_offer_property_uind; Type: CONSTRAINT; Schema: public; Owner: dev
 --
 
 ALTER TABLE ONLY public.offer_property_values
     ADD CONSTRAINT offer_property_values_offer_property_uind PRIMARY KEY (offer, property);
-
-
---
--- Name: offers_prices offers_prices_pk; Type: CONSTRAINT; Schema: public; Owner: dev
---
-
-ALTER TABLE ONLY public.offers_prices
-    ADD CONSTRAINT offers_prices_pk PRIMARY KEY (offer, price_type);
 
 
 --
@@ -2880,10 +2992,24 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: offer_prices_index_ind; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE INDEX offer_prices_index_ind ON public.offer_prices USING btree (index DESC);
+
+
+--
 -- Name: offer_property_values_keys_ind; Type: INDEX; Schema: public; Owner: dev
 --
 
 CREATE INDEX offer_property_values_keys_ind ON public.offer_property_values USING btree (value_key DESC);
+
+
+--
+-- Name: product_prices_index_ind; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE INDEX product_prices_index_ind ON public.product_prices USING btree (index DESC);
 
 
 --
@@ -2996,6 +3122,20 @@ CREATE TRIGGER catalog_types_after_update AFTER UPDATE ON public.catalog_types F
 --
 
 CREATE TRIGGER catalogs_after_insert AFTER INSERT ON public.catalogs FOR EACH ROW EXECUTE FUNCTION public.catalogs_after_insert_fnc();
+
+
+--
+-- Name: offer_prices offer_prices_before_update; Type: TRIGGER; Schema: public; Owner: dev
+--
+
+CREATE TRIGGER offer_prices_before_update BEFORE UPDATE ON public.offer_prices FOR EACH ROW WHEN ((old.index IS DISTINCT FROM new.index)) EXECUTE FUNCTION public.prices_before_update_fnc();
+
+
+--
+-- Name: product_prices product_prices_before_update; Type: TRIGGER; Schema: public; Owner: dev
+--
+
+CREATE TRIGGER product_prices_before_update BEFORE UPDATE ON public.product_prices FOR EACH ROW WHEN ((old.index IS DISTINCT FROM new.index)) EXECUTE FUNCTION public.prices_before_update_fnc();
 
 
 --
@@ -3220,6 +3360,22 @@ ALTER TABLE ONLY public.offer_amounts
 
 
 --
+-- Name: offer_prices offer_prices_catalog_product_offers_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.offer_prices
+    ADD CONSTRAINT offer_prices_catalog_product_offers_fk FOREIGN KEY (offer) REFERENCES public.catalog_product_offers(id) ON DELETE CASCADE;
+
+
+--
+-- Name: offer_prices offer_prices_price_types_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.offer_prices
+    ADD CONSTRAINT offer_prices_price_types_fk FOREIGN KEY (price_type) REFERENCES public.price_types(id) ON DELETE CASCADE;
+
+
+--
 -- Name: offer_property_values offer_property_values_catalog_product_offers_fk_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
 --
 
@@ -3233,22 +3389,6 @@ ALTER TABLE ONLY public.offer_property_values
 
 ALTER TABLE ONLY public.offer_property_values
     ADD CONSTRAINT offer_property_values_catalog_properties_fk FOREIGN KEY (property) REFERENCES public.catalog_properties(id);
-
-
---
--- Name: offers_prices offers_prices_offers_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
---
-
-ALTER TABLE ONLY public.offers_prices
-    ADD CONSTRAINT offers_prices_offers_fk FOREIGN KEY (offer) REFERENCES public.catalog_product_offers(id) ON DELETE CASCADE;
-
-
---
--- Name: offers_prices offers_prices_price_types_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
---
-
-ALTER TABLE ONLY public.offers_prices
-    ADD CONSTRAINT offers_prices_price_types_fk FOREIGN KEY (price_type) REFERENCES public.price_types(id);
 
 
 --
@@ -3281,6 +3421,14 @@ ALTER TABLE ONLY public.price_types
 
 ALTER TABLE ONLY public.price_types
     ADD CONSTRAINT price_types_currencies_fk FOREIGN KEY (display_currency) REFERENCES public.currencies(id) ON DELETE SET NULL;
+
+
+--
+-- Name: price_types price_types_currencies_store_currency_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.price_types
+    ADD CONSTRAINT price_types_currencies_store_currency_id_fk FOREIGN KEY (base_currency) REFERENCES public.currencies(id);
 
 
 --

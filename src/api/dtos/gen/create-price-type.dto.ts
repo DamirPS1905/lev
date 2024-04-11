@@ -25,4 +25,9 @@ export class GenCreatePriceTypeDto {
 	@IsInt()
 	displayCurrency:number;
 	
+	@IsNotEmpty()
+	@ApiProperty()
+	@IsInt()
+	baseCurrency:number;
+	
 }

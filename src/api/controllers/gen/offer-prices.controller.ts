@@ -3,16 +3,16 @@
  * and should not be modifiyed manyally,
  * becouse it can be overwritten in any
  * moment. All modifications are allowed
- * in api/controllers/offers-prices.controller
+ * in api/controllers/offer-prices.controller
  * in a proper way.
  */
 import { AuthInfo } from './../../../decorators/auth.decorator'
 import { ApiKeys } from './../../../entities/ApiKeys'
-import { CreateOffersPriceDto } from './../../dtos/create-offers-price.dto'
-import { UpdateOffersPriceDto } from './../../dtos/update-offers-price.dto'
+import { CreateOfferPriceDto } from './../../dtos/create-offer-price.dto'
+import { UpdateOfferPriceDto } from './../../dtos/update-offer-price.dto'
 import { CatalogProductOffersService } from './../../services/catalog-product-offers.service'
 import { CatalogsService } from './../../services/catalogs.service'
-import { OffersPricesService } from './../../services/offers-prices.service'
+import { OfferPricesService } from './../../services/offer-prices.service'
 import { PriceTypesService } from './../../services/price-types.service'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
@@ -21,13 +21,13 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))
-@ApiTags('Offers prices')
+@ApiTags('Offer prices')
 @Controller('catalog/:catalog/offer/:offer/price')
-export class GenOffersPricesController {
+export class GenOfferPricesController {
 	constructor(
 		protected readonly catalogProductOffersService: CatalogProductOffersService,
 		protected readonly catalogsService: CatalogsService,
-		protected readonly offersPricesService: OffersPricesService,
+		protected readonly offerPricesService: OfferPricesService,
 		protected readonly priceTypesService: PriceTypesService,
 	) { }
 	
@@ -36,7 +36,7 @@ export class GenOffersPricesController {
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.offersPricesService.findAll();
+		return await this.offerPricesService.findAll();
 	}
 	
 	async findOne(apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number) {
@@ -44,7 +44,7 @@ export class GenOffersPricesController {
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		const entity = await this.offersPricesService.findByOfferAndPriceType(offer, priceType);
+		const entity = await this.offerPricesService.findByOfferAndPriceType(offer, priceType);
 		if(entity===null){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
@@ -54,13 +54,13 @@ export class GenOffersPricesController {
 	
 	async validateRead(entity, apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number) { }
 	
-	async update(apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number, updateDto: UpdateOffersPriceDto) {
+	async update(apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number, updateDto: UpdateOfferPriceDto) {
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.offersPricesService.transactional(async (em) => {
-			const entity = await this.offersPricesService.findByOfferAndPriceType(offer, priceType, em);
+		return await this.offerPricesService.transactional(async (em) => {
+			const entity = await this.offerPricesService.findByOfferAndPriceType(offer, priceType, em);
 			const priceTypeIns = await this.priceTypesService.findById(priceType);
 			if(priceTypeIns===null || !(priceTypeIns.company.id===apiKey.company.id)){
 				throw new HttpException('Price type not found', HttpStatus.NOT_FOUND);
@@ -71,27 +71,27 @@ export class GenOffersPricesController {
 			}
 			await this.validateUpdate(entity, apiKey, catalog, offer, priceType, updateDto, em);
 			if(entity!==null){
-				return await this.offersPricesService.update(entity, updateDto, em);
+				return await this.offerPricesService.update(entity, updateDto, em);
 			} else {
-				return await this.offersPricesService.create(updateDto, em);
+				return await this.offerPricesService.create(updateDto, em);
 			}
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number, updateDto: UpdateOffersPriceDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number, updateDto: UpdateOfferPriceDto, em: EntityManager) { }
 	
 	async delete(apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.offersPricesService.transactional(async (em) => {
-			const entity = await this.offersPricesService.findByOfferAndPriceType(offer, priceType, em);
+		return await this.offerPricesService.transactional(async (em) => {
+			const entity = await this.offerPricesService.findByOfferAndPriceType(offer, priceType, em);
 			if(entity===null){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			await this.validateDelete(entity, apiKey, catalog, offer, priceType, em);
-			return await this.offersPricesService.remove(entity, em);
+			return await this.offerPricesService.remove(entity, em);
 		});
 	}
 	

@@ -420,13 +420,16 @@
                 },
                 "type": {
                     "def": "def",
+                    "dto": "create",
                     "dtoRequired": "create"
                 },
                 "multiple": {
-                    "def": "def"
+                    "def": "def",
+                    "dto": "create"
                 },
                 "options": {
-                    "def": "def"
+                    "def": "def",
+                    "dto": "create"
                 },
                 "scheme": {
                     "def": "def"
@@ -862,6 +865,16 @@
                         "eCode": "NOT_FOUND",
                         "eMessage": "Display currency not found"
                     }
+                },
+                "base_currency": {
+                    "def": "def",
+                    "dto": "create",
+                    "dtoRequired": "create",
+                    "load": {
+                        "as": "currencies",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Store currency not found"
+                    }
                 }
             }
         },
@@ -872,10 +885,13 @@
             "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": ":priceType",
+            "extraServices": "rates",
             "fields": {
                 "product": {
                     "def": "pk",
-                    "fillDtoFrom": "product",
+                    "allFilter": true,
+                    "from": "path",
+                    "fillDto": true,
                     "load": {
                         "as": "catalog_products",
                         "validate": "@@.catalog.id===catalog",
@@ -885,7 +901,8 @@
                 },
                 "price_type": {
                     "def": "pk",
-                    "fillDtoFrom": "priceType",
+                    "from": "path",
+                    "fillDto": true,
                     "load": {
                         "as": "price_types",
                         "validate": "@@.company.id===apiKey.company.id",
@@ -894,16 +911,25 @@
                     }
                 },
                 "value": {
-                    "def": "def"
+                    "def": "def",
+                    "dtoRequired": true
                 },
                 "currency": {
                     "def": "def"
                 },
                 "updated_at": {
                     "def": "def",
-                    "dto": false
+                    "dtoDisallow": true
                 },
                 "last_change": {
+                    "def": "def",
+                    "dto": false
+                },
+                "index": {
+                    "def": "def",
+                    "dtoDisallow": true
+                },
+                "changed_at": {
                     "def": "def",
                     "dto": false
                 }
@@ -922,17 +948,20 @@
                 }
             ]
         },
-        "offers_prices": {
+        "offer_prices": {
             "def": "def",
             "apiPathName": "offer\/:offer\/price",
             "create": false,
             "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": ":priceType",
+            "extraServices": "rates",
             "fields": {
                 "offer": {
                     "def": "pk",
-                    "fillDtoFrom": "offer",
+                    "allFilter": true,
+                    "from": "path",
+                    "fillDto": true,
                     "load": {
                         "as": "catalog_product_offers",
                         "validate": "@@.product.catalog.id===catalog",
@@ -942,7 +971,8 @@
                 },
                 "price_type": {
                     "def": "pk",
-                    "fillDtoFrom": "priceType",
+                    "from": "path",
+                    "fillDto": true,
                     "load": {
                         "as": "price_types",
                         "validate": "@@.company.id===apiKey.company.id",
@@ -951,16 +981,25 @@
                     }
                 },
                 "value": {
-                    "def": "def"
+                    "def": "def",
+                    "dtoRequired": true
                 },
                 "currency": {
                     "def": "def"
                 },
                 "updated_at": {
                     "def": "def",
-                    "dto": false
+                    "dtoDisallow": true
                 },
                 "last_change": {
+                    "def": "def",
+                    "dto": false
+                },
+                "index": {
+                    "def": "def",
+                    "dtoDisallow": true
+                },
+                "changed_at": {
                     "def": "def",
                     "dto": false
                 }
@@ -1089,9 +1128,11 @@
                 "type": {
                     "def": "pk",
                     "fillDtoFrom": "type",
-                    "readValidate": "@#.catalog.id===catalog",
-                    "readForWriteValidate": "@#.catalog.id===catalog",
+                    "readValidate": "@@===type",
+                    "readForWriteValidate": "@@===type",
                     "allFilter": true,
+                    "from": "path",
+                    "fillDto": true,
                     "load": {
                         "as": "catalog_types",
                         "validate": "@@.catalog.id===catalog",
@@ -1102,6 +1143,8 @@
                 "property": {
                     "def": "pk",
                     "fillDtoFrom": "property",
+                    "from": "path",
+                    "fillDto": true,
                     "load": {
                         "as": "catalog_properties",
                         "validate": "@@.catalog.id===catalog",

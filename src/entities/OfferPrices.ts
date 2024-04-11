@@ -1,16 +1,16 @@
 import { Entity, Index, ManyToOne, type Opt, PrimaryKeyProp, Property } from '@mikro-orm/core';
-import { CatalogProducts } from './CatalogProducts';
+import { CatalogProductOffers } from './CatalogProductOffers';
 import { PriceTypes } from './PriceTypes';
 
 @Entity()
-export class ProductPrices {
+export class OfferPrices {
 
-  [PrimaryKeyProp]?: ['product', 'priceType'];
+  [PrimaryKeyProp]?: ['offer', 'priceType'];
 
-  @ManyToOne({ entity: () => CatalogProducts, fieldName: 'product', deleteRule: 'cascade', primary: true })
-  product!: CatalogProducts;
+  @ManyToOne({ entity: () => CatalogProductOffers, fieldName: 'offer', deleteRule: 'cascade', primary: true })
+  offer!: CatalogProductOffers;
 
-  @ManyToOne({ entity: () => PriceTypes, fieldName: 'price_type', primary: true })
+  @ManyToOne({ entity: () => PriceTypes, fieldName: 'price_type', deleteRule: 'cascade', primary: true })
   priceType!: PriceTypes;
 
   @Property({ columnType: 'numeric(18,2)' })
@@ -25,7 +25,7 @@ export class ProductPrices {
   @Property({ type: 'Date', length: 6, defaultRaw: `CURRENT_TIMESTAMP` })
   updatedAt!: Date & Opt;
 
-  @Index({ name: 'product_prices_index_ind' })
+  @Index({ name: 'offer_prices_index_ind' })
   @Property({ columnType: 'numeric(18,2)' })
   index!: string;
 

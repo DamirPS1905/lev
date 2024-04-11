@@ -32,7 +32,7 @@ export class CatalogMetatypePropertiesController extends GenCatalogMetatypePrope
 	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, property: number, metatype: number, updateDto: UpdateCatalogMetatypePropertyDto, em: EntityManager) {
 		try{
 			const propertyIns = await this.catalogPropertiesService.findById(property);
-			updateDto.scheme = await this.propertyTypesService.tunePropertyScheme(apiKey.company.id, propertyIns.scheme, updateDto.scheme, true);
+			updateDto.scheme = await this.propertyTypesService.tunePropertyScheme(apiKey.company.id, propertyIns.scheme, updateDto.scheme, false);
 		}catch(e){
 			throw new HttpException(e.message, HttpStatus.CONFLICT);
 		}

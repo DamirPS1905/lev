@@ -66,7 +66,7 @@ export class GenStoresController {
 					throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 				}
 			}
-			this.validateUpdate(entity, apiKey, id, updateDto, em);
+			await this.validateUpdate(entity, apiKey, id, updateDto, em);
 			return await this.storesService.update(entity, updateDto, em);
 		});
 	}

@@ -96,6 +96,24 @@ export class GenPriceTypesService {
 		});
 	}
 	
+	findAllByBaseCurrency(baseCurrency: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(PriceTypes, {
+			baseCurrency: baseCurrency
+		});
+	}
+	
+	listByBaseCurrency(baseCurrency: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(PriceTypes, {
+			baseCurrency: baseCurrency
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id: "ASC" },
+		});
+	}
+	
 	listAll(offset: number, limit: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(PriceTypes, { }, {

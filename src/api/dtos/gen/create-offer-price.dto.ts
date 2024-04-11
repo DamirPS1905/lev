@@ -3,21 +3,21 @@
  * and should not be modifiyed manyally,
  * becouse it can be overwritten in any
  * moment. All modifications are allowed
- * in api/dtos/create-product-price.dto
+ * in api/dtos/create-offer-price.dto
  * in a proper way.
  */
 import { ApiProperty } from '@nestjs/swagger'
 import { Transform, TransformFnParams } from 'class-transformer'
-import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator'
+import { IsInt, IsOptional, IsString } from 'class-validator'
 
-export class GenCreateProductPriceDto {
+export class GenCreateOfferPriceDto {
 	
-	product:bigint;
+	offer:bigint;
 	
 	priceType:number;
 	
-	@IsNotEmpty()
-	@ApiProperty()
+	@IsOptional()
+	@ApiProperty({ required: false })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	value:string;
@@ -27,8 +27,14 @@ export class GenCreateProductPriceDto {
 	@IsInt()
 	currency:number;
 	
-	updatedAt:Date;
-	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	@IsString()
+	@Transform(({ value }: TransformFnParams) => value?.trim())
 	index:string;
+	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	changedAt:Date;
 	
 }

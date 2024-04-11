@@ -179,3 +179,29 @@ CREATE OR REPLACE TRIGGER catalogs_after_insert
 
 CREATE INDEX property_values_1_value ON property_values (((value ->> 'value')::varchar))
 WHERE type = 1;
+
+CREATE OR REPLACE FUNCTION public.prices_before_update_fnc()
+RETURNS trigger 
+AS $function$
+	BEGIN
+NEW.last_change = NEW."index" - OLD."index";
+NEW.changed_at = CURRENT_TIMESTAMP;
+RETURN NEW;
+	END;
+$function$
+LANGUAGE 'plpgsql';
+
+
+CREATE OR REPLACE TRIGGER product_prices_before_update
+    BEFORE UPDATE
+    ON public.product_prices
+    FOR EACH ROW
+	WHEN (OLD."index" IS DISTINCT FROM NEW."index")
+	EXECUTE PROCEDURE prices_before_update_fnc();
+
+CREATE OR REPLACE TRIGGER offer_prices_before_update
+    BEFORE UPDATE
+    ON public.offer_prices
+    FOR EACH ROW
+	WHEN (OLD."index" IS DISTINCT FROM NEW."index")
+	EXECUTE PROCEDURE prices_before_update_fnc();

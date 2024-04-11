@@ -36,9 +36,8 @@ export class CatalogPropertiesController extends GenCatalogPropertiesController 
 	
 	async validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreateCatalogPropertyDto, em: EntityManager) {
 		try{
-			const end = createDto.options===undefined? false: createDto.options,
-						propertyTypeIns = await this.propertyTypesService.findById(createDto.type);
-			createDto.scheme = await this.propertyTypesService.tunePropertyScheme(apiKey.company.id, propertyTypeIns.scheme, createDto.scheme, end);
+			const propertyTypeIns = await this.propertyTypesService.findById(createDto.type);
+			createDto.scheme = await this.propertyTypesService.tunePropertyScheme(apiKey.company.id, propertyTypeIns.scheme, createDto.scheme, true);
 		}catch(e){
 			throw new HttpException(e.message, HttpStatus.CONFLICT);
 		}
@@ -52,9 +51,8 @@ export class CatalogPropertiesController extends GenCatalogPropertiesController 
 	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdateCatalogPropertyDto, em: EntityManager) {
 		if(updateDto.scheme instanceof Object){
 			try{
-				const end = updateDto.options===undefined? entity.options: updateDto.options,
-							propertyTypeIns = await this.propertyTypesService.findById(entity.type.id);
-				updateDto.scheme = await this.propertyTypesService.tunePropertyScheme(apiKey.company.id, propertyTypeIns.scheme, updateDto.scheme, end);
+				const propertyTypeIns = await this.propertyTypesService.findById(entity.type.id);
+				updateDto.scheme = await this.propertyTypesService.tunePropertyScheme(apiKey.company.id, propertyTypeIns.scheme, updateDto.scheme, true);
 			}catch(e){
 				throw new HttpException(e.message, HttpStatus.CONFLICT);
 			}

@@ -75,7 +75,7 @@ export class GenUnitsController {
 			if(entity===null || !(entity.company!==null && entity.company.id===apiKey.company.id) || !(entity.group.id===group)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			this.validateUpdate(entity, apiKey, group, id, updateDto, em);
+			await this.validateUpdate(entity, apiKey, group, id, updateDto, em);
 			return await this.unitsService.update(entity, updateDto, em);
 		});
 	}
