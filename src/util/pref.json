@@ -263,10 +263,10 @@
                 },
                 "product": {
                     "def": "def",
-                    "fillDtoFrom": "product",
+                    "dtoDisallow": true,
                     "readValidate": "@@===product",
                     "readForWriteValidate": "@@===product",
-                    "from": "path: product",
+                    "from": "path",
                     "fillDto": "create"
                 },
                 "catalog": {
@@ -964,7 +964,7 @@
                     "fillDto": true,
                     "load": {
                         "as": "catalog_product_offers",
-                        "validate": "@@.product.catalog.id===catalog",
+                        "validate": "@@.catalog.id===catalog",
                         "eCode": "NOT_FOUND",
                         "eMessage": "Offer not found"
                     }

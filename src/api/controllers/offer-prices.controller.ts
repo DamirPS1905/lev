@@ -11,8 +11,8 @@ import { AuthGuard } from '@nestjs/passport'
 export class OfferPricesController extends GenOfferPricesController {
 	
 	@Get('all')
-	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number) {
-		return await super.findAll(apiKey, catalog);
+	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('offer') offer: bigint) {
+		return await super.findAll(apiKey, catalog, offer);
 	}
 	
 	@Get(':priceType')

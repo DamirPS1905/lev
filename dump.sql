@@ -444,7 +444,7 @@ CREATE TABLE public.catalog_product_offers (
     product bigint NOT NULL,
     catalog integer NOT NULL,
     article character varying NOT NULL,
-    created timestamp with time zone NOT NULL
+    created timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1387,6 +1387,7 @@ COPY public.catalog_metatypes (id, catalog, metatype) FROM stdin;
 --
 
 COPY public.catalog_product_offers (id, product, catalog, article, created) FROM stdin;
+1	1	1	FF	2024-04-11 04:54:35.363165+03
 \.
 
 
@@ -1531,6 +1532,7 @@ COPY public.offer_amounts (offer, store, amount, changed_at) FROM stdin;
 --
 
 COPY public.offer_prices (offer, price_type, value, currency, last_change, updated_at, index, changed_at) FROM stdin;
+1	1	3.50	16	26.27	2024-04-11 04:56:14.803+03	326.27	2024-04-11 04:56:14.668721+03
 \.
 
 
@@ -2450,7 +2452,7 @@ SELECT pg_catalog.setval('public.catalog_metatypes_id_seq1', 3, true);
 -- Name: catalog_product_offers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.catalog_product_offers_id_seq', 1, false);
+SELECT pg_catalog.setval('public.catalog_product_offers_id_seq', 1, true);
 
 
 --

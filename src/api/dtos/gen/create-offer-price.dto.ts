@@ -8,7 +8,7 @@
  */
 import { ApiProperty } from '@nestjs/swagger'
 import { Transform, TransformFnParams } from 'class-transformer'
-import { IsInt, IsOptional, IsString } from 'class-validator'
+import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator'
 
 export class GenCreateOfferPriceDto {
 	
@@ -16,8 +16,8 @@ export class GenCreateOfferPriceDto {
 	
 	priceType:number;
 	
-	@IsOptional()
-	@ApiProperty({ required: false })
+	@IsNotEmpty()
+	@ApiProperty()
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	value:string;
@@ -27,14 +27,8 @@ export class GenCreateOfferPriceDto {
 	@IsInt()
 	currency:number;
 	
-	@IsOptional()
-	@ApiProperty({ required: false })
-	@IsString()
-	@Transform(({ value }: TransformFnParams) => value?.trim())
-	index:string;
+	updatedAt:Date;
 	
-	@IsOptional()
-	@ApiProperty({ required: false })
-	changedAt:Date;
+	index:string;
 	
 }

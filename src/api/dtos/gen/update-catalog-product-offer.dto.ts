@@ -12,8 +12,6 @@ import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator'
 
 export class GenUpdateCatalogProductOfferDto {
 	
-	@IsOptional()
-	@ApiProperty({ required: false })
 	product:bigint;
 	
 	@IsOptional()
