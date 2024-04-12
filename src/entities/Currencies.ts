@@ -1,4 +1,7 @@
-import { Entity, type Hidden, type Opt, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Collection, Entity, type Hidden, OneToMany, type Opt, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { PriceTypes } from './PriceTypes';
+import { Rates } from './Rates';
+import { RatesSources } from './RatesSources';
 
 @Entity()
 export class Currencies {
@@ -22,5 +25,17 @@ export class Currencies {
 
   @Property({ type: 'string', nullable: true, hidden: true })
   icon?: string & Hidden;
+
+  @OneToMany({ entity: () => PriceTypes, mappedBy: 'displayCurrency' })
+  displayCurrencyInverse = new Collection<PriceTypes>(this);
+
+  @OneToMany({ entity: () => RatesSources, mappedBy: 'baseCurrency' })
+  baseCurrencyInverse = new Collection<RatesSources>(this);
+
+  @OneToMany({ entity: () => Rates, mappedBy: 'from' })
+  fromInverse = new Collection<Rates>(this);
+
+  @OneToMany({ entity: () => Rates, mappedBy: 'to' })
+  toInverse = new Collection<Rates>(this);
 
 }

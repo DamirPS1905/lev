@@ -27,15 +27,18 @@ export class CatalogTypesController extends GenCatalogTypesController {
 		return await super.create(apiKey, catalog, createDto);
 	}
 	
+	async validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreateCatalogTypeDto, em: EntityManager) {
+	  const parentType = await this.catalogTypesService.findById(createDto.parent);
+	  if(parentType===null || parentType.catalog.id!==catalog){
+			throw new HttpException("Parent type not found", HttpStatus.NOT_FOUND);
+	  }
+	 	createDto.level = parentType.level + 1;
+	}
+	
 	@Patch(':id')
 	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateCatalogTypeDto) {
 		updateDto.parent = await this.processInputType(catalog, updateDto.parent);
 		return await super.update(apiKey, catalog, id, updateDto);
-	}
-	
-	@Delete(':id')
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
-		return await super.delete(apiKey, catalog, id);
 	}
 	
 	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: number, updateDto: UpdateCatalogTypeDto, em: EntityManager) {
@@ -49,15 +52,14 @@ export class CatalogTypesController extends GenCatalogTypesController {
 				throw new HttpException("New parent type is child of current type", HttpStatus.CONFLICT);			
 		  }
 		 	updateDto.level = parentType.level + 1;
+	 		const prepeared = await this.propertyInTypesService.prepearTypeTransfer(entity.id, entity.parent.id, parent, em);
+	 		await this.propertyInTypesService.applyTypeTranser(entity.id, prepeared, em);
 	  }
 	}
 	
-	async validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreateCatalogTypeDto, em: EntityManager) {
-	  const parentType = await this.catalogTypesService.findById(createDto.parent);
-	  if(parentType===null || parentType.catalog.id!==catalog){
-			throw new HttpException("Parent type not found", HttpStatus.NOT_FOUND);
-	  }
-	 	createDto.level = parentType.level + 1;
+	@Delete(':id')
+	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
+		return await super.delete(apiKey, catalog, id);
 	}
 	
 	async processInputType(catalog: number, parent: number, em: EntityManager = null){

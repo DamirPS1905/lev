@@ -1,4 +1,5 @@
-import { Entity, type Hidden, Index, ManyToOne, PrimaryKey, PrimaryKeyProp, Property } from '@mikro-orm/core';
+import { Entity, type Hidden, Index, ManyToOne, OneToOne, PrimaryKey, PrimaryKeyProp, Property } from '@mikro-orm/core';
+import { OptionsPropertyValues } from './OptionsPropertyValues';
 import { PropertyTypes } from './PropertyTypes';
 
 @Entity()
@@ -18,5 +19,8 @@ export class PropertyValues {
 
   @Property({ columnType: 'jsonb' })
   value!: any;
+
+  @OneToOne({ entity: () => OptionsPropertyValues, mappedBy: 'value' })
+  valueInverse?: OptionsPropertyValues;
 
 }

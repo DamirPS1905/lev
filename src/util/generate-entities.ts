@@ -32,6 +32,7 @@ require('dotenv').config();
   const dump = await orm.entityGenerator.generate({
     save: true,
     path: process.cwd() + '/src/entities',
+    bidirectionalRelations: true,
     onInitialMetadata: (metadata, platform) => {
 	    metadata.forEach(meta => {
 		    const tbl = meta.collection;

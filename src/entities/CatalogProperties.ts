@@ -1,6 +1,7 @@
-import { Entity, ManyToOne, OneToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
+import { Collection, Entity, ManyToOne, OneToMany, OneToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
 import { Catalogs } from './Catalogs';
 import { PropertyTypes } from './PropertyTypes';
+import { TypePropertyValues } from './TypePropertyValues';
 
 @Entity()
 export class CatalogProperties {
@@ -25,5 +26,8 @@ export class CatalogProperties {
 
   @Property({ columnType: 'jsonb' })
   scheme!: any;
+
+  @OneToMany({ entity: () => TypePropertyValues, mappedBy: 'property' })
+  propertyInverse = new Collection<TypePropertyValues>(this);
 
 }

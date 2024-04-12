@@ -1,4 +1,4 @@
-import { Entity, type Hidden, ManyToOne, OneToOne, type Opt, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Collection, Entity, type Hidden, ManyToOne, OneToMany, OneToOne, type Opt, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 import { Companies } from './Companies';
 import { UnitGroups } from './UnitGroups';
 
@@ -28,5 +28,8 @@ export class Units {
 
   @Property({ type: 'number', columnType: 'double precision' })
   factor: number & Opt = 1;
+
+  @OneToMany({ entity: () => UnitGroups, mappedBy: 'base' })
+  baseInverse = new Collection<UnitGroups>(this);
 
 }

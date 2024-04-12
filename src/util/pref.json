@@ -160,7 +160,7 @@
         "catalog_types": {
             "def": "catDef",
             "apiPathName": "type",
-            "extraServices": "catalog_types_overload",
+            "extraServices": "catalog_types_overload, property_in_types",
             "fields": {
                 "id": {
                     "def": "id"

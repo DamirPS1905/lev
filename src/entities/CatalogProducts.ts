@@ -1,7 +1,8 @@
-import { Entity, ManyToOne, OneToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
+import { Collection, Entity, ManyToOne, OneToMany, OneToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
 import { CatalogBrands } from './CatalogBrands';
 import { CatalogTypes } from './CatalogTypes';
 import { Catalogs } from './Catalogs';
+import { ProductPropertyValues } from './ProductPropertyValues';
 
 @Entity()
 export class CatalogProducts {
@@ -23,5 +24,8 @@ export class CatalogProducts {
 
   @Property({ type: 'Date', length: 6, defaultRaw: `CURRENT_TIMESTAMP` })
   created!: Date & Opt;
+
+  @OneToMany({ entity: () => ProductPropertyValues, mappedBy: 'product' })
+  productInverse = new Collection<ProductPropertyValues>(this);
 
 }

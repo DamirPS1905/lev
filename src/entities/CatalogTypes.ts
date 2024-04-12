@@ -1,5 +1,8 @@
-import { Entity, ManyToOne, OneToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
+import { Collection, Entity, ManyToOne, OneToMany, OneToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
+import { CatalogTypesOverload } from './CatalogTypesOverload';
 import { Catalogs } from './Catalogs';
+import { PropertyInTypes } from './PropertyInTypes';
+import { TypePropertyValues } from './TypePropertyValues';
 
 @Entity()
 export class CatalogTypes {
@@ -21,5 +24,17 @@ export class CatalogTypes {
 
   @Property({ columnType: 'smallint' })
   level!: number;
+
+  @OneToMany({ entity: () => PropertyInTypes, mappedBy: 'type' })
+  typeInverse = new Collection<PropertyInTypes>(this);
+
+  @OneToMany({ entity: () => CatalogTypesOverload, mappedBy: 'parent' })
+  parentInverse = new Collection<CatalogTypesOverload>(this);
+
+  @OneToMany({ entity: () => CatalogTypesOverload, mappedBy: 'child' })
+  childInverse = new Collection<CatalogTypesOverload>(this);
+
+  @OneToMany({ entity: () => TypePropertyValues, mappedBy: 'instance' })
+  instanceInverse = new Collection<TypePropertyValues>(this);
 
 }

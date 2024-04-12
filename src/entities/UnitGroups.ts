@@ -22,4 +22,7 @@ export class UnitGroups {
   @ManyToOne({ entity: () => Units, fieldName: 'base', deleteRule: 'set null', nullable: true })
   base?: Units;
 
+  @OneToOne({ entity: () => Units, mappedBy: 'group' })
+  groupInverse?: Units;
+
 }

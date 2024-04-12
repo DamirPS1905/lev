@@ -36,7 +36,7 @@ export class CatalogTypesService extends GenCatalogTypesService {
 							.join('o.child', 'ch')
 							.select('ch.*')
 							.orderBy({ delta: 'ASC', "ch.title": 'ASC' })
-							.where('o.parent = ?', [treeRoot.id]);
+							.where('o.delta>0 AND o.parent = ?', [treeRoot.id]);
 		console.log(qb.getQuery());
 		const tree = {
 						id: treeRoot.id,

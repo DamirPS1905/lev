@@ -1,5 +1,6 @@
-import { Entity, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { Collection, Entity, OneToMany, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
 import { ActorTypes } from './ActorTypes';
+import { Users } from './Users';
 
 @Entity()
 export class Actors {
@@ -12,5 +13,8 @@ export class Actors {
 
   @Property({ nullable: true })
   key?: number;
+
+  @OneToMany({ entity: () => Users, mappedBy: 'actor' })
+  actorInverse = new Collection<Users>(this);
 
 }

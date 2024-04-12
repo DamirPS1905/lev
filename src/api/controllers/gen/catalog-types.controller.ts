@@ -13,6 +13,7 @@ import { UpdateCatalogTypeDto } from './../../dtos/update-catalog-type.dto'
 import { CatalogTypesOverloadService } from './../../services/catalog-types-overload.service'
 import { CatalogTypesService } from './../../services/catalog-types.service'
 import { CatalogsService } from './../../services/catalogs.service'
+import { PropertyInTypesService } from './../../services/property-in-types.service'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
@@ -27,6 +28,7 @@ export class GenCatalogTypesController {
 		protected readonly catalogTypesOverloadService: CatalogTypesOverloadService,
 		protected readonly catalogTypesService: CatalogTypesService,
 		protected readonly catalogsService: CatalogsService,
+		protected readonly propertyInTypesService: PropertyInTypesService,
 	) { }
 	
 	async findAll(apiKey: ApiKeys, catalog: number, offset: number, limit: number) {
