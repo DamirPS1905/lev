@@ -14,7 +14,7 @@ import { PropertyTypesService } from './../../services/property-types.service'
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))
-export class MetatypeValuesController<E, S extends IMetatypeVauesService> {
+export class MetatypeValuesController<S extends IMetatypeVauesService> {
 		
 	constructor(
 		protected readonly catalogMetatypePropertiesService: CatalogMetatypePropertiesService,

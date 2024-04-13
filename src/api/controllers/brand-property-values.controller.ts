@@ -15,7 +15,7 @@ import { CatalogBrandsService } from './../services/catalog-brands.service'
 
 @ApiTags('Brand property values')
 @Controller('catalog/:catalog/brand/:brand')
-export class BrandPropertyValuesController extends MetatypeValuesController<BrandPropertyValues, BrandPropertyValuesService> {
+export class BrandPropertyValuesController extends MetatypeValuesController<BrandPropertyValuesService> {
 		
 	protected readonly metatype:number = 2;
 	protected readonly entityName:string = "BrandPropertyValues";

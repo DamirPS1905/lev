@@ -16,7 +16,7 @@ import { CatalogTypesService } from './../services/catalog-types.service'
 
 @ApiTags('Type property values')
 @Controller('catalog/:catalog/type/:type')
-export class TypePropertyValuesController extends MetatypeValuesController<TypePropertyValues, TypePropertyValuesService> {
+export class TypePropertyValuesController extends MetatypeValuesController<TypePropertyValuesService> {
 	
 	protected readonly metatype:number = 1;
 	protected readonly entityName:string = "TypePropertyValues";
