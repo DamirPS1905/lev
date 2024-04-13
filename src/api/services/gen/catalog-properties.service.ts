@@ -6,12 +6,12 @@
  * in api/services/catalog-properties.service
  * in a proper way.
  */
-import { CatalogProperties } from './../../../entities/CatalogProperties'
-import { CreateCatalogPropertyDto } from './../../dtos/create-catalog-property.dto'
-import { UpdateCatalogPropertyDto } from './../../dtos/update-catalog-property.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { CatalogProperties } from './../../../entities/CatalogProperties';
+import { CreateCatalogPropertyDto } from './../../dtos/create-catalog-property.dto';
+import { UpdateCatalogPropertyDto } from './../../dtos/update-catalog-property.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenCatalogPropertiesService {

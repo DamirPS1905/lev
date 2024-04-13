@@ -6,12 +6,12 @@
  * in api/services/currencies.service
  * in a proper way.
  */
-import { Currencies } from './../../../entities/Currencies'
-import { CreateCurrencyDto } from './../../dtos/create-currency.dto'
-import { UpdateCurrencyDto } from './../../dtos/update-currency.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { Currencies } from './../../../entities/Currencies';
+import { CreateCurrencyDto } from './../../dtos/create-currency.dto';
+import { UpdateCurrencyDto } from './../../dtos/update-currency.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenCurrenciesService {

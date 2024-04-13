@@ -6,12 +6,12 @@
  * in api/services/actor-types.service
  * in a proper way.
  */
-import { ActorTypes } from './../../../entities/ActorTypes'
-import { CreateActorTypeDto } from './../../dtos/create-actor-type.dto'
-import { UpdateActorTypeDto } from './../../dtos/update-actor-type.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { ActorTypes } from './../../../entities/ActorTypes';
+import { CreateActorTypeDto } from './../../dtos/create-actor-type.dto';
+import { UpdateActorTypeDto } from './../../dtos/update-actor-type.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenActorTypesService {

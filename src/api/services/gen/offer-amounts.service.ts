@@ -6,12 +6,12 @@
  * in api/services/offer-amounts.service
  * in a proper way.
  */
-import { OfferAmounts } from './../../../entities/OfferAmounts'
-import { CreateOfferAmountDto } from './../../dtos/create-offer-amount.dto'
-import { UpdateOfferAmountDto } from './../../dtos/update-offer-amount.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { OfferAmounts } from './../../../entities/OfferAmounts';
+import { CreateOfferAmountDto } from './../../dtos/create-offer-amount.dto';
+import { UpdateOfferAmountDto } from './../../dtos/update-offer-amount.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenOfferAmountsService {

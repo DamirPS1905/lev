@@ -1,7 +1,8 @@
-import { Collection, Entity, type Hidden, ManyToOne, OneToMany, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
 import { Companies } from './Companies';
 import { Currencies } from './Currencies';
+import { OfferPrices } from './OfferPrices';
 import { ProductPrices } from './ProductPrices';
+import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Hidden } from '@mikro-orm/core';
 
 @Entity()
 export class PriceTypes {
@@ -9,7 +10,7 @@ export class PriceTypes {
   @PrimaryKey()
   id!: number;
 
-  @OneToOne({ entity: () => Companies, fieldName: 'company', hidden: true, unique: 'price_types_company_title_uind' })
+  @ManyToOne({ entity: () => Companies, fieldName: 'company', hidden: true, unique: 'price_types_company_title_uind' })
   company!: Companies & Hidden;
 
   @Property()
@@ -21,7 +22,14 @@ export class PriceTypes {
   @ManyToOne({ entity: () => Currencies, fieldName: 'base_currency' })
   baseCurrency!: Currencies;
 
-  @OneToMany({ entity: () => ProductPrices, mappedBy: 'priceType' })
-  priceTypeInverse = new Collection<ProductPrices>(this);
+	// gen - begin
+	
+	@OneToMany({ entity: () => OfferPrices, mappedBy: 'priceType' })
+	offerPricesByPriceType = new Collection<OfferPrices>(this);
+	
+	@OneToMany({ entity: () => ProductPrices, mappedBy: 'priceType' })
+	productPricesByPriceType = new Collection<ProductPrices>(this);
+	
+	// gen - end
 
 }

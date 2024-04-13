@@ -6,12 +6,12 @@
  * in api/services/brand-property-values.service
  * in a proper way.
  */
-import { BrandPropertyValues } from './../../../entities/BrandPropertyValues'
-import { CreateBrandPropertyValueDto } from './../../dtos/create-brand-property-value.dto'
-import { UpdateBrandPropertyValueDto } from './../../dtos/update-brand-property-value.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { BrandPropertyValues } from './../../../entities/BrandPropertyValues';
+import { CreateBrandPropertyValueDto } from './../../dtos/create-brand-property-value.dto';
+import { UpdateBrandPropertyValueDto } from './../../dtos/update-brand-property-value.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenBrandPropertyValuesService {

@@ -6,12 +6,12 @@
  * in api/services/catalog-product-offers.service
  * in a proper way.
  */
-import { CatalogProductOffers } from './../../../entities/CatalogProductOffers'
-import { CreateCatalogProductOfferDto } from './../../dtos/create-catalog-product-offer.dto'
-import { UpdateCatalogProductOfferDto } from './../../dtos/update-catalog-product-offer.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { CatalogProductOffers } from './../../../entities/CatalogProductOffers';
+import { CreateCatalogProductOfferDto } from './../../dtos/create-catalog-product-offer.dto';
+import { UpdateCatalogProductOfferDto } from './../../dtos/update-catalog-product-offer.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenCatalogProductOffersService {

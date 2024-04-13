@@ -6,15 +6,15 @@
  * in api/controllers/currencies.controller
  * in a proper way.
  */
-import { AuthInfo } from './../../../decorators/auth.decorator'
-import { ApiKeys } from './../../../entities/ApiKeys'
-import { CreateCurrencyDto } from './../../dtos/create-currency.dto'
-import { UpdateCurrencyDto } from './../../dtos/update-currency.dto'
-import { CurrenciesService } from './../../services/currencies.service'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiHeader, ApiTags } from '@nestjs/swagger'
+import { AuthInfo } from './../../../decorators/auth.decorator';
+import { ApiKeys } from './../../../entities/ApiKeys';
+import { CreateCurrencyDto } from './../../dtos/create-currency.dto';
+import { UpdateCurrencyDto } from './../../dtos/update-currency.dto';
+import { CurrenciesService } from './../../services/currencies.service';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Controller, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))

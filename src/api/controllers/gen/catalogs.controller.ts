@@ -6,15 +6,15 @@
  * in api/controllers/catalogs.controller
  * in a proper way.
  */
-import { AuthInfo } from './../../../decorators/auth.decorator'
-import { ApiKeys } from './../../../entities/ApiKeys'
-import { CreateCatalogDto } from './../../dtos/create-catalog.dto'
-import { UpdateCatalogDto } from './../../dtos/update-catalog.dto'
-import { CatalogsService } from './../../services/catalogs.service'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiHeader, ApiTags } from '@nestjs/swagger'
+import { AuthInfo } from './../../../decorators/auth.decorator';
+import { ApiKeys } from './../../../entities/ApiKeys';
+import { CreateCatalogDto } from './../../dtos/create-catalog.dto';
+import { UpdateCatalogDto } from './../../dtos/update-catalog.dto';
+import { CatalogsService } from './../../services/catalogs.service';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Controller, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))

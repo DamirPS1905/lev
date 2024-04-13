@@ -6,18 +6,18 @@
  * in api/controllers/catalog-products.controller
  * in a proper way.
  */
-import { AuthInfo } from './../../../decorators/auth.decorator'
-import { ApiKeys } from './../../../entities/ApiKeys'
-import { CreateCatalogProductDto } from './../../dtos/create-catalog-product.dto'
-import { UpdateCatalogProductDto } from './../../dtos/update-catalog-product.dto'
-import { CatalogBrandsService } from './../../services/catalog-brands.service'
-import { CatalogProductsService } from './../../services/catalog-products.service'
-import { CatalogTypesService } from './../../services/catalog-types.service'
-import { CatalogsService } from './../../services/catalogs.service'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiHeader, ApiTags } from '@nestjs/swagger'
+import { AuthInfo } from './../../../decorators/auth.decorator';
+import { ApiKeys } from './../../../entities/ApiKeys';
+import { CreateCatalogProductDto } from './../../dtos/create-catalog-product.dto';
+import { UpdateCatalogProductDto } from './../../dtos/update-catalog-product.dto';
+import { CatalogBrandsService } from './../../services/catalog-brands.service';
+import { CatalogProductsService } from './../../services/catalog-products.service';
+import { CatalogTypesService } from './../../services/catalog-types.service';
+import { CatalogsService } from './../../services/catalogs.service';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))

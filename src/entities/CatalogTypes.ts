@@ -1,8 +1,9 @@
-import { Collection, Entity, ManyToOne, OneToMany, OneToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
+import { CatalogProducts } from './CatalogProducts';
 import { CatalogTypesOverload } from './CatalogTypesOverload';
 import { Catalogs } from './Catalogs';
 import { PropertyInTypes } from './PropertyInTypes';
 import { TypePropertyValues } from './TypePropertyValues';
+import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Opt } from '@mikro-orm/core';
 
 @Entity()
 export class CatalogTypes {
@@ -16,7 +17,7 @@ export class CatalogTypes {
   @Property()
   title!: string;
 
-  @OneToOne({ entity: () => CatalogTypes, fieldName: 'parent', nullable: true, unique: 'catalog_types_parent_title' })
+  @ManyToOne({ entity: () => CatalogTypes, fieldName: 'parent', nullable: true, unique: 'catalog_types_parent_title' })
   parent?: CatalogTypes;
 
   @Property({ type: 'boolean' })
@@ -25,16 +26,23 @@ export class CatalogTypes {
   @Property({ columnType: 'smallint' })
   level!: number;
 
-  @OneToMany({ entity: () => PropertyInTypes, mappedBy: 'type' })
-  typeInverse = new Collection<PropertyInTypes>(this);
-
-  @OneToMany({ entity: () => CatalogTypesOverload, mappedBy: 'parent' })
-  parentInverse = new Collection<CatalogTypesOverload>(this);
-
-  @OneToMany({ entity: () => CatalogTypesOverload, mappedBy: 'child' })
-  childInverse = new Collection<CatalogTypesOverload>(this);
-
-  @OneToMany({ entity: () => TypePropertyValues, mappedBy: 'instance' })
-  instanceInverse = new Collection<TypePropertyValues>(this);
+	// gen - begin
+	
+	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'type' })
+	catalogProductsByType = new Collection<CatalogProducts>(this);
+	
+	@OneToMany({ entity: () => CatalogTypesOverload, mappedBy: 'child' })
+	catalogTypesOverloadByChild = new Collection<CatalogTypesOverload>(this);
+	
+	@OneToMany({ entity: () => CatalogTypesOverload, mappedBy: 'parent' })
+	catalogTypesOverloadByParent = new Collection<CatalogTypesOverload>(this);
+	
+	@OneToMany({ entity: () => PropertyInTypes, mappedBy: 'type' })
+	propertyInTypesByType = new Collection<PropertyInTypes>(this);
+	
+	@OneToMany({ entity: () => TypePropertyValues, mappedBy: 'instance' })
+	typePropertyValuesByInstance = new Collection<TypePropertyValues>(this);
+	
+	// gen - end
 
 }

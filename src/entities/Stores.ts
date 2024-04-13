@@ -1,7 +1,6 @@
-import { Collection, Entity, type Hidden, ManyToMany, OneToMany, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
-import { CatalogProductOffers } from './CatalogProductOffers';
 import { Companies } from './Companies';
 import { OfferAmounts } from './OfferAmounts';
+import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Hidden } from '@mikro-orm/core';
 
 @Entity()
 export class Stores {
@@ -9,7 +8,7 @@ export class Stores {
   @PrimaryKey()
   id!: number;
 
-  @OneToOne({ entity: () => Companies, fieldName: 'company', hidden: true, unique: 'stores_company_title_uind' })
+  @ManyToOne({ entity: () => Companies, fieldName: 'company', hidden: true, unique: 'stores_company_title_uind' })
   company!: Companies & Hidden;
 
   @Property()
@@ -24,10 +23,11 @@ export class Stores {
   @Property({ columnType: 'numeric(10,0)', nullable: true })
   geoLong?: string;
 
-  @ManyToMany({ entity: () => CatalogProductOffers, mappedBy: 'offerAmounts' })
-  offerAmountsInverse = new Collection<CatalogProductOffers>(this);
-
-  @OneToMany({ entity: () => OfferAmounts, mappedBy: 'store' })
-  storeInverse = new Collection<OfferAmounts>(this);
+	// gen - begin
+	
+	@OneToMany({ entity: () => OfferAmounts, mappedBy: 'store' })
+	offerAmountsByStore = new Collection<OfferAmounts>(this);
+	
+	// gen - end
 
 }

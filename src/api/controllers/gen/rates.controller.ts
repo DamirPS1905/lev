@@ -6,15 +6,15 @@
  * in api/controllers/rates.controller
  * in a proper way.
  */
-import { CreateRateDto } from './../../dtos/create-rate.dto'
-import { UpdateRateDto } from './../../dtos/update-rate.dto'
-import { CurrenciesService } from './../../services/currencies.service'
-import { RatesSourcesService } from './../../services/rates-sources.service'
-import { RatesService } from './../../services/rates.service'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiHeader, ApiTags } from '@nestjs/swagger'
+import { CreateRateDto } from './../../dtos/create-rate.dto';
+import { UpdateRateDto } from './../../dtos/update-rate.dto';
+import { CurrenciesService } from './../../services/currencies.service';
+import { RatesSourcesService } from './../../services/rates-sources.service';
+import { RatesService } from './../../services/rates.service';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Controller, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))

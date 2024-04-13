@@ -6,9 +6,9 @@
  * in api/dtos/create-company.dto
  * in a proper way.
  */
-import { ApiProperty } from '@nestjs/swagger'
-import { Transform, TransformFnParams } from 'class-transformer'
-import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger';
+import { Transform, TransformFnParams } from 'class-transformer';
+import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class GenCreateCompanyDto {
 	

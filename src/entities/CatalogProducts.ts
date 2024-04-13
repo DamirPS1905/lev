@@ -1,8 +1,10 @@
-import { Collection, Entity, ManyToOne, OneToMany, OneToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
 import { CatalogBrands } from './CatalogBrands';
+import { CatalogProductOffers } from './CatalogProductOffers';
 import { CatalogTypes } from './CatalogTypes';
 import { Catalogs } from './Catalogs';
+import { ProductPrices } from './ProductPrices';
 import { ProductPropertyValues } from './ProductPropertyValues';
+import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Opt } from '@mikro-orm/core';
 
 @Entity()
 export class CatalogProducts {
@@ -10,7 +12,7 @@ export class CatalogProducts {
   @PrimaryKey()
   id!: bigint;
 
-  @OneToOne({ entity: () => Catalogs, fieldName: 'catalog', unique: 'catalog_products_catalog_title_uind' })
+  @ManyToOne({ entity: () => Catalogs, fieldName: 'catalog', unique: 'catalog_products_catalog_title_uind' })
   catalog!: Catalogs;
 
   @ManyToOne({ entity: () => CatalogTypes, fieldName: 'type' })
@@ -25,7 +27,17 @@ export class CatalogProducts {
   @Property({ type: 'Date', length: 6, defaultRaw: `CURRENT_TIMESTAMP` })
   created!: Date & Opt;
 
-  @OneToMany({ entity: () => ProductPropertyValues, mappedBy: 'product' })
-  productInverse = new Collection<ProductPropertyValues>(this);
+	// gen - begin
+	
+	@OneToMany({ entity: () => CatalogProductOffers, mappedBy: 'product' })
+	catalogProductOffersByProduct = new Collection<CatalogProductOffers>(this);
+	
+	@OneToMany({ entity: () => ProductPropertyValues, mappedBy: 'product' })
+	productPropertyValuesByProduct = new Collection<ProductPropertyValues>(this);
+	
+	@OneToMany({ entity: () => ProductPrices, mappedBy: 'product' })
+	productPricesByProduct = new Collection<ProductPrices>(this);
+	
+	// gen - end
 
 }

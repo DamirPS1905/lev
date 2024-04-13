@@ -6,14 +6,14 @@
  * in api/controllers/options-property-values.controller
  * in a proper way.
  */
-import { CreateOptionsPropertyValueDto } from './../../dtos/create-options-property-value.dto'
-import { UpdateOptionsPropertyValueDto } from './../../dtos/update-options-property-value.dto'
-import { OptionsPropertyValuesService } from './../../services/options-property-values.service'
-import { PropertyTypesService } from './../../services/property-types.service'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiHeader, ApiTags } from '@nestjs/swagger'
+import { CreateOptionsPropertyValueDto } from './../../dtos/create-options-property-value.dto';
+import { UpdateOptionsPropertyValueDto } from './../../dtos/update-options-property-value.dto';
+import { OptionsPropertyValuesService } from './../../services/options-property-values.service';
+import { PropertyTypesService } from './../../services/property-types.service';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Controller, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))

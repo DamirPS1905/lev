@@ -6,15 +6,15 @@
  * in api/controllers/property-primitives.controller
  * in a proper way.
  */
-import { AuthInfo } from './../../../decorators/auth.decorator'
-import { ApiKeys } from './../../../entities/ApiKeys'
-import { CreatePropertyPrimitiveDto } from './../../dtos/create-property-primitive.dto'
-import { UpdatePropertyPrimitiveDto } from './../../dtos/update-property-primitive.dto'
-import { PropertyPrimitivesService } from './../../services/property-primitives.service'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiHeader, ApiTags } from '@nestjs/swagger'
+import { AuthInfo } from './../../../decorators/auth.decorator';
+import { ApiKeys } from './../../../entities/ApiKeys';
+import { CreatePropertyPrimitiveDto } from './../../dtos/create-property-primitive.dto';
+import { UpdatePropertyPrimitiveDto } from './../../dtos/update-property-primitive.dto';
+import { PropertyPrimitivesService } from './../../services/property-primitives.service';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Controller, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))

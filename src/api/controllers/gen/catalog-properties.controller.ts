@@ -6,17 +6,17 @@
  * in api/controllers/catalog-properties.controller
  * in a proper way.
  */
-import { AuthInfo } from './../../../decorators/auth.decorator'
-import { ApiKeys } from './../../../entities/ApiKeys'
-import { CreateCatalogPropertyDto } from './../../dtos/create-catalog-property.dto'
-import { UpdateCatalogPropertyDto } from './../../dtos/update-catalog-property.dto'
-import { CatalogPropertiesService } from './../../services/catalog-properties.service'
-import { CatalogsService } from './../../services/catalogs.service'
-import { PropertyTypesService } from './../../services/property-types.service'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiHeader, ApiTags } from '@nestjs/swagger'
+import { AuthInfo } from './../../../decorators/auth.decorator';
+import { ApiKeys } from './../../../entities/ApiKeys';
+import { CreateCatalogPropertyDto } from './../../dtos/create-catalog-property.dto';
+import { UpdateCatalogPropertyDto } from './../../dtos/update-catalog-property.dto';
+import { CatalogPropertiesService } from './../../services/catalog-properties.service';
+import { CatalogsService } from './../../services/catalogs.service';
+import { PropertyTypesService } from './../../services/property-types.service';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))

@@ -6,16 +6,16 @@
  * in api/controllers/catalog-brands.controller
  * in a proper way.
  */
-import { AuthInfo } from './../../../decorators/auth.decorator'
-import { ApiKeys } from './../../../entities/ApiKeys'
-import { CreateCatalogBrandDto } from './../../dtos/create-catalog-brand.dto'
-import { UpdateCatalogBrandDto } from './../../dtos/update-catalog-brand.dto'
-import { CatalogBrandsService } from './../../services/catalog-brands.service'
-import { CatalogsService } from './../../services/catalogs.service'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiHeader, ApiTags } from '@nestjs/swagger'
+import { AuthInfo } from './../../../decorators/auth.decorator';
+import { ApiKeys } from './../../../entities/ApiKeys';
+import { CreateCatalogBrandDto } from './../../dtos/create-catalog-brand.dto';
+import { UpdateCatalogBrandDto } from './../../dtos/update-catalog-brand.dto';
+import { CatalogBrandsService } from './../../services/catalog-brands.service';
+import { CatalogsService } from './../../services/catalogs.service';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))

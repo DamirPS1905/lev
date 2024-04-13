@@ -6,9 +6,9 @@
  * in api/dtos/update-currency.dto
  * in a proper way.
  */
-import { ApiProperty } from '@nestjs/swagger'
-import { Transform, TransformFnParams } from 'class-transformer'
-import { IsInt, IsOptional, IsString } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger';
+import { Transform, TransformFnParams } from 'class-transformer';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class GenUpdateCurrencyDto {
 	

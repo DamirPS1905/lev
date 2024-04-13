@@ -6,8 +6,8 @@
  * in api/dtos/update-product-property-value.dto
  * in a proper way.
  */
-import { ApiProperty } from '@nestjs/swagger'
-import { IsOptional } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional } from 'class-validator';
 
 export class GenUpdateProductPropertyValueDto {
 	

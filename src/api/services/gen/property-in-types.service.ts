@@ -6,12 +6,12 @@
  * in api/services/property-in-types.service
  * in a proper way.
  */
-import { PropertyInTypes } from './../../../entities/PropertyInTypes'
-import { CreatePropertyInTypeDto } from './../../dtos/create-property-in-type.dto'
-import { UpdatePropertyInTypeDto } from './../../dtos/update-property-in-type.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { PropertyInTypes } from './../../../entities/PropertyInTypes';
+import { CreatePropertyInTypeDto } from './../../dtos/create-property-in-type.dto';
+import { UpdatePropertyInTypeDto } from './../../dtos/update-property-in-type.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenPropertyInTypesService {

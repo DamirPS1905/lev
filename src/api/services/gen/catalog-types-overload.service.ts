@@ -6,12 +6,12 @@
  * in api/services/catalog-types-overload.service
  * in a proper way.
  */
-import { CatalogTypesOverload } from './../../../entities/CatalogTypesOverload'
-import { CreateCatalogTypesOverloadDto } from './../../dtos/create-catalog-types-overload.dto'
-import { UpdateCatalogTypesOverloadDto } from './../../dtos/update-catalog-types-overload.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { CatalogTypesOverload } from './../../../entities/CatalogTypesOverload';
+import { CreateCatalogTypesOverloadDto } from './../../dtos/create-catalog-types-overload.dto';
+import { UpdateCatalogTypesOverloadDto } from './../../dtos/update-catalog-types-overload.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenCatalogTypesOverloadService {

@@ -6,12 +6,12 @@
  * in api/services/product-prices.service
  * in a proper way.
  */
-import { ProductPrices } from './../../../entities/ProductPrices'
-import { CreateProductPriceDto } from './../../dtos/create-product-price.dto'
-import { UpdateProductPriceDto } from './../../dtos/update-product-price.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { ProductPrices } from './../../../entities/ProductPrices';
+import { CreateProductPriceDto } from './../../dtos/create-product-price.dto';
+import { UpdateProductPriceDto } from './../../dtos/update-product-price.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenProductPricesService {

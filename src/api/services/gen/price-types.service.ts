@@ -6,12 +6,12 @@
  * in api/services/price-types.service
  * in a proper way.
  */
-import { PriceTypes } from './../../../entities/PriceTypes'
-import { CreatePriceTypeDto } from './../../dtos/create-price-type.dto'
-import { UpdatePriceTypeDto } from './../../dtos/update-price-type.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { PriceTypes } from './../../../entities/PriceTypes';
+import { CreatePriceTypeDto } from './../../dtos/create-price-type.dto';
+import { UpdatePriceTypeDto } from './../../dtos/update-price-type.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenPriceTypesService {

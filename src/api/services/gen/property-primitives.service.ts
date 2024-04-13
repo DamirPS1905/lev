@@ -6,12 +6,12 @@
  * in api/services/property-primitives.service
  * in a proper way.
  */
-import { PropertyPrimitives } from './../../../entities/PropertyPrimitives'
-import { CreatePropertyPrimitiveDto } from './../../dtos/create-property-primitive.dto'
-import { UpdatePropertyPrimitiveDto } from './../../dtos/update-property-primitive.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { PropertyPrimitives } from './../../../entities/PropertyPrimitives';
+import { CreatePropertyPrimitiveDto } from './../../dtos/create-property-primitive.dto';
+import { UpdatePropertyPrimitiveDto } from './../../dtos/update-property-primitive.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenPropertyPrimitivesService {

@@ -6,12 +6,12 @@
  * in api/services/rates.service
  * in a proper way.
  */
-import { Rates } from './../../../entities/Rates'
-import { CreateRateDto } from './../../dtos/create-rate.dto'
-import { UpdateRateDto } from './../../dtos/update-rate.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { Rates } from './../../../entities/Rates';
+import { CreateRateDto } from './../../dtos/create-rate.dto';
+import { UpdateRateDto } from './../../dtos/update-rate.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenRatesService {

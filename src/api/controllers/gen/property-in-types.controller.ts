@@ -6,20 +6,20 @@
  * in api/controllers/property-in-types.controller
  * in a proper way.
  */
-import { AuthInfo } from './../../../decorators/auth.decorator'
-import { ApiKeys } from './../../../entities/ApiKeys'
-import { CreatePropertyInTypeDto } from './../../dtos/create-property-in-type.dto'
-import { UpdatePropertyInTypeDto } from './../../dtos/update-property-in-type.dto'
-import { CatalogPropertiesService } from './../../services/catalog-properties.service'
-import { CatalogTypesOverloadService } from './../../services/catalog-types-overload.service'
-import { CatalogTypesService } from './../../services/catalog-types.service'
-import { CatalogsService } from './../../services/catalogs.service'
-import { PropertyInTypesService } from './../../services/property-in-types.service'
-import { PropertyTypesService } from './../../services/property-types.service'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiHeader, ApiTags } from '@nestjs/swagger'
+import { AuthInfo } from './../../../decorators/auth.decorator';
+import { ApiKeys } from './../../../entities/ApiKeys';
+import { CreatePropertyInTypeDto } from './../../dtos/create-property-in-type.dto';
+import { UpdatePropertyInTypeDto } from './../../dtos/update-property-in-type.dto';
+import { CatalogPropertiesService } from './../../services/catalog-properties.service';
+import { CatalogTypesOverloadService } from './../../services/catalog-types-overload.service';
+import { CatalogTypesService } from './../../services/catalog-types.service';
+import { CatalogsService } from './../../services/catalogs.service';
+import { PropertyInTypesService } from './../../services/property-in-types.service';
+import { PropertyTypesService } from './../../services/property-types.service';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))

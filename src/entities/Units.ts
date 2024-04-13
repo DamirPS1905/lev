@@ -1,6 +1,6 @@
-import { Collection, Entity, type Hidden, ManyToOne, OneToMany, OneToOne, type Opt, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 import { Companies } from './Companies';
 import { UnitGroups } from './UnitGroups';
+import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, Unique, type Hidden, type Opt } from '@mikro-orm/core';
 
 @Entity()
 @Unique({ name: 'units_group_company_abbr_uind', expression: 'CREATE UNIQUE INDEX units_group_company_abbr_uind ON public.units USING btree ("group", company, abbr) WHERE (company IS NOT NULL)' })
@@ -20,7 +20,7 @@ export class Units {
   @Property()
   abbr!: string;
 
-  @OneToOne({ entity: () => UnitGroups, fieldName: 'group', deleteRule: 'cascade', unique: 'units_group_abbr_cuind' })
+  @ManyToOne({ entity: () => UnitGroups, fieldName: 'group', deleteRule: 'cascade', unique: 'units_group_abbr_cuind' })
   group!: UnitGroups;
 
   @Property({ type: 'number', columnType: 'double precision' })
@@ -29,7 +29,11 @@ export class Units {
   @Property({ type: 'number', columnType: 'double precision' })
   factor: number & Opt = 1;
 
-  @OneToMany({ entity: () => UnitGroups, mappedBy: 'base' })
-  baseInverse = new Collection<UnitGroups>(this);
+	// gen - begin
+	
+	@OneToMany({ entity: () => UnitGroups, mappedBy: 'base' })
+	unitGroupsByBase = new Collection<UnitGroups>(this);
+	
+	// gen - end
 
 }

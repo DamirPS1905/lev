@@ -6,17 +6,17 @@
  * in api/controllers/catalog-product-offers.controller
  * in a proper way.
  */
-import { AuthInfo } from './../../../decorators/auth.decorator'
-import { ApiKeys } from './../../../entities/ApiKeys'
-import { CreateCatalogProductOfferDto } from './../../dtos/create-catalog-product-offer.dto'
-import { UpdateCatalogProductOfferDto } from './../../dtos/update-catalog-product-offer.dto'
-import { CatalogProductOffersService } from './../../services/catalog-product-offers.service'
-import { CatalogProductsService } from './../../services/catalog-products.service'
-import { CatalogsService } from './../../services/catalogs.service'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiHeader, ApiTags } from '@nestjs/swagger'
+import { AuthInfo } from './../../../decorators/auth.decorator';
+import { ApiKeys } from './../../../entities/ApiKeys';
+import { CreateCatalogProductOfferDto } from './../../dtos/create-catalog-product-offer.dto';
+import { UpdateCatalogProductOfferDto } from './../../dtos/update-catalog-product-offer.dto';
+import { CatalogProductOffersService } from './../../services/catalog-product-offers.service';
+import { CatalogProductsService } from './../../services/catalog-products.service';
+import { CatalogsService } from './../../services/catalogs.service';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))

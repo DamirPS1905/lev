@@ -6,12 +6,12 @@
  * in api/services/stores.service
  * in a proper way.
  */
-import { Stores } from './../../../entities/Stores'
-import { CreateStoreDto } from './../../dtos/create-store.dto'
-import { UpdateStoreDto } from './../../dtos/update-store.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { Stores } from './../../../entities/Stores';
+import { CreateStoreDto } from './../../dtos/create-store.dto';
+import { UpdateStoreDto } from './../../dtos/update-store.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenStoresService {

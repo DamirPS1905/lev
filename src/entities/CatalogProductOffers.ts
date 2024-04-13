@@ -1,9 +1,10 @@
-import { Collection, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
 import { CatalogProducts } from './CatalogProducts';
 import { Catalogs } from './Catalogs';
 import { OfferAmounts } from './OfferAmounts';
+import { OfferPrices } from './OfferPrices';
 import { OfferPropertyValues } from './OfferPropertyValues';
 import { Stores } from './Stores';
+import { Collection, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryKey, Property, type Opt } from '@mikro-orm/core';
 
 @Entity()
 export class CatalogProductOffers {
@@ -14,7 +15,7 @@ export class CatalogProductOffers {
   @ManyToOne({ entity: () => CatalogProducts, fieldName: 'product' })
   product!: CatalogProducts;
 
-  @OneToOne({ entity: () => Catalogs, fieldName: 'catalog', unique: 'catalog_product_offers_catalog_article_uind' })
+  @ManyToOne({ entity: () => Catalogs, fieldName: 'catalog', unique: 'catalog_product_offers_catalog_article_uind' })
   catalog!: Catalogs;
 
   @Property()
@@ -26,7 +27,17 @@ export class CatalogProductOffers {
   @ManyToMany({ entity: () => Stores, pivotTable: 'offer_amounts', pivotEntity: () => OfferAmounts, joinColumn: 'offer', inverseJoinColumn: 'store' })
   offerAmounts = new Collection<Stores>(this);
 
-  @OneToMany({ entity: () => OfferPropertyValues, mappedBy: 'offer' })
-  offerInverse = new Collection<OfferPropertyValues>(this);
+	// gen - begin
+	
+	@OneToMany({ entity: () => OfferPropertyValues, mappedBy: 'offer' })
+	offerPropertyValuesByOffer = new Collection<OfferPropertyValues>(this);
+	
+	@OneToMany({ entity: () => OfferAmounts, mappedBy: 'offer' })
+	offerAmountsByOffer = new Collection<OfferAmounts>(this);
+	
+	@OneToMany({ entity: () => OfferPrices, mappedBy: 'offer' })
+	offerPricesByOffer = new Collection<OfferPrices>(this);
+	
+	// gen - end
 
 }

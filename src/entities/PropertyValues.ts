@@ -1,6 +1,6 @@
-import { Entity, type Hidden, Index, ManyToOne, OneToOne, PrimaryKey, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { OptionsPropertyValues } from './OptionsPropertyValues';
 import { PropertyTypes } from './PropertyTypes';
+import { Collection, Entity, Index, ManyToOne, OneToMany, PrimaryKey, PrimaryKeyProp, Property, type Hidden } from '@mikro-orm/core';
 
 @Entity()
 @Index({ name: 'property_values_1_value', expression: 'CREATE INDEX property_values_1_value ON public.property_values USING btree ((((value ->> \'value\'::text))::character varying)) WHERE (type = 1)' })
@@ -20,7 +20,11 @@ export class PropertyValues {
   @Property({ columnType: 'jsonb' })
   value!: any;
 
-  @OneToOne({ entity: () => OptionsPropertyValues, mappedBy: 'value' })
-  valueInverse?: OptionsPropertyValues;
+	// gen - begin
+	
+	@OneToMany({ entity: () => OptionsPropertyValues, mappedBy: 'value' })
+	optionsPropertyValuesByValue = new Collection<OptionsPropertyValues>(this);
+	
+	// gen - end
 
 }

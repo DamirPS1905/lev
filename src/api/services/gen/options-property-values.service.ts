@@ -6,12 +6,12 @@
  * in api/services/options-property-values.service
  * in a proper way.
  */
-import { OptionsPropertyValues } from './../../../entities/OptionsPropertyValues'
-import { CreateOptionsPropertyValueDto } from './../../dtos/create-options-property-value.dto'
-import { UpdateOptionsPropertyValueDto } from './../../dtos/update-options-property-value.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { OptionsPropertyValues } from './../../../entities/OptionsPropertyValues';
+import { CreateOptionsPropertyValueDto } from './../../dtos/create-options-property-value.dto';
+import { UpdateOptionsPropertyValueDto } from './../../dtos/update-options-property-value.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenOptionsPropertyValuesService {

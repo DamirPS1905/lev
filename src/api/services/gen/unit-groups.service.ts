@@ -6,12 +6,12 @@
  * in api/services/unit-groups.service
  * in a proper way.
  */
-import { UnitGroups } from './../../../entities/UnitGroups'
-import { CreateUnitGroupDto } from './../../dtos/create-unit-group.dto'
-import { UpdateUnitGroupDto } from './../../dtos/update-unit-group.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { UnitGroups } from './../../../entities/UnitGroups';
+import { CreateUnitGroupDto } from './../../dtos/create-unit-group.dto';
+import { UpdateUnitGroupDto } from './../../dtos/update-unit-group.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenUnitGroupsService {

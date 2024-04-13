@@ -6,18 +6,18 @@
  * in api/controllers/catalog-types.controller
  * in a proper way.
  */
-import { AuthInfo } from './../../../decorators/auth.decorator'
-import { ApiKeys } from './../../../entities/ApiKeys'
-import { CreateCatalogTypeDto } from './../../dtos/create-catalog-type.dto'
-import { UpdateCatalogTypeDto } from './../../dtos/update-catalog-type.dto'
-import { CatalogTypesOverloadService } from './../../services/catalog-types-overload.service'
-import { CatalogTypesService } from './../../services/catalog-types.service'
-import { CatalogsService } from './../../services/catalogs.service'
-import { PropertyInTypesService } from './../../services/property-in-types.service'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiHeader, ApiTags } from '@nestjs/swagger'
+import { AuthInfo } from './../../../decorators/auth.decorator';
+import { ApiKeys } from './../../../entities/ApiKeys';
+import { CreateCatalogTypeDto } from './../../dtos/create-catalog-type.dto';
+import { UpdateCatalogTypeDto } from './../../dtos/update-catalog-type.dto';
+import { CatalogTypesOverloadService } from './../../services/catalog-types-overload.service';
+import { CatalogTypesService } from './../../services/catalog-types.service';
+import { CatalogsService } from './../../services/catalogs.service';
+import { PropertyInTypesService } from './../../services/property-in-types.service';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))

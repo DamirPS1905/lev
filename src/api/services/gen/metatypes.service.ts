@@ -6,12 +6,12 @@
  * in api/services/metatypes.service
  * in a proper way.
  */
-import { Metatypes } from './../../../entities/Metatypes'
-import { CreateMetatypeDto } from './../../dtos/create-metatype.dto'
-import { UpdateMetatypeDto } from './../../dtos/update-metatype.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { Metatypes } from './../../../entities/Metatypes';
+import { CreateMetatypeDto } from './../../dtos/create-metatype.dto';
+import { UpdateMetatypeDto } from './../../dtos/update-metatype.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenMetatypesService {

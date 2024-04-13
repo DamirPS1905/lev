@@ -6,19 +6,19 @@
  * in api/controllers/product-property-values.controller
  * in a proper way.
  */
-import { AuthInfo } from './../../../decorators/auth.decorator'
-import { ApiKeys } from './../../../entities/ApiKeys'
-import { CreateProductPropertyValueDto } from './../../dtos/create-product-property-value.dto'
-import { UpdateProductPropertyValueDto } from './../../dtos/update-product-property-value.dto'
-import { CatalogProductsService } from './../../services/catalog-products.service'
-import { CatalogPropertiesService } from './../../services/catalog-properties.service'
-import { CatalogsService } from './../../services/catalogs.service'
-import { ProductPropertyValuesService } from './../../services/product-property-values.service'
-import { PropertyTypesService } from './../../services/property-types.service'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiHeader, ApiTags } from '@nestjs/swagger'
+import { AuthInfo } from './../../../decorators/auth.decorator';
+import { ApiKeys } from './../../../entities/ApiKeys';
+import { CreateProductPropertyValueDto } from './../../dtos/create-product-property-value.dto';
+import { UpdateProductPropertyValueDto } from './../../dtos/update-product-property-value.dto';
+import { CatalogProductsService } from './../../services/catalog-products.service';
+import { CatalogPropertiesService } from './../../services/catalog-properties.service';
+import { CatalogsService } from './../../services/catalogs.service';
+import { ProductPropertyValuesService } from './../../services/product-property-values.service';
+import { PropertyTypesService } from './../../services/property-types.service';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))

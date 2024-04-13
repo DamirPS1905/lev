@@ -6,12 +6,12 @@
  * in api/services/api-keys.service
  * in a proper way.
  */
-import { ApiKeys } from './../../../entities/ApiKeys'
-import { CreateApiKeyDto } from './../../dtos/create-api-key.dto'
-import { UpdateApiKeyDto } from './../../dtos/update-api-key.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { ApiKeys } from './../../../entities/ApiKeys';
+import { CreateApiKeyDto } from './../../dtos/create-api-key.dto';
+import { UpdateApiKeyDto } from './../../dtos/update-api-key.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenApiKeysService {

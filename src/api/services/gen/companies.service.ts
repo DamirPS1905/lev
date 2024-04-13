@@ -6,12 +6,12 @@
  * in api/services/companies.service
  * in a proper way.
  */
-import { Companies } from './../../../entities/Companies'
-import { CreateCompanyDto } from './../../dtos/create-company.dto'
-import { UpdateCompanyDto } from './../../dtos/update-company.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { Companies } from './../../../entities/Companies';
+import { CreateCompanyDto } from './../../dtos/create-company.dto';
+import { UpdateCompanyDto } from './../../dtos/update-company.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenCompaniesService {

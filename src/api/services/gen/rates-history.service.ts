@@ -6,12 +6,12 @@
  * in api/services/rates-history.service
  * in a proper way.
  */
-import { RatesHistory } from './../../../entities/RatesHistory'
-import { CreateRatesHistoryDto } from './../../dtos/create-rates-history.dto'
-import { UpdateRatesHistoryDto } from './../../dtos/update-rates-history.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { RatesHistory } from './../../../entities/RatesHistory';
+import { CreateRatesHistoryDto } from './../../dtos/create-rates-history.dto';
+import { UpdateRatesHistoryDto } from './../../dtos/update-rates-history.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenRatesHistoryService {

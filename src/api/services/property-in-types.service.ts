@@ -9,44 +9,44 @@ import { CreatePropertyInTypeDto } from './../dtos/create-property-in-type.dto'
 export class PropertyInTypesService extends GenPropertyInTypesService {
 	
 	async getChildsWithPropertyByType(property: number, parent: number, emt: EntityManager = null){
-		const conn = this.getEm(emt).getConnection(),
-					qu = `SELECT pit.*
-								FROM catalog_types_overload cto
-								JOIN catalog_types ct ON cto.child=ct.id
-								JOIN property_in_types pit ON pit."type"=ct.id 
-								WHERE cto.parent=${parent} AND pit.property=${property}`;
-		return await conn.execute<PropertyInTypes[]>(qu);
+		return await this.getEm(emt)
+			.createQueryBuilder(PropertyInTypes, 'pit')
+		  .select(['pit.*'])
+		  .join('pit.type', 'ct')
+		  .join('ct.catalogTypesOverloadByChild', 'cto')
+		  .where({'cto.parent': parent, 'pit.property': property })
+		  .getResult();
 	}
 	
 	async getParentsWithPropertyByType(property: number, child: number, emt: EntityManager = null){
-		const conn = this.getEm(emt).getConnection(),
-					qu = `SELECT pit.*
-								FROM catalog_types_overload cto
-								JOIN catalog_types ct ON cto.parent=ct.id
-								JOIN property_in_types pit ON pit."type"=ct.id 
-								WHERE cto.child=${child} AND pit.property=${property}`;
-		return await conn.execute<PropertyInTypes[]>(qu);
+		return await this.getEm(emt)
+			.createQueryBuilder(PropertyInTypes, 'pit')
+		  .select(['pit.*'])
+		  .join('pit.type', 'ct')
+		  .join('ct.catalogTypesOverloadByParent', 'cto')
+		  .where({'cto.child': child, 'pit.property': property })
+		  .getResult();
 	}
 	
 	async findOwnByType(type: number, emt: EntityManager = null) {
-		const conn = this.getEm(emt).getConnection(),
-					qu = `SELECT cp.id, cp."catalog", cp.title, cp."type", cp.multiple, cp."options", pit.scheme 
-								FROM property_in_types pit
-								JOIN catalog_properties cp ON cp.id=pit.property 
-								WHERE pit."type" =${type}`;
-		return await conn.execute<CatalogProperties[]>(qu);
+		return await this.getEm(emt)
+			.createQueryBuilder(CatalogProperties, 'cp')
+		  .select(['cp.id', 'cp.catalog', 'cp.title', 'cp.type', 'cp.multiple', 'cp.options', 'pit.scheme'])
+		  .join('cp.propertyInTypesByProperty', 'pit')
+		  .where({'pit.type': type })
+		  .getResult();
 	}
 	
 	
 	async findEveryByType(type: number, emt: EntityManager = null) {
-		const conn = this.getEm(emt).getConnection(),
-					qu = `SELECT cp.id, cp."catalog", cp.title, cp."type", cp.multiple, cp."options", pit.scheme 
-								FROM catalog_types_overload cto 
-								JOIN catalog_types ct ON cto.parent = ct.id
-								JOIN property_in_types pit ON pit."type" =ct.id
-								JOIN catalog_properties cp ON cp.id=pit.property 
-								WHERE cto."child" =${type}`;
-		return await conn.execute<CatalogProperties[]>(qu);
+		return await this.getEm(emt)
+			.createQueryBuilder(CatalogProperties, 'cp')
+		  .select(['cp.id', 'cp.catalog', 'cp.title', 'cp.type', 'cp.multiple', 'cp.options', 'pit.scheme'])
+		  .join('cp.propertyInTypesByProperty', 'pit')
+		  .join('pit.type', 'ct')
+		  .join('ct.catalogTypesOverloadByParent', 'cto')
+		  .where({'cto.child': type })
+		  .getResult();
 	}
 	
 	async prepearTypeTransfer(type: number, oldParent: number, newParent: number, emt: EntityManager = null){
@@ -57,14 +57,14 @@ export class PropertyInTypesService extends GenPropertyInTypesService {
 					ownProperties = (await em.createQueryBuilder(PropertyInTypes, 'pit')
 					  .select(['pit.property'], true)
 					  .join('pit.type', 'ct')
-					  .join('ct.childInverse', 'cto')
+					  .join('ct.catalogTypesOverloadByChild', 'cto')
 					  .where({'cto.parent': type })
 					  .execute()).map(p=>p.property.id);
 		if(ownProperties.length>0){
 			clean = await em.createQueryBuilder(PropertyInTypes, 'pit')
 			  .select(['pit.*'])
 			  .join('pit.type', 'ct')
-			  .join('ct.parentInverse', 'cto')
+			  .join('ct.catalogTypesOverloadByParent', 'cto')
 			  .where({'cto.child': newParent, 'pit.property': { $in: ownProperties } })
 			  .getResult();
 		}
@@ -72,7 +72,7 @@ export class PropertyInTypesService extends GenPropertyInTypesService {
 		const loosed = await em.createQueryBuilder(PropertyInTypes, 'pit')
 		  .select(['pit.*'])
 		  .join('pit.type', 'ct')
-		  .join('ct.parentInverse', 'cto')
+		  .join('ct.catalogTypesOverloadByParent', 'cto')
 		  .where({'cto.child': oldParent })
 		  .getResult();
 		if(loosed.length>0){
@@ -80,7 +80,7 @@ export class PropertyInTypesService extends GenPropertyInTypesService {
 						found = (await em.createQueryBuilder(PropertyInTypes, 'pit')
 						  .select(['pit.property'])
 						  .join('pit.type', 'ct')
-						  .join('ct.parentInverse', 'cto')
+						  .join('ct.catalogTypesOverloadByParent', 'cto')
 						  .where({'cto.child': newParent, 'pit.property': { $in: lookUp } })
 						  .execute()).map(p=>p.property.id);
 			add = loosed.filter(lost => !found.includes(lost.property.id))

@@ -6,12 +6,12 @@
  * in api/services/catalog-brands.service
  * in a proper way.
  */
-import { CatalogBrands } from './../../../entities/CatalogBrands'
-import { CreateCatalogBrandDto } from './../../dtos/create-catalog-brand.dto'
-import { UpdateCatalogBrandDto } from './../../dtos/update-catalog-brand.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { CatalogBrands } from './../../../entities/CatalogBrands';
+import { CreateCatalogBrandDto } from './../../dtos/create-catalog-brand.dto';
+import { UpdateCatalogBrandDto } from './../../dtos/update-catalog-brand.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenCatalogBrandsService {

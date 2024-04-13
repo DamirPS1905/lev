@@ -6,9 +6,9 @@
  * in api/dtos/create-property-primitive.dto
  * in a proper way.
  */
-import { ApiProperty } from '@nestjs/swagger'
-import { Transform, TransformFnParams } from 'class-transformer'
-import { IsOptional, IsString } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger';
+import { Transform, TransformFnParams } from 'class-transformer';
+import { IsOptional, IsString } from 'class-validator';
 
 export class GenCreatePropertyPrimitiveDto {
 	

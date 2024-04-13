@@ -1,4 +1,4 @@
-import { MikroORM } from '@mikro-orm/core';
+import { MikroORM, ReferenceKind } from '@mikro-orm/core';
 import { EntityGenerator } from '@mikro-orm/entity-generator';
 import { Options, PostgreSqlDriver } from '@mikro-orm/postgresql';
 import * as fs from 'fs';
@@ -32,9 +32,9 @@ require('dotenv').config();
   const dump = await orm.entityGenerator.generate({
     save: true,
     path: process.cwd() + '/src/entities',
-    bidirectionalRelations: true,
     onInitialMetadata: (metadata, platform) => {
 	    metadata.forEach(meta => {
+		    //console.log(meta);
 		    const tbl = meta.collection;
 	      meta.props.forEach(prop => {
 		      const col = prop.fieldNames[0];
@@ -42,6 +42,17 @@ require('dotenv').config();
 				    prop.hidden = true;
 		      }
 	      });
+	    });
+	  },
+	  onProcessedMetadata: (metadata, platform) => {
+	    metadata.forEach(meta => {
+		    meta.indexes.forEach(p => {
+			    p.expression = p.expression.replace(/['']/g, "\\'");
+		    })
+		    meta.relations.forEach(p => {
+			    if(p.kind===ReferenceKind.ONE_TO_ONE)
+			    	p.kind = ReferenceKind.MANY_TO_ONE
+		    })
 	    });
 	  },
   });

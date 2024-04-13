@@ -6,12 +6,12 @@
  * in api/services/catalogs.service
  * in a proper way.
  */
-import { Catalogs } from './../../../entities/Catalogs'
-import { CreateCatalogDto } from './../../dtos/create-catalog.dto'
-import { UpdateCatalogDto } from './../../dtos/update-catalog.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { Catalogs } from './../../../entities/Catalogs';
+import { CreateCatalogDto } from './../../dtos/create-catalog.dto';
+import { UpdateCatalogDto } from './../../dtos/update-catalog.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenCatalogsService {

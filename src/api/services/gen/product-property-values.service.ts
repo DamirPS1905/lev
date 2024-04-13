@@ -6,12 +6,12 @@
  * in api/services/product-property-values.service
  * in a proper way.
  */
-import { ProductPropertyValues } from './../../../entities/ProductPropertyValues'
-import { CreateProductPropertyValueDto } from './../../dtos/create-product-property-value.dto'
-import { UpdateProductPropertyValueDto } from './../../dtos/update-product-property-value.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { ProductPropertyValues } from './../../../entities/ProductPropertyValues';
+import { CreateProductPropertyValueDto } from './../../dtos/create-product-property-value.dto';
+import { UpdateProductPropertyValueDto } from './../../dtos/update-product-property-value.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenProductPropertyValuesService {

@@ -1,6 +1,7 @@
-import { Collection, Entity, OneToMany, OneToOne, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { CatalogProperties } from './CatalogProperties';
 import { Catalogs } from './Catalogs';
 import { PropertyValues } from './PropertyValues';
+import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 
 @Entity()
 @Unique({ name: 'property_types_common_title_uind', expression: 'CREATE UNIQUE INDEX property_types_common_title_uind ON public.property_types USING btree (title) WHERE (catalog IS NULL)' })
@@ -16,10 +17,17 @@ export class PropertyTypes {
   @Property({ columnType: 'jsonb' })
   scheme!: any;
 
-  @OneToOne({ entity: () => Catalogs, fieldName: 'catalog', nullable: true, unique: 'property_types_catalog_title_uind' })
+  @ManyToOne({ entity: () => Catalogs, fieldName: 'catalog', nullable: true, unique: 'property_types_catalog_title_uind' })
   catalog?: Catalogs;
 
-  @OneToMany({ entity: () => PropertyValues, mappedBy: 'type' })
-  typeInverse = new Collection<PropertyValues>(this);
+	// gen - begin
+	
+	@OneToMany({ entity: () => CatalogProperties, mappedBy: 'type' })
+	catalogPropertiesByType = new Collection<CatalogProperties>(this);
+	
+	@OneToMany({ entity: () => PropertyValues, mappedBy: 'type' })
+	propertyValuesByType = new Collection<PropertyValues>(this);
+	
+	// gen - end
 
 }

@@ -6,8 +6,8 @@
  * in api/dtos/create-actor.dto
  * in a proper way.
  */
-import { ApiProperty } from '@nestjs/swagger'
-import { IsInt, IsOptional } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger';
+import { IsInt, IsOptional } from 'class-validator';
 
 export class GenCreateActorDto {
 	

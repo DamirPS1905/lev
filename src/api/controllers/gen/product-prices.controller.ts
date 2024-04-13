@@ -6,19 +6,19 @@
  * in api/controllers/product-prices.controller
  * in a proper way.
  */
-import { AuthInfo } from './../../../decorators/auth.decorator'
-import { ApiKeys } from './../../../entities/ApiKeys'
-import { CreateProductPriceDto } from './../../dtos/create-product-price.dto'
-import { UpdateProductPriceDto } from './../../dtos/update-product-price.dto'
-import { CatalogProductsService } from './../../services/catalog-products.service'
-import { CatalogsService } from './../../services/catalogs.service'
-import { PriceTypesService } from './../../services/price-types.service'
-import { ProductPricesService } from './../../services/product-prices.service'
-import { RatesService } from './../../services/rates.service'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiHeader, ApiTags } from '@nestjs/swagger'
+import { AuthInfo } from './../../../decorators/auth.decorator';
+import { ApiKeys } from './../../../entities/ApiKeys';
+import { CreateProductPriceDto } from './../../dtos/create-product-price.dto';
+import { UpdateProductPriceDto } from './../../dtos/update-product-price.dto';
+import { CatalogProductsService } from './../../services/catalog-products.service';
+import { CatalogsService } from './../../services/catalogs.service';
+import { PriceTypesService } from './../../services/price-types.service';
+import { ProductPricesService } from './../../services/product-prices.service';
+import { RatesService } from './../../services/rates.service';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))

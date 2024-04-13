@@ -6,8 +6,8 @@
  * in api/dtos/update-property-in-type.dto
  * in a proper way.
  */
-import { ApiProperty } from '@nestjs/swagger'
-import { IsOptional } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional } from 'class-validator';
 
 export class GenUpdatePropertyInTypeDto {
 	

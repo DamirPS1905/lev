@@ -1,6 +1,6 @@
-import { Collection, Entity, type Hidden, ManyToOne, OneToMany, type Opt, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 import { Currencies } from './Currencies';
 import { Rates } from './Rates';
+import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, Unique, type Hidden, type Opt } from '@mikro-orm/core';
 
 @Entity()
 export class RatesSources {
@@ -27,7 +27,11 @@ export class RatesSources {
   @Property({ type: 'string', columnType: 'text', nullable: true, hidden: true })
   problemInfo?: string & Hidden;
 
-  @OneToMany({ entity: () => Rates, mappedBy: 'source' })
-  sourceInverse = new Collection<Rates>(this);
+	// gen - begin
+	
+	@OneToMany({ entity: () => Rates, mappedBy: 'source' })
+	ratesBySource = new Collection<Rates>(this);
+	
+	// gen - end
 
 }

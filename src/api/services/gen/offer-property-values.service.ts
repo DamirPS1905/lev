@@ -6,12 +6,12 @@
  * in api/services/offer-property-values.service
  * in a proper way.
  */
-import { OfferPropertyValues } from './../../../entities/OfferPropertyValues'
-import { CreateOfferPropertyValueDto } from './../../dtos/create-offer-property-value.dto'
-import { UpdateOfferPropertyValueDto } from './../../dtos/update-offer-property-value.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { OfferPropertyValues } from './../../../entities/OfferPropertyValues';
+import { CreateOfferPropertyValueDto } from './../../dtos/create-offer-property-value.dto';
+import { UpdateOfferPropertyValueDto } from './../../dtos/update-offer-property-value.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenOfferPropertyValuesService {

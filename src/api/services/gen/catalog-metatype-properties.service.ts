@@ -6,12 +6,12 @@
  * in api/services/catalog-metatype-properties.service
  * in a proper way.
  */
-import { CatalogMetatypeProperties } from './../../../entities/CatalogMetatypeProperties'
-import { CreateCatalogMetatypePropertyDto } from './../../dtos/create-catalog-metatype-property.dto'
-import { UpdateCatalogMetatypePropertyDto } from './../../dtos/update-catalog-metatype-property.dto'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { CatalogMetatypeProperties } from './../../../entities/CatalogMetatypeProperties';
+import { CreateCatalogMetatypePropertyDto } from './../../dtos/create-catalog-metatype-property.dto';
+import { UpdateCatalogMetatypePropertyDto } from './../../dtos/update-catalog-metatype-property.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GenCatalogMetatypePropertiesService {
