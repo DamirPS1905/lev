@@ -250,6 +250,9 @@
                 "created": {
                     "def": "def",
                     "dto": false
+                },
+                "collection": {
+                    "def": "def"
                 }
             }
         },
@@ -377,6 +380,9 @@
                 },
                 "value_key": {
                     "def": "def"
+                },
+                "order": {
+                    "def": "def"
                 }
             },
             "extraRouteParams": [
@@ -502,6 +508,9 @@
                 },
                 "value_key": {
                     "def": "def"
+                },
+                "order": {
+                    "def": "def"
                 }
             },
             "extraRouteParams": [
@@ -623,26 +632,6 @@
                     "def": "id"
                 },
                 "title": {
-                    "def": "def"
-                }
-            }
-        },
-        "catalog_metatypes": {
-            "def": "catDef",
-            "create": false,
-            "update": false,
-            "delete": false,
-            "getOne": false,
-            "paginateByMax": 0,
-            "fields": {
-                "id": {
-                    "def": "id"
-                },
-                "catalog": {
-                    "def": "catalog",
-                    "hidden": true
-                },
-                "metatype": {
                     "def": "def"
                 }
             }
@@ -1104,9 +1093,6 @@
                 "value_key": {
                     "def": "def"
                 },
-                "order": {
-                    "def": "def"
-                },
                 "type": {
                     "def": "def",
                     "hidden": true
@@ -1280,6 +1266,74 @@
             }
         },
         "brand_property_values": {
+            "def": "def",
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": false,
+            "list": false,
+            "fields": {
+                "instance": {
+                    "def": "def"
+                },
+                "property": {
+                    "def": "def"
+                },
+                "order": {
+                    "def": "def"
+                },
+                "value": {
+                    "def": "def"
+                }
+            }
+        },
+        "catalog_brand_collections": {
+            "def": "catDef",
+            "apiPathName": "collection",
+            "paginateByMax": 0,
+            "apiPrefix": "catalog\/:catalog\/brand\/:brand",
+            "fields": {
+                "id": {
+                    "def": "id"
+                },
+                "brand": {
+                    "def": "def",
+                    "dtoDisallow": true,
+                    "readValidate": "@@===brand",
+                    "readForWriteValidate": "@@===brand",
+                    "from": "path",
+                    "fillDto": "create"
+                },
+                "title": {
+                    "def": "title"
+                }
+            },
+            "extraRouteParams": [
+                {
+                    "key": "catalog",
+                    "type": "number",
+                    "var": "catalog",
+                    "load": {
+                        "as": "catalogs",
+                        "validate": "@@.company.id===apiKey.company.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Catalog not found"
+                    }
+                },
+                {
+                    "key": "brand",
+                    "type": "number",
+                    "var": "brand",
+                    "load": {
+                        "as": "catalog_brands",
+                        "validate": "@@.catalog.id===catalog",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Brand not found"
+                    }
+                }
+            ]
+        },
+        "collection_property_values": {
             "def": "def",
             "create": false,
             "update": false,

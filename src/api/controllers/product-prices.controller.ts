@@ -7,21 +7,22 @@ import { GenProductPricesController } from './gen/product-prices.controller'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
+import { ParseBigIntPipe } from './../../pipes/parse-bigint.pipe'
 
 export class ProductPricesController extends GenProductPricesController {
 	
 	@Get('all')
-	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint) {
+	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product', ParseBigIntPipe) product: bigint) {
 		return await super.findAll(apiKey, catalog, product);
 	}
 	
 	@Get(':priceType')
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('priceType', ParseIntPipe) priceType: number) {
+	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product', ParseBigIntPipe) product: bigint, @Param('priceType', ParseIntPipe) priceType: number) {
 		return await super.findOne(apiKey, catalog, product, priceType);
 	}
 	
 	@Patch(':priceType')
-	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('priceType', ParseIntPipe) priceType: number, @Body() updateDto: UpdateProductPriceDto) {
+	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product', ParseBigIntPipe) product: bigint, @Param('priceType', ParseIntPipe) priceType: number, @Body() updateDto: UpdateProductPriceDto) {
 		return await super.update(apiKey, catalog, product, priceType, updateDto);
 	}
 	
@@ -40,7 +41,7 @@ export class ProductPricesController extends GenProductPricesController {
 	}
 	
 	@Delete(':priceType')
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product') product: bigint, @Param('priceType', ParseIntPipe) priceType: number) {
+	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('product', ParseBigIntPipe) product: bigint, @Param('priceType', ParseIntPipe) priceType: number) {
 		return await super.delete(apiKey, catalog, product, priceType);
 	}
 	

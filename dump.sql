@@ -305,6 +305,41 @@ ALTER SEQUENCE public.brands_id_seq OWNED BY public.catalog_types.id;
 
 
 --
+-- Name: catalog_brand_collections; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.catalog_brand_collections (
+    id integer NOT NULL,
+    brand integer NOT NULL,
+    title character varying NOT NULL
+);
+
+
+ALTER TABLE public.catalog_brand_collections OWNER TO dev;
+
+--
+-- Name: catalog_brand_collections_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.catalog_brand_collections_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.catalog_brand_collections_id_seq OWNER TO dev;
+
+--
+-- Name: catalog_brand_collections_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
+--
+
+ALTER SEQUENCE public.catalog_brand_collections_id_seq OWNED BY public.catalog_brand_collections.id;
+
+
+--
 -- Name: catalog_brands; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -356,19 +391,6 @@ CREATE TABLE public.catalog_metatype_properties (
 ALTER TABLE public.catalog_metatype_properties OWNER TO dev;
 
 --
--- Name: catalog_metatypes; Type: TABLE; Schema: public; Owner: dev
---
-
-CREATE TABLE public.catalog_metatypes (
-    id integer NOT NULL,
-    catalog integer NOT NULL,
-    metatype integer NOT NULL
-);
-
-
-ALTER TABLE public.catalog_metatypes OWNER TO dev;
-
---
 -- Name: metatypes; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -400,28 +422,6 @@ ALTER SEQUENCE public.catalog_metatypes_id_seq OWNER TO dev;
 --
 
 ALTER SEQUENCE public.catalog_metatypes_id_seq OWNED BY public.metatypes.id;
-
-
---
--- Name: catalog_metatypes_id_seq1; Type: SEQUENCE; Schema: public; Owner: dev
---
-
-CREATE SEQUENCE public.catalog_metatypes_id_seq1
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.catalog_metatypes_id_seq1 OWNER TO dev;
-
---
--- Name: catalog_metatypes_id_seq1; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
---
-
-ALTER SEQUENCE public.catalog_metatypes_id_seq1 OWNED BY public.catalog_metatypes.id;
 
 
 --
@@ -470,7 +470,8 @@ CREATE TABLE public.catalog_products (
     type integer NOT NULL,
     brand integer NOT NULL,
     title character varying NOT NULL,
-    created timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    created timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    collection integer
 );
 
 
@@ -585,6 +586,20 @@ ALTER SEQUENCE public.catalogs_id_seq OWNED BY public.catalogs.id;
 
 
 --
+-- Name: collection_property_values; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.collection_property_values (
+    instance integer NOT NULL,
+    property integer NOT NULL,
+    "order" smallint NOT NULL,
+    value bigint NOT NULL
+);
+
+
+ALTER TABLE public.collection_property_values OWNER TO dev;
+
+--
 -- Name: companies; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -697,7 +712,8 @@ ALTER TABLE public.offer_prices OWNER TO dev;
 CREATE TABLE public.offer_property_values (
     offer bigint NOT NULL,
     property integer NOT NULL,
-    value_key bigint NOT NULL
+    "order" smallint NOT NULL,
+    value bigint NOT NULL
 );
 
 
@@ -779,7 +795,8 @@ ALTER TABLE public.product_prices OWNER TO dev;
 CREATE TABLE public.product_property_values (
     product bigint NOT NULL,
     property integer NOT NULL,
-    value_key bigint NOT NULL
+    "order" smallint NOT NULL,
+    value bigint NOT NULL
 );
 
 
@@ -1152,17 +1169,17 @@ ALTER TABLE ONLY public.api_keys ALTER COLUMN id SET DEFAULT nextval('public.api
 
 
 --
+-- Name: catalog_brand_collections id; Type: DEFAULT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.catalog_brand_collections ALTER COLUMN id SET DEFAULT nextval('public.catalog_brand_collections_id_seq'::regclass);
+
+
+--
 -- Name: catalog_brands id; Type: DEFAULT; Schema: public; Owner: dev
 --
 
 ALTER TABLE ONLY public.catalog_brands ALTER COLUMN id SET DEFAULT nextval('public.catalog_brands_id_seq'::regclass);
-
-
---
--- Name: catalog_metatypes id; Type: DEFAULT; Schema: public; Owner: dev
---
-
-ALTER TABLE ONLY public.catalog_metatypes ALTER COLUMN id SET DEFAULT nextval('public.catalog_metatypes_id_seq1'::regclass);
 
 
 --
@@ -1322,6 +1339,14 @@ COPY public.brand_property_values (instance, property, "order", value) FROM stdi
 
 
 --
+-- Data for Name: catalog_brand_collections; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.catalog_brand_collections (id, brand, title) FROM stdin;
+\.
+
+
+--
 -- Data for Name: catalog_brands; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
@@ -1361,17 +1386,6 @@ COPY public.catalog_metatype_properties (metatype, catalog, property, scheme) FR
 
 
 --
--- Data for Name: catalog_metatypes; Type: TABLE DATA; Schema: public; Owner: dev
---
-
-COPY public.catalog_metatypes (id, catalog, metatype) FROM stdin;
-1	1	1
-2	1	2
-3	1	3
-\.
-
-
---
 -- Data for Name: catalog_product_offers; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
@@ -1384,8 +1398,8 @@ COPY public.catalog_product_offers (id, product, catalog, article, created) FROM
 -- Data for Name: catalog_products; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.catalog_products (id, catalog, type, brand, title, created) FROM stdin;
-1	1	9	6	Fucken first	2024-04-10 02:50:17.864553+03
+COPY public.catalog_products (id, catalog, type, brand, title, created, collection) FROM stdin;
+1	1	9	6	Fucken first	2024-04-10 02:50:17.864553+03	\N
 \.
 
 
@@ -1446,6 +1460,14 @@ COPY public.catalog_types_overload (parent, child, delta) FROM stdin;
 
 COPY public.catalogs (id, title, company) FROM stdin;
 1	ololo	1
+\.
+
+
+--
+-- Data for Name: collection_property_values; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.collection_property_values (instance, property, "order", value) FROM stdin;
 \.
 
 
@@ -1542,7 +1564,7 @@ COPY public.offer_prices (offer, price_type, value, currency, last_change, updat
 -- Data for Name: offer_property_values; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.offer_property_values (offer, property, value_key) FROM stdin;
+COPY public.offer_property_values (offer, property, "order", value) FROM stdin;
 \.
 
 
@@ -1578,7 +1600,7 @@ COPY public.product_prices (product, price_type, value, currency, last_change, u
 -- Data for Name: product_property_values; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.product_property_values (product, property, value_key) FROM stdin;
+COPY public.product_property_values (product, property, "order", value) FROM stdin;
 \.
 
 
@@ -1646,92 +1668,92 @@ COPY public.property_values (value_key, type, value) FROM stdin;
 --
 
 COPY public.rates ("from", "to", source, rate, updated_at) FROM stdin;
-3	2	1	60.980200000	2024-04-13 03:45:04.186+03
-2	3	1	0.016398766	2024-04-13 03:45:04.186+03
-4	2	1	54.965800000	2024-04-13 03:45:04.186+03
-2	4	1	0.018193131	2024-04-13 03:45:04.186+03
-5	2	1	116.989300000	2024-04-13 03:45:04.186+03
-2	5	1	0.008547790	2024-04-13 03:45:04.186+03
-6	2	1	0.237259000	2024-04-13 03:45:04.186+03
-2	6	1	4.214803232	2024-04-13 03:45:04.186+03
-7	2	1	28.628000000	2024-04-13 03:45:04.186+03
-2	7	1	0.034930837	2024-04-13 03:45:04.186+03
-8	2	1	51.258900000	2024-04-13 03:45:04.186+03
-2	8	1	0.019508807	2024-04-13 03:45:04.186+03
-9	2	1	18.407800000	2024-04-13 03:45:04.186+03
-2	9	1	0.054324797	2024-04-13 03:45:04.186+03
-10	2	1	0.254520000	2024-04-13 03:45:04.186+03
-2	10	1	3.928964325	2024-04-13 03:45:04.186+03
-11	2	1	0.003880160	2024-04-13 03:45:04.186+03
-2	11	1	257.721331079	2024-04-13 03:45:04.186+03
-12	2	1	11.944500000	2024-04-13 03:45:04.186+03
-2	12	1	0.083720541	2024-04-13 03:45:04.186+03
-13	2	1	34.970800000	2024-04-13 03:45:04.186+03
-2	13	1	0.028595285	2024-04-13 03:45:04.186+03
-14	2	1	13.438100000	2024-04-13 03:45:04.186+03
-2	14	1	0.074415282	2024-04-13 03:45:04.186+03
-15	2	1	25.443700000	2024-04-13 03:45:04.186+03
-2	15	1	0.039302460	2024-04-13 03:45:04.186+03
-16	2	1	93.441900000	2024-04-13 03:45:04.186+03
-2	16	1	0.010701837	2024-04-13 03:45:04.186+03
-17	2	1	99.726400000	2024-04-13 03:45:04.186+03
-2	28	1	0.115885866	2024-04-13 03:45:04.186+03
-29	2	1	23.370400000	2024-04-13 03:45:04.186+03
-2	29	1	0.042789169	2024-04-13 03:45:04.186+03
-30	2	1	20.032600000	2024-04-13 03:45:04.186+03
-2	30	1	0.049918633	2024-04-13 03:45:04.186+03
-31	2	1	123.346100000	2024-04-13 03:45:04.186+03
-2	31	1	0.008107269	2024-04-13 03:45:04.186+03
-32	2	1	68.940500000	2024-04-13 03:45:04.186+03
-2	32	1	0.014505262	2024-04-13 03:45:04.186+03
-33	2	1	8.544120000	2024-04-13 03:45:04.186+03
-2	33	1	0.117039555	2024-04-13 03:45:04.186+03
-34	2	1	2.550830000	2024-04-13 03:45:04.186+03
-2	34	1	0.392029261	2024-04-13 03:45:04.186+03
-44	2	1	0.067938000	2024-04-13 03:45:04.186+03
-2	44	1	14.719302894	2024-04-13 03:45:04.186+03
-45	2	1	0.610691000	2024-04-13 03:45:04.186+03
-2	45	1	1.637489336	2024-04-13 03:45:04.186+03
-2	17	1	0.010027435	2024-04-13 03:45:04.186+03
-18	2	1	1.963430000	2024-04-13 03:45:04.186+03
-2	18	1	0.509312784	2024-04-13 03:45:04.186+03
-19	2	1	1.120500000	2024-04-13 03:45:04.186+03
-2	19	1	0.892458724	2024-04-13 03:45:04.186+03
-20	2	1	0.005874260	2024-04-13 03:45:04.186+03
-2	20	1	170.234208224	2024-04-13 03:45:04.186+03
-21	2	1	0.208385000	2024-04-13 03:45:04.186+03
-2	21	1	4.798809895	2024-04-13 03:45:04.186+03
-22	2	1	68.245600000	2024-04-13 03:45:04.186+03
-2	22	1	0.014652959	2024-04-13 03:45:04.186+03
-23	2	1	25.670900000	2024-04-13 03:45:04.186+03
-2	23	1	0.038954614	2024-04-13 03:45:04.186+03
-24	2	1	1.048500000	2024-04-13 03:45:04.186+03
-2	24	1	0.953743443	2024-04-13 03:45:04.186+03
-25	2	1	12.868500000	2024-04-13 03:45:04.186+03
-2	25	1	0.077709135	2024-04-13 03:45:04.186+03
-26	2	1	5.296230000	2024-04-13 03:45:04.186+03
-2	26	1	0.188813552	2024-04-13 03:45:04.186+03
-27	2	1	56.153900000	2024-04-13 03:45:04.186+03
-2	27	1	0.017808202	2024-04-13 03:45:04.186+03
-28	2	1	8.629180000	2024-04-13 03:45:04.186+03
-35	2	1	2.916890000	2024-04-13 03:45:04.186+03
-2	35	1	0.342830892	2024-04-13 03:45:04.186+03
-36	2	1	26.697700000	2024-04-13 03:45:04.186+03
-2	36	1	0.037456410	2024-04-13 03:45:04.186+03
-37	2	1	0.007371630	2024-04-13 03:45:04.186+03
-2	37	1	135.655207871	2024-04-13 03:45:04.186+03
-38	2	1	2.385690000	2024-04-13 03:45:04.186+03
-2	38	1	0.419165944	2024-04-13 03:45:04.186+03
-39	2	1	3.929100000	2024-04-13 03:45:04.186+03
-2	39	1	0.254511211	2024-04-13 03:45:04.186+03
-40	2	1	8.694280000	2024-04-13 03:45:04.186+03
-2	40	1	0.115018150	2024-04-13 03:45:04.186+03
-41	2	1	102.379600000	2024-04-13 03:45:04.186+03
-2	41	1	0.009767571	2024-04-13 03:45:04.186+03
-42	2	1	0.854819000	2024-04-13 03:45:04.186+03
-2	42	1	1.169838293	2024-04-13 03:45:04.186+03
-43	2	1	5.000480000	2024-04-13 03:45:04.186+03
-2	43	1	0.199980802	2024-04-13 03:45:04.186+03
+3	2	1	60.980200000	2024-04-14 03:45:00.7+03
+2	3	1	0.016398766	2024-04-14 03:45:00.7+03
+4	2	1	54.965800000	2024-04-14 03:45:00.7+03
+2	4	1	0.018193131	2024-04-14 03:45:00.7+03
+5	2	1	116.989300000	2024-04-14 03:45:00.7+03
+2	5	1	0.008547790	2024-04-14 03:45:00.7+03
+6	2	1	0.237259000	2024-04-14 03:45:00.7+03
+2	6	1	4.214803232	2024-04-14 03:45:00.7+03
+7	2	1	28.628000000	2024-04-14 03:45:00.7+03
+2	7	1	0.034930837	2024-04-14 03:45:00.7+03
+8	2	1	51.258900000	2024-04-14 03:45:00.7+03
+2	8	1	0.019508807	2024-04-14 03:45:00.7+03
+9	2	1	18.407800000	2024-04-14 03:45:00.7+03
+2	9	1	0.054324797	2024-04-14 03:45:00.7+03
+10	2	1	0.254520000	2024-04-14 03:45:00.7+03
+2	10	1	3.928964325	2024-04-14 03:45:00.7+03
+11	2	1	0.003880160	2024-04-14 03:45:00.7+03
+2	11	1	257.721331079	2024-04-14 03:45:00.7+03
+12	2	1	11.944500000	2024-04-14 03:45:00.7+03
+2	12	1	0.083720541	2024-04-14 03:45:00.7+03
+13	2	1	34.970800000	2024-04-14 03:45:00.7+03
+2	13	1	0.028595285	2024-04-14 03:45:00.7+03
+14	2	1	13.438100000	2024-04-14 03:45:00.7+03
+2	14	1	0.074415282	2024-04-14 03:45:00.7+03
+15	2	1	25.443700000	2024-04-14 03:45:00.7+03
+2	15	1	0.039302460	2024-04-14 03:45:00.7+03
+16	2	1	93.441900000	2024-04-14 03:45:00.7+03
+2	16	1	0.010701837	2024-04-14 03:45:00.7+03
+17	2	1	99.726400000	2024-04-14 03:45:00.7+03
+2	28	1	0.115885866	2024-04-14 03:45:00.7+03
+29	2	1	23.370400000	2024-04-14 03:45:00.7+03
+2	29	1	0.042789169	2024-04-14 03:45:00.7+03
+30	2	1	20.032600000	2024-04-14 03:45:00.7+03
+2	30	1	0.049918633	2024-04-14 03:45:00.7+03
+31	2	1	123.346100000	2024-04-14 03:45:00.7+03
+2	31	1	0.008107269	2024-04-14 03:45:00.7+03
+32	2	1	68.940500000	2024-04-14 03:45:00.7+03
+2	32	1	0.014505262	2024-04-14 03:45:00.7+03
+33	2	1	8.544120000	2024-04-14 03:45:00.7+03
+2	33	1	0.117039555	2024-04-14 03:45:00.7+03
+34	2	1	2.550830000	2024-04-14 03:45:00.7+03
+2	34	1	0.392029261	2024-04-14 03:45:00.7+03
+44	2	1	0.067938000	2024-04-14 03:45:00.7+03
+2	44	1	14.719302894	2024-04-14 03:45:00.7+03
+45	2	1	0.610691000	2024-04-14 03:45:00.7+03
+2	45	1	1.637489336	2024-04-14 03:45:00.7+03
+2	17	1	0.010027435	2024-04-14 03:45:00.7+03
+18	2	1	1.963430000	2024-04-14 03:45:00.7+03
+2	18	1	0.509312784	2024-04-14 03:45:00.7+03
+19	2	1	1.120500000	2024-04-14 03:45:00.7+03
+2	19	1	0.892458724	2024-04-14 03:45:00.7+03
+20	2	1	0.005874260	2024-04-14 03:45:00.7+03
+2	20	1	170.234208224	2024-04-14 03:45:00.7+03
+21	2	1	0.208385000	2024-04-14 03:45:00.7+03
+2	21	1	4.798809895	2024-04-14 03:45:00.7+03
+22	2	1	68.245600000	2024-04-14 03:45:00.7+03
+2	22	1	0.014652959	2024-04-14 03:45:00.7+03
+23	2	1	25.670900000	2024-04-14 03:45:00.7+03
+2	23	1	0.038954614	2024-04-14 03:45:00.7+03
+24	2	1	1.048500000	2024-04-14 03:45:00.7+03
+2	24	1	0.953743443	2024-04-14 03:45:00.7+03
+25	2	1	12.868500000	2024-04-14 03:45:00.7+03
+2	25	1	0.077709135	2024-04-14 03:45:00.7+03
+26	2	1	5.296230000	2024-04-14 03:45:00.7+03
+2	26	1	0.188813552	2024-04-14 03:45:00.7+03
+27	2	1	56.153900000	2024-04-14 03:45:00.7+03
+2	27	1	0.017808202	2024-04-14 03:45:00.7+03
+28	2	1	8.629180000	2024-04-14 03:45:00.7+03
+35	2	1	2.916890000	2024-04-14 03:45:00.7+03
+2	35	1	0.342830892	2024-04-14 03:45:00.7+03
+36	2	1	26.697700000	2024-04-14 03:45:00.7+03
+2	36	1	0.037456410	2024-04-14 03:45:00.7+03
+37	2	1	0.007371630	2024-04-14 03:45:00.7+03
+2	37	1	135.655207871	2024-04-14 03:45:00.7+03
+38	2	1	2.385690000	2024-04-14 03:45:00.7+03
+2	38	1	0.419165944	2024-04-14 03:45:00.7+03
+39	2	1	3.929100000	2024-04-14 03:45:00.7+03
+2	39	1	0.254511211	2024-04-14 03:45:00.7+03
+40	2	1	8.694280000	2024-04-14 03:45:00.7+03
+2	40	1	0.115018150	2024-04-14 03:45:00.7+03
+41	2	1	102.379600000	2024-04-14 03:45:00.7+03
+2	41	1	0.009767571	2024-04-14 03:45:00.7+03
+42	2	1	0.854819000	2024-04-14 03:45:00.7+03
+2	42	1	1.169838293	2024-04-14 03:45:00.7+03
+43	2	1	5.000480000	2024-04-14 03:45:00.7+03
+2	43	1	0.199980802	2024-04-14 03:45:00.7+03
 \.
 
 
@@ -2522,7 +2544,7 @@ COPY public.rates_history ("from", "to", source, date, rate) FROM stdin;
 --
 
 COPY public.rates_sources (id, title, base_currency, timezone, fine, fine_at, problem_info) FROM stdin;
-1	Rus CB	2	Europe/Moscow	t	2024-04-13 03:45:05.492+03	-3007
+1	Rus CB	2	Europe/Moscow	t	2024-04-14 03:45:01.67+03	-3007
 \.
 
 
@@ -2602,6 +2624,13 @@ SELECT pg_catalog.setval('public.brands_id_seq', 13, true);
 
 
 --
+-- Name: catalog_brand_collections_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.catalog_brand_collections_id_seq', 1, false);
+
+
+--
 -- Name: catalog_brands_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
@@ -2613,13 +2642,6 @@ SELECT pg_catalog.setval('public.catalog_brands_id_seq', 22, true);
 --
 
 SELECT pg_catalog.setval('public.catalog_metatypes_id_seq', 6, true);
-
-
---
--- Name: catalog_metatypes_id_seq1; Type: SEQUENCE SET; Schema: public; Owner: dev
---
-
-SELECT pg_catalog.setval('public.catalog_metatypes_id_seq1', 3, true);
 
 
 --
@@ -2784,6 +2806,22 @@ ALTER TABLE ONLY public.brand_property_values
 
 
 --
+-- Name: catalog_brand_collections catalog_brand_collections_brand_title_uind; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.catalog_brand_collections
+    ADD CONSTRAINT catalog_brand_collections_brand_title_uind UNIQUE (brand, title);
+
+
+--
+-- Name: catalog_brand_collections catalog_brand_collections_pk; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.catalog_brand_collections
+    ADD CONSTRAINT catalog_brand_collections_pk PRIMARY KEY (id);
+
+
+--
 -- Name: catalog_brands catalog_brands_catalog_title_uind; Type: CONSTRAINT; Schema: public; Owner: dev
 --
 
@@ -2805,22 +2843,6 @@ ALTER TABLE ONLY public.catalog_brands
 
 ALTER TABLE ONLY public.catalog_metatype_properties
     ADD CONSTRAINT catalog_metatype_properties_pk PRIMARY KEY (metatype, catalog, property);
-
-
---
--- Name: catalog_metatypes catalog_metatypes_catalog_metatype_uind; Type: CONSTRAINT; Schema: public; Owner: dev
---
-
-ALTER TABLE ONLY public.catalog_metatypes
-    ADD CONSTRAINT catalog_metatypes_catalog_metatype_uind UNIQUE (catalog, metatype);
-
-
---
--- Name: catalog_metatypes catalog_metatypes_pk; Type: CONSTRAINT; Schema: public; Owner: dev
---
-
-ALTER TABLE ONLY public.catalog_metatypes
-    ADD CONSTRAINT catalog_metatypes_pk PRIMARY KEY (id);
 
 
 --
@@ -2952,6 +2974,14 @@ ALTER TABLE ONLY public.currencies
 
 
 --
+-- Name: collection_property_values instance_property_values_pk; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.collection_property_values
+    ADD CONSTRAINT instance_property_values_pk PRIMARY KEY (instance, property, "order");
+
+
+--
 -- Name: metatypes metatypes_pk; Type: CONSTRAINT; Schema: public; Owner: dev
 --
 
@@ -2984,11 +3014,11 @@ ALTER TABLE ONLY public.offer_prices
 
 
 --
--- Name: offer_property_values offer_property_values_offer_property_uind; Type: CONSTRAINT; Schema: public; Owner: dev
+-- Name: offer_property_values offer_property_values_pk; Type: CONSTRAINT; Schema: public; Owner: dev
 --
 
 ALTER TABLE ONLY public.offer_property_values
-    ADD CONSTRAINT offer_property_values_offer_property_uind PRIMARY KEY (offer, property);
+    ADD CONSTRAINT offer_property_values_pk PRIMARY KEY (offer, property, "order");
 
 
 --
@@ -3032,11 +3062,11 @@ ALTER TABLE ONLY public.product_prices
 
 
 --
--- Name: product_property_values product_property_values_product_property_uind; Type: CONSTRAINT; Schema: public; Owner: dev
+-- Name: product_property_values product_property_values_pk; Type: CONSTRAINT; Schema: public; Owner: dev
 --
 
 ALTER TABLE ONLY public.product_property_values
-    ADD CONSTRAINT product_property_values_product_property_uind PRIMARY KEY (product, property);
+    ADD CONSTRAINT product_property_values_pk PRIMARY KEY (product, property, "order");
 
 
 --
@@ -3175,24 +3205,10 @@ CREATE INDEX offer_prices_index_ind ON public.offer_prices USING btree (index DE
 
 
 --
--- Name: offer_property_values_keys_ind; Type: INDEX; Schema: public; Owner: dev
---
-
-CREATE INDEX offer_property_values_keys_ind ON public.offer_property_values USING btree (value_key DESC);
-
-
---
 -- Name: product_prices_index_ind; Type: INDEX; Schema: public; Owner: dev
 --
 
 CREATE INDEX product_prices_index_ind ON public.product_prices USING btree (index DESC);
-
-
---
--- Name: product_property_values_keys_ind; Type: INDEX; Schema: public; Owner: dev
---
-
-CREATE INDEX product_property_values_keys_ind ON public.product_property_values USING btree (value_key DESC);
 
 
 --
@@ -3376,6 +3392,14 @@ ALTER TABLE ONLY public.brand_property_values
 
 
 --
+-- Name: catalog_brand_collections catalog_brand_collections_catalog_brands_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.catalog_brand_collections
+    ADD CONSTRAINT catalog_brand_collections_catalog_brands_fk FOREIGN KEY (brand) REFERENCES public.catalog_brands(id) ON DELETE CASCADE;
+
+
+--
 -- Name: catalog_brands catalog_brands_catalogs_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
 --
 
@@ -3408,22 +3432,6 @@ ALTER TABLE ONLY public.catalog_metatype_properties
 
 
 --
--- Name: catalog_metatypes catalog_metatypes_catalogs_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
---
-
-ALTER TABLE ONLY public.catalog_metatypes
-    ADD CONSTRAINT catalog_metatypes_catalogs_fk FOREIGN KEY (catalog) REFERENCES public.catalogs(id) ON DELETE CASCADE;
-
-
---
--- Name: catalog_metatypes catalog_metatypes_metatypes_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
---
-
-ALTER TABLE ONLY public.catalog_metatypes
-    ADD CONSTRAINT catalog_metatypes_metatypes_fk FOREIGN KEY (metatype) REFERENCES public.metatypes(id);
-
-
---
 -- Name: catalog_product_offers catalog_product_offers_catalog_products_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
 --
 
@@ -3437,6 +3445,14 @@ ALTER TABLE ONLY public.catalog_product_offers
 
 ALTER TABLE ONLY public.catalog_product_offers
     ADD CONSTRAINT catalog_product_offers_catalogs_fk FOREIGN KEY (catalog) REFERENCES public.catalogs(id);
+
+
+--
+-- Name: catalog_products catalog_products_catalog_brand_collections_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.catalog_products
+    ADD CONSTRAINT catalog_products_catalog_brand_collections_fk FOREIGN KEY (collection) REFERENCES public.catalog_brand_collections(id) ON DELETE SET NULL;
 
 
 --
@@ -3520,6 +3536,22 @@ ALTER TABLE ONLY public.catalogs
 
 
 --
+-- Name: collection_property_values collection_property_values_catalog_brand_collections_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.collection_property_values
+    ADD CONSTRAINT collection_property_values_catalog_brand_collections_fk FOREIGN KEY (instance) REFERENCES public.catalog_brand_collections(id) ON DELETE CASCADE;
+
+
+--
+-- Name: collection_property_values collection_property_values_catalog_properties_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.collection_property_values
+    ADD CONSTRAINT collection_property_values_catalog_properties_fk FOREIGN KEY (property) REFERENCES public.catalog_properties(id) ON DELETE CASCADE;
+
+
+--
 -- Name: offer_amounts offer_amounts_offers_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
 --
 
@@ -3552,11 +3584,11 @@ ALTER TABLE ONLY public.offer_prices
 
 
 --
--- Name: offer_property_values offer_property_values_catalog_product_offers_fk_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+-- Name: offer_property_values offer_property_values_catalog_product_offers_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
 --
 
 ALTER TABLE ONLY public.offer_property_values
-    ADD CONSTRAINT offer_property_values_catalog_product_offers_fk_fk FOREIGN KEY (offer) REFERENCES public.catalog_product_offers(id) ON DELETE CASCADE;
+    ADD CONSTRAINT offer_property_values_catalog_product_offers_fk FOREIGN KEY (offer) REFERENCES public.catalog_product_offers(id) ON DELETE CASCADE;
 
 
 --
@@ -3564,7 +3596,7 @@ ALTER TABLE ONLY public.offer_property_values
 --
 
 ALTER TABLE ONLY public.offer_property_values
-    ADD CONSTRAINT offer_property_values_catalog_properties_fk FOREIGN KEY (property) REFERENCES public.catalog_properties(id);
+    ADD CONSTRAINT offer_property_values_catalog_properties_fk FOREIGN KEY (property) REFERENCES public.catalog_properties(id) ON DELETE CASCADE;
 
 
 --
@@ -3624,11 +3656,11 @@ ALTER TABLE ONLY public.product_prices
 
 
 --
--- Name: product_property_values product_property_values_catalog_products_fk_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+-- Name: product_property_values product_property_values_catalog_products_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
 --
 
 ALTER TABLE ONLY public.product_property_values
-    ADD CONSTRAINT product_property_values_catalog_products_fk_fk FOREIGN KEY (product) REFERENCES public.catalog_products(id) ON DELETE CASCADE;
+    ADD CONSTRAINT product_property_values_catalog_products_fk FOREIGN KEY (product) REFERENCES public.catalog_products(id) ON DELETE CASCADE;
 
 
 --
@@ -3636,7 +3668,7 @@ ALTER TABLE ONLY public.product_property_values
 --
 
 ALTER TABLE ONLY public.product_property_values
-    ADD CONSTRAINT product_property_values_catalog_properties_fk FOREIGN KEY (property) REFERENCES public.catalog_properties(id);
+    ADD CONSTRAINT product_property_values_catalog_properties_fk FOREIGN KEY (property) REFERENCES public.catalog_properties(id) ON DELETE CASCADE;
 
 
 --

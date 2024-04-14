@@ -23,7 +23,9 @@ require('dotenv').config();
   });
   const data = fs.readFileSync(process.cwd() + '/src/util/pref.json', 'utf8'),
     		info = JSON.parse(data),
-			  getVal = (tbl, col, key) => {
+			  getVal = (tbl, col, key, def) => {
+				  if(!info.entities.hasOwnProperty(tbl)) return def;
+				  if(!info.entities[tbl].fields.hasOwnProperty(col)) return def;
 				  const finfo = info.entities[tbl].fields[col],
 				  			def = info.fieldsDefaults[finfo.def];
 				  return finfo.hasOwnProperty(key)? finfo[key]: def[key];
@@ -38,7 +40,7 @@ require('dotenv').config();
 		    const tbl = meta.collection;
 	      meta.props.forEach(prop => {
 		      const col = prop.fieldNames[0];
-		      if(getVal(tbl, col, 'hidden')===true){
+		      if(getVal(tbl, col, 'hidden', false)===true){
 				    prop.hidden = true;
 		      }
 	      });

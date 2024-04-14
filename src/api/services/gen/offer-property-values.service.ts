@@ -46,28 +46,10 @@ export class GenOfferPropertyValuesService {
 	async transactional(cb){ return await this.em.fork().transactional(cb); }
 	
 	
-	findByOfferAndProperty(offer: bigint, property: number, emt: EntityManager = null) {
+	findByOfferAndPropertyAndOrder(offer: bigint, property: number, order: number, emt: EntityManager = null) {
 		const em = this.getEm(emt);
 		return em.findOne(OfferPropertyValues, {
-			offer: offer, property: property
-		});
-	}
-	
-	findAllByProperty(property: number, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
-		return em.find(OfferPropertyValues, {
-			property: property
-		});
-	}
-	
-	listByProperty(property: number, offset: number, limit: number, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
-		return em.find(OfferPropertyValues, {
-			property: property
-		}, {
-			limit: limit,
-			offset: offset,
-			orderBy: { offer: "ASC", property: "ASC" },
+			offer: offer, property: property, order: order
 		});
 	}
 	
@@ -85,7 +67,25 @@ export class GenOfferPropertyValuesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { offer: "ASC", property: "ASC" },
+			orderBy: { offer: "ASC", property: "ASC", order: "ASC" },
+		});
+	}
+	
+	findAllByProperty(property: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(OfferPropertyValues, {
+			property: property
+		});
+	}
+	
+	listByProperty(property: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(OfferPropertyValues, {
+			property: property
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { offer: "ASC", property: "ASC", order: "ASC" },
 		});
 	}
 	
@@ -94,14 +94,14 @@ export class GenOfferPropertyValuesService {
 		return em.find(OfferPropertyValues, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { offer: "ASC", property: "ASC" },
+			orderBy: { offer: "ASC", property: "ASC", order: "ASC" },
 		});
 	}
 	
 	findAll(emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(OfferPropertyValues, { }, {
-			orderBy: { offer: "ASC", property: "ASC" },
+			orderBy: { offer: "ASC", property: "ASC", order: "ASC" },
 		});
 	}
 	

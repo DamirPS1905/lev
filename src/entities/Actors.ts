@@ -15,6 +15,8 @@ export class Actors {
   @Property({ nullable: true })
   key?: number;
 
+
+
 	// gen - begin
 	
 	@OneToMany({ entity: () => ApiKeys, mappedBy: 'actor' })

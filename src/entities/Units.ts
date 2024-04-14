@@ -29,6 +29,8 @@ export class Units {
   @Property({ type: 'number', columnType: 'double precision' })
   factor: number & Opt = 1;
 
+
+
 	// gen - begin
 	
 	@OneToMany({ entity: () => UnitGroups, mappedBy: 'base' })

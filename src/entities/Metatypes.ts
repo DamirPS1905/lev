@@ -1,5 +1,4 @@
 import { CatalogMetatypeProperties } from './CatalogMetatypeProperties';
-import { CatalogMetatypes } from './CatalogMetatypes';
 import { Collection, Entity, OneToMany, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 
 @Entity()
@@ -12,10 +11,9 @@ export class Metatypes {
   @Property()
   title!: string;
 
+
+
 	// gen - begin
-	
-	@OneToMany({ entity: () => CatalogMetatypes, mappedBy: 'metatype' })
-	catalogMetatypesByMetatype = new Collection<CatalogMetatypes>(this);
 	
 	@OneToMany({ entity: () => CatalogMetatypeProperties, mappedBy: 'metatype' })
 	catalogMetatypePropertiesByMetatype = new Collection<CatalogMetatypeProperties>(this);

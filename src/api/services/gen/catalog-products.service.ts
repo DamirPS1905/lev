@@ -114,6 +114,24 @@ export class GenCatalogProductsService {
 		});
 	}
 	
+	findAllByCollection(collection: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogProducts, {
+			collection: collection
+		});
+	}
+	
+	listByCollection(collection: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogProducts, {
+			collection: collection
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id: "ASC" },
+		});
+	}
+	
 	listAll(offset: number, limit: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(CatalogProducts, { }, {

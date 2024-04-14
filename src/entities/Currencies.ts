@@ -26,6 +26,8 @@ export class Currencies {
   @Property({ type: 'string', nullable: true, hidden: true })
   icon?: string & Hidden;
 
+
+
 	// gen - begin
 	
 	@OneToMany({ entity: () => Rates, mappedBy: 'to' })

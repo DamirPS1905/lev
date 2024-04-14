@@ -44,37 +44,37 @@ export class GenProductPropertyValuesController {
 		return await this.productPropertyValuesService.listAll(offset, limit);
 	}
 	
-	async findOne(apiKey: ApiKeys, catalog: number, product: bigint, property: number) {
+	async findOne(apiKey: ApiKeys, catalog: number, product: bigint, property: number, order: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		const entity = await this.productPropertyValuesService.findByProductAndProperty(product, property);
+		const entity = await this.productPropertyValuesService.findByProductAndPropertyAndOrder(product, property, order);
 		if(entity===null){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
-		await this.validateRead(entity, apiKey, catalog, product, property);
+		await this.validateRead(entity, apiKey, catalog, product, property, order);
 		return entity;
 	}
 	
-	async validateRead(entity, apiKey: ApiKeys, catalog: number, product: bigint, property: number) { }
+	async validateRead(entity, apiKey: ApiKeys, catalog: number, product: bigint, property: number, order: number) { }
 	
-	async update(apiKey: ApiKeys, catalog: number, product: bigint, property: number, updateDto: UpdateProductPropertyValueDto) {
+	async update(apiKey: ApiKeys, catalog: number, product: bigint, property: number, order: number, updateDto: UpdateProductPropertyValueDto) {
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.productPropertyValuesService.transactional(async (em) => {
-			const entity = await this.productPropertyValuesService.findByProductAndProperty(product, property, em);
-			const propertyIns = await this.catalogPropertiesService.findById(property);
-			if(propertyIns===null || !(propertyIns.catalog.id===catalog)){
-				throw new HttpException('Property not found', HttpStatus.NOT_FOUND);
-			}
+			const entity = await this.productPropertyValuesService.findByProductAndPropertyAndOrder(product, property, order, em);
 			const productIns = await this.catalogProductsService.findById(product);
 			if(productIns===null || !(productIns.catalog.id===catalog)){
 				throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateUpdate(entity, apiKey, catalog, product, property, updateDto, em);
+			const propertyIns = await this.catalogPropertiesService.findById(property);
+			if(propertyIns===null || !(propertyIns.catalog.id===catalog)){
+				throw new HttpException('Property not found', HttpStatus.NOT_FOUND);
+			}
+			await this.validateUpdate(entity, apiKey, catalog, product, property, order, updateDto, em);
 			if(entity!==null){
 				return await this.productPropertyValuesService.update(entity, updateDto, em);
 			} else {
@@ -83,23 +83,23 @@ export class GenProductPropertyValuesController {
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, property: number, updateDto: UpdateProductPropertyValueDto, em: EntityManager) { }
+	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, product: bigint, property: number, order: number, updateDto: UpdateProductPropertyValueDto, em: EntityManager) { }
 	
-	async delete(apiKey: ApiKeys, catalog: number, product: bigint, property: number) {
+	async delete(apiKey: ApiKeys, catalog: number, product: bigint, property: number, order: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.productPropertyValuesService.transactional(async (em) => {
-			const entity = await this.productPropertyValuesService.findByProductAndProperty(product, property, em);
+			const entity = await this.productPropertyValuesService.findByProductAndPropertyAndOrder(product, property, order, em);
 			if(entity===null){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, apiKey, catalog, product, property, em);
+			await this.validateDelete(entity, apiKey, catalog, product, property, order, em);
 			return await this.productPropertyValuesService.remove(entity, em);
 		});
 	}
 	
-	async validateDelete(entity, apiKey: ApiKeys, catalog: number, product: bigint, property: number, em: EntityManager) { }
+	async validateDelete(entity, apiKey: ApiKeys, catalog: number, product: bigint, property: number, order: number, em: EntityManager) { }
 	
 }

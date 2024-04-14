@@ -48,8 +48,8 @@ export class PropertyInTypesController extends GenPropertyInTypesController {
 	}
 	
 	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, type: number, property: number, updateDto: UpdatePropertyInTypeDto, em: EntityManager) {
-		const parents = await this.propertyInTypesService.getParentsWithPropertyByType(property, type, em);
-		if(parents.length>0){
+		const propertyInType = await this.propertyInTypesService.getParentsPropertyByChild(property, type, em);
+		if(propertyInType!==null){
 			throw new HttpException('Parent type already contains this property', HttpStatus.CONFLICT);
 		}
 		const childs = await this.propertyInTypesService.getChildsWithPropertyByType(property, type, em);

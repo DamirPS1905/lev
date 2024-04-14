@@ -22,6 +22,8 @@ export class PriceTypes {
   @ManyToOne({ entity: () => Currencies, fieldName: 'base_currency' })
   baseCurrency!: Currencies;
 
+
+
 	// gen - begin
 	
 	@OneToMany({ entity: () => OfferPrices, mappedBy: 'priceType' })

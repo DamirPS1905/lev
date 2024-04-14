@@ -17,10 +17,7 @@ import { CatalogTypesService } from './../services/catalog-types.service'
 @ApiTags('Type property values')
 @Controller('catalog/:catalog/type/:type')
 export class TypePropertyValuesController extends MetatypeValuesController<TypePropertyValuesService> {
-	
-	protected readonly metatype:number = 1;
-	protected readonly entityName:string = "TypePropertyValues";
-	
+		
 	constructor(
 		catalogMetatypePropertiesService: CatalogMetatypePropertiesService,
 		catalogsService: CatalogsService,
@@ -30,6 +27,8 @@ export class TypePropertyValuesController extends MetatypeValuesController<TypeP
 		protected readonly catalogTypesService: CatalogTypesService
 	){
 		super(
+			1,
+			"TypePropertyValues",
 			catalogMetatypePropertiesService,
 			catalogsService,
 			optionsPropertyValuesService,
@@ -59,14 +58,10 @@ export class TypePropertyValuesController extends MetatypeValuesController<TypeP
 	@ApiBody({
 	  schema: {
 	    oneOf: [
-	      {
-	        type: 'object',
-	      },
+	      {type: 'object'},
 	      {
 	        type: 'array',
-	        items: {
-		        type: 'object'
-	        }
+	        items: {type: 'object'}
 	      },
 	    ],
 	  },

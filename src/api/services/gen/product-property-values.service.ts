@@ -46,28 +46,10 @@ export class GenProductPropertyValuesService {
 	async transactional(cb){ return await this.em.fork().transactional(cb); }
 	
 	
-	findByProductAndProperty(product: bigint, property: number, emt: EntityManager = null) {
+	findByProductAndPropertyAndOrder(product: bigint, property: number, order: number, emt: EntityManager = null) {
 		const em = this.getEm(emt);
 		return em.findOne(ProductPropertyValues, {
-			product: product, property: property
-		});
-	}
-	
-	findAllByProperty(property: number, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
-		return em.find(ProductPropertyValues, {
-			property: property
-		});
-	}
-	
-	listByProperty(property: number, offset: number, limit: number, emt: EntityManager = null) {
-		const em = emt || this.em.fork();
-		return em.find(ProductPropertyValues, {
-			property: property
-		}, {
-			limit: limit,
-			offset: offset,
-			orderBy: { product: "ASC", property: "ASC" },
+			product: product, property: property, order: order
 		});
 	}
 	
@@ -85,7 +67,25 @@ export class GenProductPropertyValuesService {
 		}, {
 			limit: limit,
 			offset: offset,
-			orderBy: { product: "ASC", property: "ASC" },
+			orderBy: { product: "ASC", property: "ASC", order: "ASC" },
+		});
+	}
+	
+	findAllByProperty(property: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(ProductPropertyValues, {
+			property: property
+		});
+	}
+	
+	listByProperty(property: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(ProductPropertyValues, {
+			property: property
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { product: "ASC", property: "ASC", order: "ASC" },
 		});
 	}
 	
@@ -94,14 +94,14 @@ export class GenProductPropertyValuesService {
 		return em.find(ProductPropertyValues, { }, {
 			limit: limit,
 			offset: offset,
-			orderBy: { product: "ASC", property: "ASC" },
+			orderBy: { product: "ASC", property: "ASC", order: "ASC" },
 		});
 	}
 	
 	findAll(emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(ProductPropertyValues, { }, {
-			orderBy: { product: "ASC", property: "ASC" },
+			orderBy: { product: "ASC", property: "ASC", order: "ASC" },
 		});
 	}
 	

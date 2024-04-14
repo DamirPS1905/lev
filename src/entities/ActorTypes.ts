@@ -11,6 +11,8 @@ export class ActorTypes {
   @Property()
   title!: string;
 
+
+
 	// gen - begin
 	
 	@OneToMany({ entity: () => Actors, mappedBy: 'type' })

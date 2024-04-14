@@ -6,7 +6,6 @@ import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, Controller, DefaultValuePipe, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiQuery, ApiTags, ApiExtraModels, ApiBody } from '@nestjs/swagger'
-import { BrandPropertyValues } from './../../entities/BrandPropertyValues'
 import { CatalogMetatypePropertiesService } from './../services/catalog-metatype-properties.service'
 import { CatalogsService } from './../services/catalogs.service'
 import { OptionsPropertyValuesService } from './../services/options-property-values.service'
@@ -16,10 +15,7 @@ import { CatalogBrandsService } from './../services/catalog-brands.service'
 @ApiTags('Brand property values')
 @Controller('catalog/:catalog/brand/:brand')
 export class BrandPropertyValuesController extends MetatypeValuesController<BrandPropertyValuesService> {
-		
-	protected readonly metatype:number = 2;
-	protected readonly entityName:string = "BrandPropertyValues";
-
+	
 	constructor(
 		catalogMetatypePropertiesService: CatalogMetatypePropertiesService,
 		catalogsService: CatalogsService,
@@ -29,6 +25,8 @@ export class BrandPropertyValuesController extends MetatypeValuesController<Bran
 		protected readonly catalogBrandsService: CatalogBrandsService
 	){
 		super(
+			2,
+			"BrandPropertyValues",
 			catalogMetatypePropertiesService,
 			catalogsService,
 			optionsPropertyValuesService,
@@ -40,7 +38,7 @@ export class BrandPropertyValuesController extends MetatypeValuesController<Bran
 	protected async validateInstance(catalog:number, instance:number, emt:EntityManager = null){
 		const brandIns = await this.catalogBrandsService.findById(instance, emt);
 		if(brandIns===null || brandIns.catalog.id!==catalog){
-			throw new HttpException('Branf not found', HttpStatus.NOT_FOUND);			
+			throw new HttpException('Brand not found', HttpStatus.NOT_FOUND);			
 		}
 	}
 			

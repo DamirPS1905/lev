@@ -1,6 +1,5 @@
 import { CatalogBrands } from './CatalogBrands';
 import { CatalogMetatypeProperties } from './CatalogMetatypeProperties';
-import { CatalogMetatypes } from './CatalogMetatypes';
 import { CatalogProductOffers } from './CatalogProductOffers';
 import { CatalogProducts } from './CatalogProducts';
 import { CatalogProperties } from './CatalogProperties';
@@ -21,13 +20,12 @@ export class Catalogs {
   @ManyToOne({ entity: () => Companies, fieldName: 'company', hidden: true, unique: 'catalogs_company_title_uind' })
   company!: Companies & Hidden;
 
+
+
 	// gen - begin
 	
 	@OneToMany({ entity: () => CatalogTypes, mappedBy: 'catalog' })
 	catalogTypesByCatalog = new Collection<CatalogTypes>(this);
-	
-	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'catalog' })
-	catalogProductsByCatalog = new Collection<CatalogProducts>(this);
 	
 	@OneToMany({ entity: () => CatalogProductOffers, mappedBy: 'catalog' })
 	catalogProductOffersByCatalog = new Collection<CatalogProductOffers>(this);
@@ -38,11 +36,11 @@ export class Catalogs {
 	@OneToMany({ entity: () => CatalogBrands, mappedBy: 'catalog' })
 	catalogBrandsByCatalog = new Collection<CatalogBrands>(this);
 	
+	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'catalog' })
+	catalogProductsByCatalog = new Collection<CatalogProducts>(this);
+	
 	@OneToMany({ entity: () => CatalogProperties, mappedBy: 'catalog' })
 	catalogPropertiesByCatalog = new Collection<CatalogProperties>(this);
-	
-	@OneToMany({ entity: () => CatalogMetatypes, mappedBy: 'catalog' })
-	catalogMetatypesByCatalog = new Collection<CatalogMetatypes>(this);
 	
 	@OneToMany({ entity: () => CatalogMetatypeProperties, mappedBy: 'catalog' })
 	catalogMetatypePropertiesByCatalog = new Collection<CatalogMetatypeProperties>(this);

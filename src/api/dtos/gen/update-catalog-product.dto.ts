@@ -30,4 +30,9 @@ export class GenUpdateCatalogProductDto {
 	@MaxLength(255)
 	title:string;
 	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	@IsInt()
+	collection:number;
+	
 }

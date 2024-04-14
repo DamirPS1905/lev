@@ -1,6 +1,7 @@
 import { BrandPropertyValues } from './BrandPropertyValues';
 import { CatalogMetatypeProperties } from './CatalogMetatypeProperties';
 import { Catalogs } from './Catalogs';
+import { CollectionPropertyValues } from './CollectionPropertyValues';
 import { OfferPropertyValues } from './OfferPropertyValues';
 import { OptionsPropertyValues } from './OptionsPropertyValues';
 import { ProductPropertyValues } from './ProductPropertyValues';
@@ -33,16 +34,12 @@ export class CatalogProperties {
   @Property({ columnType: 'jsonb' })
   scheme!: any;
 
+
+
 	// gen - begin
 	
 	@OneToMany({ entity: () => OptionsPropertyValues, mappedBy: 'property' })
 	optionsPropertyValuesByProperty = new Collection<OptionsPropertyValues>(this);
-	
-	@OneToMany({ entity: () => ProductPropertyValues, mappedBy: 'property' })
-	productPropertyValuesByProperty = new Collection<ProductPropertyValues>(this);
-	
-	@OneToMany({ entity: () => OfferPropertyValues, mappedBy: 'property' })
-	offerPropertyValuesByProperty = new Collection<OfferPropertyValues>(this);
 	
 	@OneToMany({ entity: () => PropertyInTypes, mappedBy: 'property' })
 	propertyInTypesByProperty = new Collection<PropertyInTypes>(this);
@@ -55,6 +52,15 @@ export class CatalogProperties {
 	
 	@OneToMany({ entity: () => TypePropertyValues, mappedBy: 'property' })
 	typePropertyValuesByProperty = new Collection<TypePropertyValues>(this);
+	
+	@OneToMany({ entity: () => ProductPropertyValues, mappedBy: 'property' })
+	productPropertyValuesByProperty = new Collection<ProductPropertyValues>(this);
+	
+	@OneToMany({ entity: () => OfferPropertyValues, mappedBy: 'property' })
+	offerPropertyValuesByProperty = new Collection<OfferPropertyValues>(this);
+	
+	@OneToMany({ entity: () => CollectionPropertyValues, mappedBy: 'property' })
+	collectionPropertyValuesByProperty = new Collection<CollectionPropertyValues>(this);
 	
 	// gen - end
 

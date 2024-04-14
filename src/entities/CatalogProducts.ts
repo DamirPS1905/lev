@@ -1,3 +1,4 @@
+import { CatalogBrandCollections } from './CatalogBrandCollections';
 import { CatalogBrands } from './CatalogBrands';
 import { CatalogProductOffers } from './CatalogProductOffers';
 import { CatalogTypes } from './CatalogTypes';
@@ -27,16 +28,21 @@ export class CatalogProducts {
   @Property({ type: 'Date', length: 6, defaultRaw: `CURRENT_TIMESTAMP` })
   created!: Date & Opt;
 
+  @ManyToOne({ entity: () => CatalogBrandCollections, fieldName: 'collection', deleteRule: 'set null', nullable: true })
+  collection?: CatalogBrandCollections;
+
+
+
 	// gen - begin
 	
 	@OneToMany({ entity: () => CatalogProductOffers, mappedBy: 'product' })
 	catalogProductOffersByProduct = new Collection<CatalogProductOffers>(this);
 	
-	@OneToMany({ entity: () => ProductPropertyValues, mappedBy: 'product' })
-	productPropertyValuesByProduct = new Collection<ProductPropertyValues>(this);
-	
 	@OneToMany({ entity: () => ProductPrices, mappedBy: 'product' })
 	productPricesByProduct = new Collection<ProductPrices>(this);
+	
+	@OneToMany({ entity: () => ProductPropertyValues, mappedBy: 'product' })
+	productPropertyValuesByProduct = new Collection<ProductPropertyValues>(this);
 	
 	// gen - end
 

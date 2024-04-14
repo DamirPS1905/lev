@@ -5,7 +5,7 @@ import { EntityManager } from '@mikro-orm/postgresql'
 import { IMetatypeVauesService } from './interface/i-metatype-values.service'
 
 @Injectable()
-export class TypePropertyValuesService extends GenTypePropertyValuesService implements IMetatypeVauesService {
+export class TypePropertyValuesService extends GenTypePropertyValuesService implements IMetatypeVauesService<number> {
 	
 	findAllByInstanceAndProperty(instance: number, property: number, emt: EntityManager = null) {
 		return this.getEm(emt).find(TypePropertyValues, {

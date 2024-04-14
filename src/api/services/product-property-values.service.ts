@@ -2,18 +2,23 @@ import { GenProductPropertyValuesService } from './gen/product-property-values.s
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/postgresql'
 import { ProductPropertyValues } from './../../entities/ProductPropertyValues'
+import { IMetatypeVauesService } from './interface/i-metatype-values.service'
 
 @Injectable()
-export class ProductPropertyValuesService extends GenProductPropertyValuesService {
+export class ProductPropertyValuesService extends GenProductPropertyValuesService implements IMetatypeVauesService<bigint> {
 	
-	findAllByProductAndProperty(product: bigint, property: number, emt: EntityManager = null) {
+	findAllByInstanceAndProperty(product: bigint, property: number, emt: EntityManager = null) {
 		return this.getEm(emt).find(ProductPropertyValues, {
 			property: property,
 			product: product
 		});
 	}
 	
-	async readValuesByProduct(product: bigint, emt: EntityManager = null){
+	findByInstanceAndPropertyAndOrder(product: bigint, property: number, order: number, emt: EntityManager = null) {
+		return this.findByProductAndPropertyAndOrder(product, property, order);
+	}
+	
+	async readValuesByInstance(product: bigint, emt: EntityManager = null){
 		const conn = this.getEm(emt).getConnection(),
 					qu = `SELECT ppv.property, pv.value, p.multiple
 								FROM 
@@ -25,7 +30,7 @@ export class ProductPropertyValuesService extends GenProductPropertyValuesServic
 		return await conn.execute(qu);
 	}
 	
-	async readValuesByProductAndProperty(product: bigint, property: number, emt: EntityManager = null){
+	async readValuesByInstanceAndProperty(product: bigint, property: number, emt: EntityManager = null){
 		const conn = this.getEm(emt).getConnection(),
 					qu = `SELECT pv.value 
 								FROM 
@@ -36,7 +41,7 @@ export class ProductPropertyValuesService extends GenProductPropertyValuesServic
 		return await conn.execute(qu);
 	}
 	
-	async readValueByProductAndProperty(product: bigint, property: number, emt: EntityManager = null){
+	async readValueByInstanceAndProperty(product: bigint, property: number, emt: EntityManager = null){
 		const conn = this.getEm(emt).getConnection(),
 					qu = `SELECT pv.value 
 								FROM 
@@ -48,7 +53,7 @@ export class ProductPropertyValuesService extends GenProductPropertyValuesServic
 		return null;
 	}
 	
-	async removeExtraByProductAndPropertyAndMaxOrder(product: bigint, property: number, maxOrder: number, andValues: boolean, emt: EntityManager = null){
+	async removeExtraByInstanceAndPropertyAndMaxOrder(product: bigint, property: number, maxOrder: number, andValues: boolean, emt: EntityManager = null){
 		const conn = this.getEm(emt).getConnection();
 		if(andValues){
 			const qu = `DELETE FROM property_values pv

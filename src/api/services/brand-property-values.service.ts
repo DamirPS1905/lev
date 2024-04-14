@@ -5,7 +5,7 @@ import { BrandPropertyValues } from './../../entities/BrandPropertyValues'
 import { IMetatypeVauesService } from './interface/i-metatype-values.service'
 
 @Injectable()
-export class BrandPropertyValuesService extends GenBrandPropertyValuesService implements IMetatypeVauesService {
+export class BrandPropertyValuesService extends GenBrandPropertyValuesService implements IMetatypeVauesService<number> {
 	
 	findAllByInstanceAndProperty(instance: number, property: number, emt: EntityManager = null) {
 		return this.getEm(emt).find(BrandPropertyValues, {

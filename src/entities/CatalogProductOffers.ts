@@ -27,16 +27,18 @@ export class CatalogProductOffers {
   @ManyToMany({ entity: () => Stores, pivotTable: 'offer_amounts', pivotEntity: () => OfferAmounts, joinColumn: 'offer', inverseJoinColumn: 'store' })
   offerAmounts = new Collection<Stores>(this);
 
+
+
 	// gen - begin
-	
-	@OneToMany({ entity: () => OfferPropertyValues, mappedBy: 'offer' })
-	offerPropertyValuesByOffer = new Collection<OfferPropertyValues>(this);
 	
 	@OneToMany({ entity: () => OfferAmounts, mappedBy: 'offer' })
 	offerAmountsByOffer = new Collection<OfferAmounts>(this);
 	
 	@OneToMany({ entity: () => OfferPrices, mappedBy: 'offer' })
 	offerPricesByOffer = new Collection<OfferPrices>(this);
+	
+	@OneToMany({ entity: () => OfferPropertyValues, mappedBy: 'offer' })
+	offerPropertyValuesByOffer = new Collection<OfferPropertyValues>(this);
 	
 	// gen - end
 

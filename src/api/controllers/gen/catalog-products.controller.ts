@@ -10,6 +10,7 @@ import { AuthInfo } from './../../../decorators/auth.decorator';
 import { ApiKeys } from './../../../entities/ApiKeys';
 import { CreateCatalogProductDto } from './../../dtos/create-catalog-product.dto';
 import { UpdateCatalogProductDto } from './../../dtos/update-catalog-product.dto';
+import { CatalogBrandCollectionsService } from './../../services/catalog-brand-collections.service';
 import { CatalogBrandsService } from './../../services/catalog-brands.service';
 import { CatalogProductsService } from './../../services/catalog-products.service';
 import { CatalogTypesService } from './../../services/catalog-types.service';
@@ -25,6 +26,7 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger';
 @Controller('catalog/:catalog/products')
 export class GenCatalogProductsController {
 	constructor(
+		protected readonly catalogBrandCollectionsService: CatalogBrandCollectionsService,
 		protected readonly catalogBrandsService: CatalogBrandsService,
 		protected readonly catalogProductsService: CatalogProductsService,
 		protected readonly catalogTypesService: CatalogTypesService,
@@ -76,6 +78,12 @@ export class GenCatalogProductsController {
 			if(typeIns===null || !(typeIns.catalog.id===catalog)){
 				throw new HttpException('Type not found', HttpStatus.CONFLICT);
 			}
+			if(createDto.collection!==undefined){
+				const tmp = await this.catalogBrandCollectionsService.findById(createDto.collection, em);
+				if(tmp===null){
+					throw new HttpException('Not found contrainst (collection)', HttpStatus.CONFLICT);
+				}
+			}
 			await this.validateCreate(apiKey, catalog, createDto, em);
 			return await this.catalogProductsService.create(createDto, em);
 		});
@@ -100,6 +108,12 @@ export class GenCatalogProductsController {
 				const typeIns = await this.catalogTypesService.findById(updateDto.type);
 				if(typeIns===null || !(typeIns.catalog.id===catalog)){
 					throw new HttpException('Type not found', HttpStatus.CONFLICT);
+				}
+			}
+			if(updateDto.collection!==undefined){
+				const tmp = await this.catalogBrandCollectionsService.findById(updateDto.collection, em);
+				if(tmp===null){
+					throw new HttpException('Not found contrainst (collection)', HttpStatus.CONFLICT);
 				}
 			}
 			if(entity===null || !(entity.catalog.id===catalog)){

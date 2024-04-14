@@ -18,14 +18,14 @@ export class PropertyInTypesService extends GenPropertyInTypesService {
 		  .getResult();
 	}
 	
-	async getParentsWithPropertyByType(property: number, child: number, emt: EntityManager = null){
+	async getParentsPropertyByChild(property: number, child: number, emt: EntityManager = null){
 		return await this.getEm(emt)
 			.createQueryBuilder(PropertyInTypes, 'pit')
 		  .select(['pit.*'])
 		  .join('pit.type', 'ct')
 		  .join('ct.catalogTypesOverloadByParent', 'cto')
 		  .where({'cto.child': child, 'pit.property': property })
-		  .getResult();
+		  .getSingleResult();
 	}
 	
 	async findOwnByType(type: number, emt: EntityManager = null) {

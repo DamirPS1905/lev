@@ -3,17 +3,31 @@
  * and should not be modifiyed manyally,
  * becouse it can be overwritten in any
  * moment. All modifications are allowed
- * in api/dtos/update-catalog-metatype.dto
+ * in api/dtos/create-collection-property-value.dto
  * in a proper way.
  */
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsOptional } from 'class-validator';
 
-export class GenUpdateCatalogMetatypeDto {
+export class GenCreateCollectionPropertyValueDto {
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
 	@IsInt()
-	metatype:number;
+	instance:number;
+	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	@IsInt()
+	property:number;
+	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	@IsInt()
+	order:number;
+	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	value:bigint;
 	
 }

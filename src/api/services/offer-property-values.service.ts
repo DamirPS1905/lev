@@ -2,18 +2,23 @@ import { GenOfferPropertyValuesService } from './gen/offer-property-values.servi
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/postgresql'
 import { OfferPropertyValues } from './../../entities/OfferPropertyValues'
+import { IMetatypeVauesService } from './interface/i-metatype-values.service'
 
 @Injectable()
-export class OfferPropertyValuesService extends GenOfferPropertyValuesService {
+export class OfferPropertyValuesService extends GenOfferPropertyValuesService implements IMetatypeVauesService<bigint> {
 	
-	findAllByOfferAndProperty(offer: bigint, property: number, emt: EntityManager = null) {
+	findAllByInstanceAndProperty(offer: bigint, property: number, emt: EntityManager = null) {
 		return this.getEm(emt).find(OfferPropertyValues, {
 			property: property,
 			offer: offer
 		});
 	}
 	
-	async readValuesByOffer(offer: bigint, emt: EntityManager = null){
+	findByInstanceAndPropertyAndOrder(offer: bigint, property: number, order: number, emt: EntityManager = null) {
+		return this.findByOfferAndPropertyAndOrder(offer, property, order);
+	}
+	
+	async readValuesByInstance(offer: bigint, emt: EntityManager = null){
 		const conn = this.getEm(emt).getConnection(),
 					qu = `SELECT opv.property, pv.value, p.multiple
 								FROM 
@@ -25,7 +30,7 @@ export class OfferPropertyValuesService extends GenOfferPropertyValuesService {
 		return await conn.execute(qu);
 	}
 	
-	async readValuesByOfferAndProperty(offer: bigint, property: number, emt: EntityManager = null){
+	async readValuesByInstanceAndProperty(offer: bigint, property: number, emt: EntityManager = null){
 		const conn = this.getEm(emt).getConnection(),
 					qu = `SELECT pv.value 
 								FROM 
@@ -36,7 +41,7 @@ export class OfferPropertyValuesService extends GenOfferPropertyValuesService {
 		return await conn.execute(qu);
 	}
 	
-	async readValueByOfferAndProperty(offer: bigint, property: number, emt: EntityManager = null){
+	async readValueByInstanceAndProperty(offer: bigint, property: number, emt: EntityManager = null){
 		const conn = this.getEm(emt).getConnection(),
 					qu = `SELECT pv.value 
 								FROM 
@@ -48,7 +53,7 @@ export class OfferPropertyValuesService extends GenOfferPropertyValuesService {
 		return null;
 	}
 	
-	async removeExtraByOfferAndPropertyAndMaxOrder(offer: bigint, property: number, maxOrder: number, andValues: boolean, emt: EntityManager = null){
+	async removeExtraByInstanceAndPropertyAndMaxOrder(offer: bigint, property: number, maxOrder: number, andValues: boolean, emt: EntityManager = null){
 		const conn = this.getEm(emt).getConnection();
 		if(andValues){
 			const qu = `DELETE FROM property_values pv

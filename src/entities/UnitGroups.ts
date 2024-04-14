@@ -22,6 +22,8 @@ export class UnitGroups {
   @ManyToOne({ entity: () => Units, fieldName: 'base', deleteRule: 'set null', nullable: true })
   base?: Units;
 
+
+
 	// gen - begin
 	
 	@OneToMany({ entity: () => Units, mappedBy: 'group' })

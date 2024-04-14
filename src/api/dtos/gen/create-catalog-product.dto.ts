@@ -8,7 +8,7 @@
  */
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class GenCreateCatalogProductDto {
 	
@@ -31,5 +31,10 @@ export class GenCreateCatalogProductDto {
 	@MinLength(1)
 	@MaxLength(255)
 	title:string;
+	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	@IsInt()
+	collection:number;
 	
 }

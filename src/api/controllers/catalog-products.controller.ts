@@ -7,6 +7,7 @@ import { GenCatalogProductsController } from './gen/catalog-products.controller'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
+import { ParseBigIntPipe } from './../../pipes/parse-bigint.pipe'
 
 export class CatalogProductsController extends GenCatalogProductsController {
 	
@@ -16,7 +17,9 @@ export class CatalogProductsController extends GenCatalogProductsController {
 	}
 	
 	@Get(':id')
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id') id: bigint) {
+	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseBigIntPipe) id: bigint) {
+		console.log(id);
+		console.log(typeof id);
 		return await super.findOne(apiKey, catalog, id);
 	}
 	
@@ -26,12 +29,12 @@ export class CatalogProductsController extends GenCatalogProductsController {
 	}
 	
 	@Patch(':id')
-	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id') id: bigint, @Body() updateDto: UpdateCatalogProductDto) {
+	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseBigIntPipe) id: bigint, @Body() updateDto: UpdateCatalogProductDto) {
 		return await super.update(apiKey, catalog, id, updateDto);
 	}
 	
 	@Delete(':id')
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id') id: bigint) {
+	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseBigIntPipe) id: bigint) {
 		return await super.delete(apiKey, catalog, id);
 	}
 	

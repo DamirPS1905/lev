@@ -17,6 +17,8 @@ export class Companies {
   @Property()
   title!: string;
 
+
+
 	// gen - begin
 	
 	@OneToMany({ entity: () => Catalogs, mappedBy: 'company' })

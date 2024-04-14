@@ -14,6 +14,7 @@ import { CatalogPropertiesService } from './../services/catalog-properties.servi
 import { CatalogsService } from './../services/catalogs.service'
 import { PropertyTypesService } from './../services/property-types.service'
 import { PropertyValuesService } from './../services/property-values.service'
+import { ParseBigIntPipe } from './../../pipes/parse-bigint.pipe'
 
 @ApiHeader({ name: 'X-API-KEY', required: true })
 @UseGuards(AuthGuard('api-key'))
@@ -39,7 +40,7 @@ export class OptionsPropertyValuesController {
 	}
 	
 	@Get(':value')
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value') value: bigint) {
+	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value', ParseBigIntPipe) value: bigint) {
 		await this.validatePath(apiKey, catalog, property);
 		const optionIns = await this.optionsPropertyValuesService.findByValue(value);
 		if(optionIns===null || optionIns.property.id!==property){
@@ -102,7 +103,7 @@ export class OptionsPropertyValuesController {
 	  },
 	})
 	@Patch(':value')
-	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value') value: bigint, @Body() updateDto: Object | Array<Object>) {
+	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value', ParseBigIntPipe) value: bigint, @Body() updateDto: Object | Array<Object>) {
 		const propertyIns = await this.validatePath(apiKey, catalog, property),
 					val = await this.propertyTypesService.validateSingleValue(apiKey.company.id, propertyIns.scheme, updateDto),
 					json = JSON.stringify(val, Object.keys(val).sort()),
@@ -125,7 +126,7 @@ export class OptionsPropertyValuesController {
 	}
 	
 	@Delete(':value')
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value') value: bigint) {
+	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value', ParseBigIntPipe) value: bigint) {
 		await this.validatePath(apiKey, catalog, property);
 		return this.optionsPropertyValuesService.transactional(async (em) => {
 			const entity = await this.optionsPropertyValuesService.findByValue(value, em);
