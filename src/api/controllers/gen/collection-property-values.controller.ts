@@ -14,7 +14,7 @@ import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
-@ApiHeader({ name: 'X-API-KEY', required: true })
+@ApiHeader({ name: 'X-API-KEY', required: true, description: 'Ваш идентефикатор апи' })
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Collection property values')
 @Controller('collection-property-value')
