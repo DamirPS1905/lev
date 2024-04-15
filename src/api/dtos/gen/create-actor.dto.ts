@@ -26,4 +26,9 @@ export class GenCreateActorDto {
 	@IsInt()
 	key:number;
 	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	@IsInt()
+	company:number;
+	
 }

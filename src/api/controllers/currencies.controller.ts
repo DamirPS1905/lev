@@ -1,5 +1,5 @@
 import { AuthInfo } from './../../decorators/auth.decorator'
-import { ApiKeys } from './../../entities/ApiKeys'
+import { Actors } from './../../entities/Actors'
 import { CreateCurrencyDto } from './../dtos/create-currency.dto'
 import { UpdateCurrencyDto } from './../dtos/update-currency.dto'
 import { CurrenciesService } from './../services/currencies.service'
@@ -11,8 +11,8 @@ import { AuthGuard } from '@nestjs/passport'
 export class CurrenciesController extends GenCurrenciesController {
 	
 	@Get('all')
-	async findAll(@AuthInfo() apiKey: ApiKeys) {
-		return await super.findAll(apiKey);
+	async findAll(@AuthInfo() actor: Actors) {
+		return await super.findAll(actor);
 	}
 	
 	

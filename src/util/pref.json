@@ -18,9 +18,9 @@
     "entitiesClass": "[AA:multiName]",
     "authDecoratorClassPath": "decorators\/auth.decorator",
     "authDecoratorClass": "AuthInfo",
-    "authDecoratorVar": "apiKey",
-    "authDecoratorVarClass": "ApiKeys",
-    "authDecoratorVarClassPath": "entities\/ApiKeys",
+    "authDecoratorVar": "actor",
+    "authDecoratorVarClass": "Actors",
+    "authDecoratorVarClassPath": "entities\/Actors",
     "fieldsDefaults": {
         "def": {
             "dto": true,
@@ -39,13 +39,13 @@
             "dtoMax": false,
             "dtoTrim": true,
             "dtoDisallow": true,
-            "fillDtoFrom": "apiKey.company.id",
-            "readValidate": "@@===apiKey.company.id",
-            "readForWriteValidate": "@@===apiKey.company.id",
+            "fillDtoFrom": "actor.company.id",
+            "readValidate": "@@===actor.company.id",
+            "readForWriteValidate": "@@===actor.company.id",
             "ignoreFk": true,
             "allFilter": true,
             "hidden": true,
-            "from": "other: apiKey.company.id",
+            "from": "other: actor.company.id",
             "fillDto": "create"
         },
         "title": {
@@ -127,7 +127,7 @@
                     "var": "catalog",
                     "load": {
                         "as": "catalogs",
-                        "validate": "@@.company.id===apiKey.company.id",
+                        "validate": "@@.company.id===actor.company.id",
                         "eCode": "NOT_FOUND",
                         "eMessage": "Catalog not found"
                     }
@@ -302,7 +302,7 @@
                     "var": "catalog",
                     "load": {
                         "as": "catalogs",
-                        "validate": "@@.company.id===apiKey.company.id",
+                        "validate": "@@.company.id===actor.company.id",
                         "eCode": "NOT_FOUND",
                         "eMessage": "Catalog not found"
                     }
@@ -402,7 +402,7 @@
                     "var": "catalog",
                     "load": {
                         "as": "catalogs",
-                        "validate": "@@.company.id===apiKey.company.id",
+                        "validate": "@@.company.id===actor.company.id",
                         "eCode": "NOT_FOUND",
                         "eMessage": "Catalog not found"
                     }
@@ -529,7 +529,7 @@
                     "var": "catalog",
                     "load": {
                         "as": "catalogs",
-                        "validate": "@@.company.id===apiKey.company.id",
+                        "validate": "@@.company.id===actor.company.id",
                         "eCode": "NOT_FOUND",
                         "eMessage": "Catalog not found"
                     }
@@ -559,6 +559,12 @@
                     "def": "def"
                 },
                 "key": {
+                    "def": "def"
+                },
+                "companies": {
+                    "def": "def"
+                },
+                "company": {
                     "def": "def"
                 }
             }
@@ -659,8 +665,8 @@
                 },
                 "company": {
                     "def": "company",
-                    "readValidate": "@#===null || @@===apiKey.company.id",
-                    "readForWriteValidate": "@#!==null && @@===apiKey.company.id"
+                    "readValidate": "@#===null || @@===actor.company.id",
+                    "readForWriteValidate": "@#!==null && @@===actor.company.id"
                 },
                 "description": {
                     "def": "def",
@@ -689,8 +695,8 @@
                 },
                 "company": {
                     "def": "company",
-                    "readValidate": "@#===null || @@===apiKey.company.id",
-                    "readForWriteValidate": "@#!==null && @@===apiKey.company.id"
+                    "readValidate": "@#===null || @@===actor.company.id",
+                    "readForWriteValidate": "@#!==null && @@===actor.company.id"
                 },
                 "title": {
                     "def": "def",
@@ -729,7 +735,7 @@
                     "var": "group",
                     "load": {
                         "as": "unit_groups",
-                        "validate": "@@.company===null || @@.company.id===apiKey.company.id",
+                        "validate": "@@.company===null || @@.company.id===actor.company.id",
                         "eCode": "NOT_FOUND",
                         "eMessage": "Units group not found"
                     }
@@ -913,7 +919,7 @@
                     "fillDto": true,
                     "load": {
                         "as": "price_types",
-                        "validate": "@@.company.id===apiKey.company.id",
+                        "validate": "@@.company.id===actor.company.id",
                         "eCode": "NOT_FOUND",
                         "eMessage": "Price type not found"
                     }
@@ -951,7 +957,7 @@
                     "var": "catalog",
                     "load": {
                         "as": "catalogs",
-                        "validate": "@@.company.id===apiKey.company.id",
+                        "validate": "@@.company.id===actor.company.id",
                         "eCode": "NOT_FOUND",
                         "eMessage": "Catalog not found"
                     }
@@ -985,7 +991,7 @@
                     "fillDto": true,
                     "load": {
                         "as": "price_types",
-                        "validate": "@@.company.id===apiKey.company.id",
+                        "validate": "@@.company.id===actor.company.id",
                         "eCode": "NOT_FOUND",
                         "eMessage": "Price type not found"
                     }
@@ -1023,7 +1029,7 @@
                     "var": "catalog",
                     "load": {
                         "as": "catalogs",
-                        "validate": "@@.company.id===apiKey.company.id",
+                        "validate": "@@.company.id===actor.company.id",
                         "eCode": "NOT_FOUND",
                         "eMessage": "Catalog not found"
                     }
@@ -1085,7 +1091,7 @@
                     "fillDtoFrom": "store",
                     "load": {
                         "as": "stores",
-                        "validate": "@@.company.id===apiKey.company.id",
+                        "validate": "@@.company.id===actor.company.id",
                         "eCode": "NOT_FOUND",
                         "eMessage": "Store not found"
                     }
@@ -1105,7 +1111,7 @@
                     "var": "catalog",
                     "load": {
                         "as": "catalogs",
-                        "validate": "@@.company.id===apiKey.company.id",
+                        "validate": "@@.company.id===actor.company.id",
                         "eCode": "NOT_FOUND",
                         "eMessage": "Catalog not found"
                     }
@@ -1177,7 +1183,7 @@
                     "var": "catalog",
                     "load": {
                         "as": "catalogs",
-                        "validate": "@@.company.id===apiKey.company.id",
+                        "validate": "@@.company.id===actor.company.id",
                         "eCode": "NOT_FOUND",
                         "eMessage": "Catalog not found"
                     }
@@ -1228,7 +1234,7 @@
                     "fillDto": true,
                     "load": {
                         "as": "catalogs",
-                        "validate": "@@.company.id===apiKey.company.id",
+                        "validate": "@@.company.id===actor.company.id",
                         "eCode": "CONFLICT",
                         "eMessage": "Catalog not found"
                     }
@@ -1342,7 +1348,7 @@
                     "var": "catalog",
                     "load": {
                         "as": "catalogs",
-                        "validate": "@@.company.id===apiKey.company.id",
+                        "validate": "@@.company.id===actor.company.id",
                         "eCode": "NOT_FOUND",
                         "eMessage": "Catalog not found"
                     }

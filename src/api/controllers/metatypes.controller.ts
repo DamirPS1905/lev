@@ -1,5 +1,5 @@
 import { AuthInfo } from './../../decorators/auth.decorator'
-import { ApiKeys } from './../../entities/ApiKeys'
+import { Actors } from './../../entities/Actors'
 import { CreateMetatypeDto } from './../dtos/create-metatype.dto'
 import { UpdateMetatypeDto } from './../dtos/update-metatype.dto'
 import { MetatypesService } from './../services/metatypes.service'
@@ -11,8 +11,8 @@ import { AuthGuard } from '@nestjs/passport'
 export class MetatypesController extends GenMetatypesController {
 	
 	@Get('all')
-	async findAll(@AuthInfo() apiKey: ApiKeys) {
-		return await super.findAll(apiKey);
+	async findAll(@AuthInfo() actor: Actors) {
+		return await super.findAll(actor);
 	}
 	
 	

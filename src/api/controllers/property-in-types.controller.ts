@@ -1,5 +1,5 @@
 import { AuthInfo } from './../../decorators/auth.decorator'
-import { ApiKeys } from './../../entities/ApiKeys'
+import { Actors } from './../../entities/Actors'
 import { CreatePropertyInTypeDto } from './../dtos/create-property-in-type.dto'
 import { UpdatePropertyInTypeDto } from './../dtos/update-property-in-type.dto'
 import { PropertyInTypesService } from './../services/property-in-types.service'
@@ -7,14 +7,17 @@ import { GenPropertyInTypesController } from './gen/property-in-types.controller
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, DefaultValuePipe, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { ApiQuery } from '@nestjs/swagger'
+import { ApiQuery, ApiOperation, ApiParam } from '@nestjs/swagger'
 
 export class PropertyInTypesController extends GenPropertyInTypesController {
 	
 	@Get('all')
-	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number){
+	@ApiOperation({summary: "Получение всех свойств товара, с учетом унаследованных от родительских типов, доступных в типе товара"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'type', description: 'ID типа товара'})
+	async findAll(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number){
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const typeIns = await this.catalogTypesService.findById(type);
@@ -25,9 +28,12 @@ export class PropertyInTypesController extends GenPropertyInTypesController {
 	}
 	
 	@Get('own')
-	async findOwn(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number){
+	@ApiOperation({summary: "Получение всех свойств товара прикрепленных к данному типу товара"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'type', description: 'ID типа товара'})
+	async findOwn(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number){
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const typeIns = await this.catalogTypesService.findById(type);
@@ -38,16 +44,24 @@ export class PropertyInTypesController extends GenPropertyInTypesController {
 	}
 	
 	@Get(':property')
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number) {
-		return await super.findOne(apiKey, catalog, type, property);
+	@ApiOperation({summary: "Получение параметров прикрепленния определенного свойства к данному типу товара"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'type', description: 'ID типа товара'})
+	@ApiParam({name: 'property', description: 'ID свойства'})
+	async findOne(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number) {
+		return await super.findOne(actor, catalog, type, property);
 	}
 	
 	@Patch(':property')
-	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number, @Body() updateDto: UpdatePropertyInTypeDto) {
-		return await super.update(apiKey, catalog, type, property, updateDto);
+	@ApiOperation({summary: "Прикрепление свойства к данному типу товара или обновление его параметров"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'type', description: 'ID типа товара'})
+	@ApiParam({name: 'property', description: 'ID свойства'})
+	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number, @Body() updateDto: UpdatePropertyInTypeDto) {
+		return await super.update(actor, catalog, type, property, updateDto);
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, type: number, property: number, updateDto: UpdatePropertyInTypeDto, em: EntityManager) {
+	async validateUpdate(entity, actor: Actors, catalog: number, type: number, property: number, updateDto: UpdatePropertyInTypeDto, em: EntityManager) {
 		const propertyInType = await this.propertyInTypesService.getParentsPropertyByChild(property, type, em);
 		if(propertyInType!==null){
 			throw new HttpException('Parent type already contains this property', HttpStatus.CONFLICT);
@@ -58,15 +72,19 @@ export class PropertyInTypesController extends GenPropertyInTypesController {
 		}
 		try{
 			const propertyIns = await this.catalogPropertiesService.findById(property);
-			updateDto.scheme = await this.propertyTypesService.tunePropertyScheme(apiKey.company.id, propertyIns.scheme, updateDto.scheme, false);
+			updateDto.scheme = await this.propertyTypesService.tunePropertyScheme(actor.company.id, propertyIns.scheme, updateDto.scheme, false);
 		}catch(e){
 			throw new HttpException(e.message, HttpStatus.CONFLICT);
 		}
 	}
 	
 	@Delete(':property')
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number) {
-		return await super.delete(apiKey, catalog, type, property);
+	@ApiOperation({summary: "Удаление свойства из данного типа товара"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'type', description: 'ID типа товара'})
+	@ApiParam({name: 'property', description: 'ID свойства'})
+	async delete(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number) {
+		return await super.delete(actor, catalog, type, property);
 	}
 	
 }

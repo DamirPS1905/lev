@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { AuthInfo } from './../../../decorators/auth.decorator';
-import { ApiKeys } from './../../../entities/ApiKeys';
+import { Actors } from './../../../entities/Actors';
 import { CreateCatalogBrandCollectionDto } from './../../dtos/create-catalog-brand-collection.dto';
 import { UpdateCatalogBrandCollectionDto } from './../../dtos/update-catalog-brand-collection.dto';
 import { CatalogBrandCollectionsService } from './../../services/catalog-brand-collections.service';
@@ -29,9 +29,9 @@ export class GenCatalogBrandCollectionsController {
 		protected readonly catalogsService: CatalogsService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, catalog: number, brand: number) {
+	async findAll(actor: Actors, catalog: number, brand: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const brandIns = await this.catalogBrandsService.findById(brand);
@@ -41,9 +41,9 @@ export class GenCatalogBrandCollectionsController {
 		return await this.catalogBrandCollectionsService.findAll();
 	}
 	
-	async findOne(apiKey: ApiKeys, catalog: number, brand: number, id: number) {
+	async findOne(actor: Actors, catalog: number, brand: number, id: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const brandIns = await this.catalogBrandsService.findById(brand);
@@ -54,16 +54,16 @@ export class GenCatalogBrandCollectionsController {
 		if(entity===null || !(entity.brand.id===brand)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
-		await this.validateRead(entity, apiKey, catalog, brand, id);
+		await this.validateRead(entity, actor, catalog, brand, id);
 		return entity;
 	}
 	
-	async validateRead(entity, apiKey: ApiKeys, catalog: number, brand: number, id: number) { }
+	async validateRead(entity, actor: Actors, catalog: number, brand: number, id: number) { }
 	
-	async create(apiKey: ApiKeys, catalog: number, brand: number, createDto: CreateCatalogBrandCollectionDto) {
+	async create(actor: Actors, catalog: number, brand: number, createDto: CreateCatalogBrandCollectionDto) {
 		createDto.brand = brand;
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const brandIns = await this.catalogBrandsService.findById(brand);
@@ -79,16 +79,16 @@ export class GenCatalogBrandCollectionsController {
 			if(tmp===null){
 				throw new HttpException('Not found contrainst (brand)', HttpStatus.CONFLICT);
 			}
-			await this.validateCreate(apiKey, catalog, brand, createDto, em);
+			await this.validateCreate(actor, catalog, brand, createDto, em);
 			return await this.catalogBrandCollectionsService.create(createDto, em);
 		});
 	}
 	
-	async validateCreate(apiKey: ApiKeys, catalog: number, brand: number, createDto: CreateCatalogBrandCollectionDto, em: EntityManager) { }
+	async validateCreate(actor: Actors, catalog: number, brand: number, createDto: CreateCatalogBrandCollectionDto, em: EntityManager) { }
 	
-	async update(apiKey: ApiKeys, catalog: number, brand: number, id: number, updateDto: UpdateCatalogBrandCollectionDto) {
+	async update(actor: Actors, catalog: number, brand: number, id: number, updateDto: UpdateCatalogBrandCollectionDto) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const brandIns = await this.catalogBrandsService.findById(brand);
@@ -110,16 +110,16 @@ export class GenCatalogBrandCollectionsController {
 					throw new HttpException('Duplicate (brand, title)', HttpStatus.CONFLICT);
 				}
 			}
-			await this.validateUpdate(entity, apiKey, catalog, brand, id, updateDto, em);
+			await this.validateUpdate(entity, actor, catalog, brand, id, updateDto, em);
 			return await this.catalogBrandCollectionsService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, brand: number, id: number, updateDto: UpdateCatalogBrandCollectionDto, em: EntityManager) { }
+	async validateUpdate(entity, actor: Actors, catalog: number, brand: number, id: number, updateDto: UpdateCatalogBrandCollectionDto, em: EntityManager) { }
 	
-	async delete(apiKey: ApiKeys, catalog: number, brand: number, id: number) {
+	async delete(actor: Actors, catalog: number, brand: number, id: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const brandIns = await this.catalogBrandsService.findById(brand);
@@ -131,11 +131,11 @@ export class GenCatalogBrandCollectionsController {
 			if(entity===null || !(entity.brand.id===brand)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, apiKey, catalog, brand, id, em);
+			await this.validateDelete(entity, actor, catalog, brand, id, em);
 			return await this.catalogBrandCollectionsService.remove(entity, em);
 		});
 	}
 	
-	async validateDelete(entity, apiKey: ApiKeys, catalog: number, brand: number, id: number, em: EntityManager) { }
+	async validateDelete(entity, actor: Actors, catalog: number, brand: number, id: number, em: EntityManager) { }
 	
 }

@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { AuthInfo } from './../../../decorators/auth.decorator';
-import { ApiKeys } from './../../../entities/ApiKeys';
+import { Actors } from './../../../entities/Actors';
 import { CreateUnitDto } from './../../dtos/create-unit.dto';
 import { UpdateUnitDto } from './../../dtos/update-unit.dto';
 import { UnitGroupsService } from './../../services/unit-groups.service';
@@ -27,76 +27,76 @@ export class GenUnitsController {
 		protected readonly unitsService: UnitsService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, group: number) {
+	async findAll(actor: Actors, group: number) {
 		const groupIns = await this.unitGroupsService.findById(group);
-		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===apiKey.company.id)){
+		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===actor.company.id)){
 			throw new HttpException('Units group not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.unitsService.findAllByCompany(apiKey.company.id);
+		return await this.unitsService.findAllByCompany(actor.company.id);
 	}
 	
-	async findOne(apiKey: ApiKeys, group: number, id: number) {
+	async findOne(actor: Actors, group: number, id: number) {
 		const groupIns = await this.unitGroupsService.findById(group);
-		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===apiKey.company.id)){
+		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===actor.company.id)){
 			throw new HttpException('Units group not found', HttpStatus.NOT_FOUND);
 		}
 		const entity = await this.unitsService.findById(id);
-		if(entity===null || !(entity.company===null || entity.company.id===apiKey.company.id) || !(entity.group.id===group)){
+		if(entity===null || !(entity.company===null || entity.company.id===actor.company.id) || !(entity.group.id===group)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
-		await this.validateRead(entity, apiKey, group, id);
+		await this.validateRead(entity, actor, group, id);
 		return entity;
 	}
 	
-	async validateRead(entity, apiKey: ApiKeys, group: number, id: number) { }
+	async validateRead(entity, actor: Actors, group: number, id: number) { }
 	
-	async create(apiKey: ApiKeys, group: number, createDto: CreateUnitDto) {
-		createDto.company = apiKey.company.id;
+	async create(actor: Actors, group: number, createDto: CreateUnitDto) {
+		createDto.company = actor.company.id;
 		createDto.group = group;
 		const groupIns = await this.unitGroupsService.findById(group);
-		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===apiKey.company.id)){
+		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===actor.company.id)){
 			throw new HttpException('Units group not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.unitsService.transactional(async (em) => {
-			await this.validateCreate(apiKey, group, createDto, em);
+			await this.validateCreate(actor, group, createDto, em);
 			return await this.unitsService.create(createDto, em);
 		});
 	}
 	
-	async validateCreate(apiKey: ApiKeys, group: number, createDto: CreateUnitDto, em: EntityManager) { }
+	async validateCreate(actor: Actors, group: number, createDto: CreateUnitDto, em: EntityManager) { }
 	
-	async update(apiKey: ApiKeys, group: number, id: number, updateDto: UpdateUnitDto) {
+	async update(actor: Actors, group: number, id: number, updateDto: UpdateUnitDto) {
 		const groupIns = await this.unitGroupsService.findById(group);
-		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===apiKey.company.id)){
+		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===actor.company.id)){
 			throw new HttpException('Units group not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.unitsService.transactional(async (em) => {
 			const entity = await this.unitsService.findById(id, em);
-			if(entity===null || !(entity.company!==null && entity.company.id===apiKey.company.id) || !(entity.group.id===group)){
+			if(entity===null || !(entity.company!==null && entity.company.id===actor.company.id) || !(entity.group.id===group)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateUpdate(entity, apiKey, group, id, updateDto, em);
+			await this.validateUpdate(entity, actor, group, id, updateDto, em);
 			return await this.unitsService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, group: number, id: number, updateDto: UpdateUnitDto, em: EntityManager) { }
+	async validateUpdate(entity, actor: Actors, group: number, id: number, updateDto: UpdateUnitDto, em: EntityManager) { }
 	
-	async delete(apiKey: ApiKeys, group: number, id: number) {
+	async delete(actor: Actors, group: number, id: number) {
 		const groupIns = await this.unitGroupsService.findById(group);
-		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===apiKey.company.id)){
+		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===actor.company.id)){
 			throw new HttpException('Units group not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.unitsService.transactional(async (em) => {
 			const entity = await this.unitsService.findById(id, em);
-			if(entity===null || !(entity.company!==null && entity.company.id===apiKey.company.id) || !(entity.group.id===group)){
+			if(entity===null || !(entity.company!==null && entity.company.id===actor.company.id) || !(entity.group.id===group)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, apiKey, group, id, em);
+			await this.validateDelete(entity, actor, group, id, em);
 			return await this.unitsService.remove(entity, em);
 		});
 	}
 	
-	async validateDelete(entity, apiKey: ApiKeys, group: number, id: number, em: EntityManager) { }
+	async validateDelete(entity, actor: Actors, group: number, id: number, em: EntityManager) { }
 	
 }

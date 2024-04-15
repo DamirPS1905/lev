@@ -1,5 +1,5 @@
 import { AuthInfo } from './../../decorators/auth.decorator';
-import { ApiKeys } from './../../entities/ApiKeys';
+import { Actors } from './../../entities/Actors';
 import { CreateCollectionPropertyValueDto } from './../dtos/create-collection-property-value.dto';
 import { UpdateCollectionPropertyValueDto } from './../dtos/update-collection-property-value.dto';
 import { CollectionPropertyValuesService } from './../services/collection-property-values.service';
@@ -52,8 +52,8 @@ export class CollectionPropertyValuesController extends MetatypeValuesController
 	@ApiOperation({summary: "Получение значений всех свойств коллекции бренда"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'collection', description: 'ID коллекции бренда'})
-	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('collection', ParseIntPipe) collection: number) {
-		return await super.findAll(apiKey, catalog, collection);
+	async findAll(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('collection', ParseIntPipe) collection: number) {
+		return await super.findAll(actor, catalog, collection);
 	}
 	
 	@Get('property/:property')
@@ -61,8 +61,8 @@ export class CollectionPropertyValuesController extends MetatypeValuesController
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'collection', description: 'ID коллекции бренда'})
 	@ApiParam({name: 'property', description: 'ID свойства'})
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('collection', ParseIntPipe) collection: number, @Param('property', ParseIntPipe) property: number) {
-		return await super.findOne(apiKey, catalog, collection, property);
+	async findOne(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('collection', ParseIntPipe) collection: number, @Param('property', ParseIntPipe) property: number) {
+		return await super.findOne(actor, catalog, collection, property);
 	}
 	
 	@Patch('property/:property')
@@ -82,8 +82,8 @@ export class CollectionPropertyValuesController extends MetatypeValuesController
 	    ],
 	  },
 	})
-	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('collection', ParseIntPipe) collection: number, @Param('property', ParseIntPipe) property: number, @Body() updateDto: Object | Array<Object>) {
-		return super.update(apiKey, catalog, collection, property, updateDto);
+	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('collection', ParseIntPipe) collection: number, @Param('property', ParseIntPipe) property: number, @Body() updateDto: Object | Array<Object>) {
+		return super.update(actor, catalog, collection, property, updateDto);
 	}	
 	
 	@Delete('property/:property')
@@ -91,8 +91,8 @@ export class CollectionPropertyValuesController extends MetatypeValuesController
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'collection', description: 'ID коллекции бренда'})
 	@ApiParam({name: 'property', description: 'ID свойства'})
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('collection', ParseIntPipe) collection: number, @Param('property', ParseIntPipe) property: number) {
-		return super.delete(apiKey, catalog, collection, property);
+	async delete(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('collection', ParseIntPipe) collection: number, @Param('property', ParseIntPipe) property: number) {
+		return super.delete(actor, catalog, collection, property);
 	}
 	
 }

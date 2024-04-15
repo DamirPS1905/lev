@@ -1,5 +1,5 @@
 import { AuthInfo } from './../../decorators/auth.decorator'
-import { ApiKeys } from './../../entities/ApiKeys'
+import { Actors } from './../../entities/Actors'
 import { CreateOptionsPropertyValueDto } from './../dtos/create-options-property-value.dto'
 import { UpdateOptionsPropertyValueDto } from './../dtos/update-options-property-value.dto'
 import { OptionsPropertyValuesService } from './../services/options-property-values.service'
@@ -34,14 +34,14 @@ export class OptionsPropertyValuesController {
 	@Get('all')
 	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
 	@ApiQuery({ name: 'offset', description: 'Count of skipping entities', required: false})
-	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
-		await this.validatePath(apiKey, catalog, property);
+	async findAll(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
+		await this.validatePath(actor, catalog, property);
 		return await this.optionsPropertyValuesService.readAllByProperty(property, offset, limit);
 	}
 	
 	@Get(':value')
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value', ParseBigIntPipe) value: bigint) {
-		await this.validatePath(apiKey, catalog, property);
+	async findOne(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value', ParseBigIntPipe) value: bigint) {
+		await this.validatePath(actor, catalog, property);
 		const optionIns = await this.optionsPropertyValuesService.findByValue(value);
 		if(optionIns===null || optionIns.property.id!==property){
 			throw new HttpException('Option not found', HttpStatus.NOT_FOUND);
@@ -63,9 +63,9 @@ export class OptionsPropertyValuesController {
 	  },
 	})
 	@Post()
-	async create(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Body() createDto: Object | Array<Object>) {
-		const propertyIns = await this.validatePath(apiKey, catalog, property),
-					val = await this.propertyTypesService.validateSingleValue(apiKey.company.id, propertyIns.scheme, createDto),
+	async create(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Body() createDto: Object | Array<Object>) {
+		const propertyIns = await this.validatePath(actor, catalog, property),
+					val = await this.propertyTypesService.validateSingleValue(actor.company.id, propertyIns.scheme, createDto),
 					json = JSON.stringify(val, Object.keys(val).sort()),
 					hash = createHash('sha256').update(json).digest('base64');
 		return this.optionsPropertyValuesService.transactional(async (em) => {
@@ -103,9 +103,9 @@ export class OptionsPropertyValuesController {
 	  },
 	})
 	@Patch(':value')
-	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value', ParseBigIntPipe) value: bigint, @Body() updateDto: Object | Array<Object>) {
-		const propertyIns = await this.validatePath(apiKey, catalog, property),
-					val = await this.propertyTypesService.validateSingleValue(apiKey.company.id, propertyIns.scheme, updateDto),
+	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value', ParseBigIntPipe) value: bigint, @Body() updateDto: Object | Array<Object>) {
+		const propertyIns = await this.validatePath(actor, catalog, property),
+					val = await this.propertyTypesService.validateSingleValue(actor.company.id, propertyIns.scheme, updateDto),
 					json = JSON.stringify(val, Object.keys(val).sort()),
 					hash = createHash('sha256').update(json).digest('base64');
 		return this.optionsPropertyValuesService.transactional(async (em) => {
@@ -126,8 +126,8 @@ export class OptionsPropertyValuesController {
 	}
 	
 	@Delete(':value')
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value', ParseBigIntPipe) value: bigint) {
-		await this.validatePath(apiKey, catalog, property);
+	async delete(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value', ParseBigIntPipe) value: bigint) {
+		await this.validatePath(actor, catalog, property);
 		return this.optionsPropertyValuesService.transactional(async (em) => {
 			const entity = await this.optionsPropertyValuesService.findByValue(value, em);
 			if(entity===null || entity.property.id!==property){
@@ -138,9 +138,9 @@ export class OptionsPropertyValuesController {
 		});
 	}
 	
-	private async validatePath(apiKey: ApiKeys, catalog: number, property: number){
+	private async validatePath(actor: Actors, catalog: number, property: number){
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || catalogIns.company.id!==apiKey.company.id){
+		if(catalogIns===null || catalogIns.company.id!==actor.company.id){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const propertyIns = await this.catalogPropertiesService.findById(property);

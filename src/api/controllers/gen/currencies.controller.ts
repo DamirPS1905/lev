@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { AuthInfo } from './../../../decorators/auth.decorator';
-import { ApiKeys } from './../../../entities/ApiKeys';
+import { Actors } from './../../../entities/Actors';
 import { CreateCurrencyDto } from './../../dtos/create-currency.dto';
 import { UpdateCurrencyDto } from './../../dtos/update-currency.dto';
 import { CurrenciesService } from './../../services/currencies.service';
@@ -25,7 +25,7 @@ export class GenCurrenciesController {
 		protected readonly currenciesService: CurrenciesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys) {
+	async findAll(actor: Actors) {
 		return await this.currenciesService.findAll();
 	}
 	

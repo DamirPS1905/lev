@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { AuthInfo } from './../../../decorators/auth.decorator';
-import { ApiKeys } from './../../../entities/ApiKeys';
+import { Actors } from './../../../entities/Actors';
 import { CreateCatalogMetatypePropertyDto } from './../../dtos/create-catalog-metatype-property.dto';
 import { UpdateCatalogMetatypePropertyDto } from './../../dtos/update-catalog-metatype-property.dto';
 import { CatalogMetatypePropertiesService } from './../../services/catalog-metatype-properties.service';
@@ -33,18 +33,18 @@ export class GenCatalogMetatypePropertiesController {
 		protected readonly propertyTypesService: PropertyTypesService,
 	) { }
 	
-	async findOne(apiKey: ApiKeys, catalog: number, property: number, metatype: number) {
+	async findOne(actor: Actors, catalog: number, property: number, metatype: number) {
 		const entity = await this.catalogMetatypePropertiesService.findByCatalogAndPropertyAndMetatype(catalog, property, metatype);
 		if(entity===null){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
-		await this.validateRead(entity, apiKey, catalog, property, metatype);
+		await this.validateRead(entity, actor, catalog, property, metatype);
 		return entity;
 	}
 	
-	async validateRead(entity, apiKey: ApiKeys, catalog: number, property: number, metatype: number) { }
+	async validateRead(entity, actor: Actors, catalog: number, property: number, metatype: number) { }
 	
-	async update(apiKey: ApiKeys, catalog: number, property: number, metatype: number, updateDto: UpdateCatalogMetatypePropertyDto) {
+	async update(actor: Actors, catalog: number, property: number, metatype: number, updateDto: UpdateCatalogMetatypePropertyDto) {
 		updateDto.metatype = metatype;
 		updateDto.catalog = catalog;
 		updateDto.property = property;
@@ -59,10 +59,10 @@ export class GenCatalogMetatypePropertiesController {
 				throw new HttpException('Metatype not found', HttpStatus.CONFLICT);
 			}
 			const catalogIns = await this.catalogsService.findById(catalog);
-			if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+			if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 				throw new HttpException('Catalog not found', HttpStatus.CONFLICT);
 			}
-			await this.validateUpdate(entity, apiKey, catalog, property, metatype, updateDto, em);
+			await this.validateUpdate(entity, actor, catalog, property, metatype, updateDto, em);
 			if(entity!==null){
 				return await this.catalogMetatypePropertiesService.update(entity, updateDto, em);
 			} else {
@@ -71,19 +71,19 @@ export class GenCatalogMetatypePropertiesController {
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, property: number, metatype: number, updateDto: UpdateCatalogMetatypePropertyDto, em: EntityManager) { }
+	async validateUpdate(entity, actor: Actors, catalog: number, property: number, metatype: number, updateDto: UpdateCatalogMetatypePropertyDto, em: EntityManager) { }
 	
-	async delete(apiKey: ApiKeys, catalog: number, property: number, metatype: number) {
+	async delete(actor: Actors, catalog: number, property: number, metatype: number) {
 		return await this.catalogMetatypePropertiesService.transactional(async (em) => {
 			const entity = await this.catalogMetatypePropertiesService.findByCatalogAndPropertyAndMetatype(catalog, property, metatype, em);
 			if(entity===null){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, apiKey, catalog, property, metatype, em);
+			await this.validateDelete(entity, actor, catalog, property, metatype, em);
 			return await this.catalogMetatypePropertiesService.remove(entity, em);
 		});
 	}
 	
-	async validateDelete(entity, apiKey: ApiKeys, catalog: number, property: number, metatype: number, em: EntityManager) { }
+	async validateDelete(entity, actor: Actors, catalog: number, property: number, metatype: number, em: EntityManager) { }
 	
 }

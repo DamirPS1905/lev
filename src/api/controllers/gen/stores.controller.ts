@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { AuthInfo } from './../../../decorators/auth.decorator';
-import { ApiKeys } from './../../../entities/ApiKeys';
+import { Actors } from './../../../entities/Actors';
 import { CreateStoreDto } from './../../dtos/create-store.dto';
 import { UpdateStoreDto } from './../../dtos/update-store.dto';
 import { StoresService } from './../../services/stores.service';
@@ -25,39 +25,39 @@ export class GenStoresController {
 		protected readonly storesService: StoresService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys) {
-		return await this.storesService.findAllByCompany(apiKey.company.id);
+	async findAll(actor: Actors) {
+		return await this.storesService.findAllByCompany(actor.company.id);
 	}
 	
-	async findOne(apiKey: ApiKeys, id: number) {
+	async findOne(actor: Actors, id: number) {
 		const entity = await this.storesService.findById(id);
-		if(entity===null || !(entity.company.id===apiKey.company.id)){
+		if(entity===null || !(entity.company.id===actor.company.id)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
-		await this.validateRead(entity, apiKey, id);
+		await this.validateRead(entity, actor, id);
 		return entity;
 	}
 	
-	async validateRead(entity, apiKey: ApiKeys, id: number) { }
+	async validateRead(entity, actor: Actors, id: number) { }
 	
-	async create(apiKey: ApiKeys, createDto: CreateStoreDto) {
-		createDto.company = apiKey.company.id;
+	async create(actor: Actors, createDto: CreateStoreDto) {
+		createDto.company = actor.company.id;
 		return await this.storesService.transactional(async (em) => {
-			const existed0 = await this.storesService.findByCompanyAndTitle(apiKey.company.id, createDto.title, em);
+			const existed0 = await this.storesService.findByCompanyAndTitle(actor.company.id, createDto.title, em);
 			if(existed0!==null){
 				throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 			}
-			await this.validateCreate(apiKey, createDto, em);
+			await this.validateCreate(actor, createDto, em);
 			return await this.storesService.create(createDto, em);
 		});
 	}
 	
-	async validateCreate(apiKey: ApiKeys, createDto: CreateStoreDto, em: EntityManager) { }
+	async validateCreate(actor: Actors, createDto: CreateStoreDto, em: EntityManager) { }
 	
-	async update(apiKey: ApiKeys, id: number, updateDto: UpdateStoreDto) {
+	async update(actor: Actors, id: number, updateDto: UpdateStoreDto) {
 		return await this.storesService.transactional(async (em) => {
 			const entity = await this.storesService.findById(id, em);
-			if(entity===null || !(entity.company.id===apiKey.company.id)){
+			if(entity===null || !(entity.company.id===actor.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			if((updateDto.title!==undefined && updateDto.title!==entity.title)){
@@ -66,24 +66,24 @@ export class GenStoresController {
 					throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 				}
 			}
-			await this.validateUpdate(entity, apiKey, id, updateDto, em);
+			await this.validateUpdate(entity, actor, id, updateDto, em);
 			return await this.storesService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, id: number, updateDto: UpdateStoreDto, em: EntityManager) { }
+	async validateUpdate(entity, actor: Actors, id: number, updateDto: UpdateStoreDto, em: EntityManager) { }
 	
-	async delete(apiKey: ApiKeys, id: number) {
+	async delete(actor: Actors, id: number) {
 		return await this.storesService.transactional(async (em) => {
 			const entity = await this.storesService.findById(id, em);
-			if(entity===null || !(entity.company.id===apiKey.company.id)){
+			if(entity===null || !(entity.company.id===actor.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, apiKey, id, em);
+			await this.validateDelete(entity, actor, id, em);
 			return await this.storesService.remove(entity, em);
 		});
 	}
 	
-	async validateDelete(entity, apiKey: ApiKeys, id: number, em: EntityManager) { }
+	async validateDelete(entity, actor: Actors, id: number, em: EntityManager) { }
 	
 }

@@ -1,4 +1,4 @@
-import { ApiKeys } from './../../../entities/ApiKeys'
+import { Actors } from './../../../entities/Actors'
 import { PropertyValues } from './../../../entities/PropertyValues'
 import { EntityManager, wrap } from '@mikro-orm/postgresql'
 import { Body, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, UseGuards } from '@nestjs/common'
@@ -23,9 +23,9 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 		protected readonly valuesService: S,
 	) { }
 		
-	async findAll(apiKey: ApiKeys, catalog: number, instance: P) {
+	async findAll(actor: Actors, catalog: number, instance: P) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		await this.validateInstance(catalog, instance, null);
@@ -57,9 +57,9 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 		return result;
 	}
 	
-	async findOne(apiKey: ApiKeys, catalog: number, instance: P, property: number) {
+	async findOne(actor: Actors, catalog: number, instance: P, property: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		await this.validateInstance(catalog, instance, null);
@@ -80,9 +80,9 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 	
 	protected abstract validateAttachment(catalog: number, property: number, instance: P, em: EntityManager);
 	
-	async update(apiKey: ApiKeys, catalog: number, instance: P, property: number, updateDto: Object | Array<Object>) {
+	async update(actor: Actors, catalog: number, instance: P, property: number, updateDto: Object | Array<Object>) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.valuesService.transactional(async (em) => {
@@ -105,14 +105,14 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 				if(propertyIns.multiple){
 					if(updateDto instanceof Array){
 						for(let i = 0; i<updateDto.length; i++){
-							await this.writeOne(apiKey.company.id, instance, propertyIns, scheme, updateDto[i], i, em);
+							await this.writeOne(actor.company.id, instance, propertyIns, scheme, updateDto[i], i, em);
 						}
 						await this.valuesService.removeExtraByInstanceAndPropertyAndMaxOrder(instance, propertyIns.id, updateDto.length, true, em);
 					}else{
 						throw new HttpException('You should provide array for multiple properties', HttpStatus.CONFLICT);
 					}
 				}else{
-					await this.writeOne(apiKey.company.id, instance, propertyIns, scheme, updateDto, 0, em);
+					await this.writeOne(actor.company.id, instance, propertyIns, scheme, updateDto, 0, em);
 				}
 			}
 		});
@@ -164,9 +164,9 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 		}
 	}
 	
-	async delete(apiKey: ApiKeys, catalog: number, instance: P, property: number) {
+	async delete(actor: Actors, catalog: number, instance: P, property: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.valuesService.transactional(async (em) => {

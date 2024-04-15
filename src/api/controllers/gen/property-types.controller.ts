@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { AuthInfo } from './../../../decorators/auth.decorator';
-import { ApiKeys } from './../../../entities/ApiKeys';
+import { Actors } from './../../../entities/Actors';
 import { CreatePropertyTypeDto } from './../../dtos/create-property-type.dto';
 import { UpdatePropertyTypeDto } from './../../dtos/update-property-type.dto';
 import { CatalogsService } from './../../services/catalogs.service';
@@ -27,27 +27,27 @@ export class GenPropertyTypesController {
 		protected readonly propertyTypesService: PropertyTypesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, catalog: number) {
+	async findAll(actor: Actors, catalog: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.propertyTypesService.findAllByCatalog(catalog);
 	}
 	
-	async findOne(apiKey: ApiKeys, catalog: number, id: number) {
+	async findOne(actor: Actors, catalog: number, id: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const entity = await this.propertyTypesService.findById(id);
 		if(entity===null || !(entity.catalog===null || entity.catalog.id===catalog)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
-		await this.validateRead(entity, apiKey, catalog, id);
+		await this.validateRead(entity, actor, catalog, id);
 		return entity;
 	}
 	
-	async validateRead(entity, apiKey: ApiKeys, catalog: number, id: number) { }
+	async validateRead(entity, actor: Actors, catalog: number, id: number) { }
 	
 }

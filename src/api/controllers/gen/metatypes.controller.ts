@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { AuthInfo } from './../../../decorators/auth.decorator';
-import { ApiKeys } from './../../../entities/ApiKeys';
+import { Actors } from './../../../entities/Actors';
 import { CreateMetatypeDto } from './../../dtos/create-metatype.dto';
 import { UpdateMetatypeDto } from './../../dtos/update-metatype.dto';
 import { MetatypesService } from './../../services/metatypes.service';
@@ -25,7 +25,7 @@ export class GenMetatypesController {
 		protected readonly metatypesService: MetatypesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys) {
+	async findAll(actor: Actors) {
 		return await this.metatypesService.findAll();
 	}
 	

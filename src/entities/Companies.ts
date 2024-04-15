@@ -1,3 +1,4 @@
+import { Actors } from './Actors';
 import { ApiKeys } from './ApiKeys';
 import { Catalogs } from './Catalogs';
 import { PriceTypes } from './PriceTypes';
@@ -21,6 +22,9 @@ export class Companies {
 	
 	@OneToMany({ entity: () => Catalogs, mappedBy: 'company' })
 	catalogsByCompany = new Collection<Catalogs>(this);
+	
+	@OneToMany({ entity: () => Actors, mappedBy: 'company' })
+	actorsByCompany = new Collection<Actors>(this);
 	
 	@OneToMany({ entity: () => ApiKeys, mappedBy: 'company' })
 	apiKeysByCompany = new Collection<ApiKeys>(this);

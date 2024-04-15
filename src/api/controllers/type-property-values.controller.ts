@@ -1,5 +1,5 @@
 import { AuthInfo } from './../../decorators/auth.decorator'
-import { ApiKeys } from './../../entities/ApiKeys'
+import { Actors } from './../../entities/Actors'
 import { PropertyValues } from './../../entities/PropertyValues'
 import { TypePropertyValues } from './../../entities/TypePropertyValues'
 import { TypePropertyValuesService } from './../services/type-property-values.service'
@@ -48,8 +48,8 @@ export class TypePropertyValuesController extends MetatypeValuesController<TypeP
 	@ApiOperation({summary: "Получение значений всех свойств типа товара"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'type', description: 'ID типа товара'})
-	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number) {
-		return await super.findAll(apiKey, catalog, type);
+	async findAll(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number) {
+		return await super.findAll(actor, catalog, type);
 	}
 	
 	@Get('property/:property')
@@ -57,8 +57,8 @@ export class TypePropertyValuesController extends MetatypeValuesController<TypeP
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'type', description: 'ID типа товара'})
 	@ApiParam({name: 'property', description: 'ID свойства'})
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number) {
-		return await super.findOne(apiKey, catalog, type, property);
+	async findOne(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number) {
+		return await super.findOne(actor, catalog, type, property);
 	}
 	
 	@Patch('property/:property')
@@ -78,8 +78,8 @@ export class TypePropertyValuesController extends MetatypeValuesController<TypeP
 	    ],
 	  },
 	})	
-	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number, @Body() updateDto: Object | Array<Object>) {
-		return super.update(apiKey, catalog, type, property, updateDto);
+	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number, @Body() updateDto: Object | Array<Object>) {
+		return super.update(actor, catalog, type, property, updateDto);
 	}	
 	
 	@Delete('property/:property')
@@ -87,8 +87,8 @@ export class TypePropertyValuesController extends MetatypeValuesController<TypeP
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'type', description: 'ID типа товара'})
 	@ApiParam({name: 'property', description: 'ID свойства'})
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number) {
-		return super.delete(apiKey, catalog, type, property);
+	async delete(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number) {
+		return super.delete(actor, catalog, type, property);
 	}	
 	
 }

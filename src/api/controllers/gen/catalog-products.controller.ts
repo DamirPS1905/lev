@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { AuthInfo } from './../../../decorators/auth.decorator';
-import { ApiKeys } from './../../../entities/ApiKeys';
+import { Actors } from './../../../entities/Actors';
 import { CreateCatalogProductDto } from './../../dtos/create-catalog-product.dto';
 import { UpdateCatalogProductDto } from './../../dtos/update-catalog-product.dto';
 import { CatalogBrandCollectionsService } from './../../services/catalog-brand-collections.service';
@@ -33,9 +33,9 @@ export class GenCatalogProductsController {
 		protected readonly catalogsService: CatalogsService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys, catalog: number, offset: number, limit: number) {
+	async findAll(actor: Actors, catalog: number, offset: number, limit: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
@@ -44,25 +44,25 @@ export class GenCatalogProductsController {
 		return await this.catalogProductsService.listByCatalog(catalog, offset, limit);
 	}
 	
-	async findOne(apiKey: ApiKeys, catalog: number, id: bigint) {
+	async findOne(actor: Actors, catalog: number, id: bigint) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const entity = await this.catalogProductsService.findById(id);
 		if(entity===null || !(entity.catalog.id===catalog)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
-		await this.validateRead(entity, apiKey, catalog, id);
+		await this.validateRead(entity, actor, catalog, id);
 		return entity;
 	}
 	
-	async validateRead(entity, apiKey: ApiKeys, catalog: number, id: bigint) { }
+	async validateRead(entity, actor: Actors, catalog: number, id: bigint) { }
 	
-	async create(apiKey: ApiKeys, catalog: number, createDto: CreateCatalogProductDto) {
+	async create(actor: Actors, catalog: number, createDto: CreateCatalogProductDto) {
 		createDto.catalog = catalog;
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.catalogProductsService.transactional(async (em) => {
@@ -86,16 +86,16 @@ export class GenCatalogProductsController {
 					}
 				}
 			}
-			await this.validateCreate(apiKey, catalog, createDto, em);
+			await this.validateCreate(actor, catalog, createDto, em);
 			return await this.catalogProductsService.create(createDto, em);
 		});
 	}
 	
-	async validateCreate(apiKey: ApiKeys, catalog: number, createDto: CreateCatalogProductDto, em: EntityManager) { }
+	async validateCreate(actor: Actors, catalog: number, createDto: CreateCatalogProductDto, em: EntityManager) { }
 	
-	async update(apiKey: ApiKeys, catalog: number, id: bigint, updateDto: UpdateCatalogProductDto) {
+	async update(actor: Actors, catalog: number, id: bigint, updateDto: UpdateCatalogProductDto) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.catalogProductsService.transactional(async (em) => {
@@ -129,16 +129,16 @@ export class GenCatalogProductsController {
 					throw new HttpException('Duplicate (catalog, title)', HttpStatus.CONFLICT);
 				}
 			}
-			await this.validateUpdate(entity, apiKey, catalog, id, updateDto, em);
+			await this.validateUpdate(entity, actor, catalog, id, updateDto, em);
 			return await this.catalogProductsService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, id: bigint, updateDto: UpdateCatalogProductDto, em: EntityManager) { }
+	async validateUpdate(entity, actor: Actors, catalog: number, id: bigint, updateDto: UpdateCatalogProductDto, em: EntityManager) { }
 	
-	async delete(apiKey: ApiKeys, catalog: number, id: bigint) {
+	async delete(actor: Actors, catalog: number, id: bigint) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.catalogProductsService.transactional(async (em) => {
@@ -146,11 +146,11 @@ export class GenCatalogProductsController {
 			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, apiKey, catalog, id, em);
+			await this.validateDelete(entity, actor, catalog, id, em);
 			return await this.catalogProductsService.remove(entity, em);
 		});
 	}
 	
-	async validateDelete(entity, apiKey: ApiKeys, catalog: number, id: bigint, em: EntityManager) { }
+	async validateDelete(entity, actor: Actors, catalog: number, id: bigint, em: EntityManager) { }
 	
 }

@@ -1,5 +1,5 @@
 import { AuthInfo } from './../../decorators/auth.decorator'
-import { ApiKeys } from './../../entities/ApiKeys'
+import { Actors } from './../../entities/Actors'
 import { CreateOfferPriceDto } from './../dtos/create-offer-price.dto'
 import { UpdateOfferPriceDto } from './../dtos/update-offer-price.dto'
 import { OfferPricesService } from './../services/offer-prices.service'
@@ -12,21 +12,21 @@ import { ParseBigIntPipe } from './../../pipes/parse-bigint.pipe'
 export class OfferPricesController extends GenOfferPricesController {
 	
 	@Get('all')
-	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('offer', ParseBigIntPipe) offer: bigint) {
-		return await super.findAll(apiKey, catalog, offer);
+	async findAll(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('offer', ParseBigIntPipe) offer: bigint) {
+		return await super.findAll(actor, catalog, offer);
 	}
 	
 	@Get(':priceType')
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('offer', ParseBigIntPipe) offer: bigint, @Param('priceType', ParseIntPipe) priceType: number) {
-		return await super.findOne(apiKey, catalog, offer, priceType);
+	async findOne(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('offer', ParseBigIntPipe) offer: bigint, @Param('priceType', ParseIntPipe) priceType: number) {
+		return await super.findOne(actor, catalog, offer, priceType);
 	}
 	
 	@Patch(':priceType')
-	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('offer', ParseBigIntPipe) offer: bigint, @Param('priceType', ParseIntPipe) priceType: number, @Body() updateDto: UpdateOfferPriceDto) {
-		return await super.update(apiKey, catalog, offer, priceType, updateDto);
+	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('offer', ParseBigIntPipe) offer: bigint, @Param('priceType', ParseIntPipe) priceType: number, @Body() updateDto: UpdateOfferPriceDto) {
+		return await super.update(actor, catalog, offer, priceType, updateDto);
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, offer: bigint, priceType: number, updateDto: UpdateOfferPriceDto, em: EntityManager) {
+	async validateUpdate(entity, actor: Actors, catalog: number, offer: bigint, priceType: number, updateDto: UpdateOfferPriceDto, em: EntityManager) {
 		try{
 			const priceTypeIns = await this.priceTypesService.findById(priceType, em);
 			if(updateDto.currency===undefined || updateDto.currency===priceTypeIns.baseCurrency.id){
@@ -41,8 +41,8 @@ export class OfferPricesController extends GenOfferPricesController {
 	}
 	
 	@Delete(':priceType')
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('offer', ParseBigIntPipe) offer: bigint, @Param('priceType', ParseIntPipe) priceType: number) {
-		return await super.delete(apiKey, catalog, offer, priceType);
+	async delete(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('offer', ParseBigIntPipe) offer: bigint, @Param('priceType', ParseIntPipe) priceType: number) {
+		return await super.delete(actor, catalog, offer, priceType);
 	}
 	
 	

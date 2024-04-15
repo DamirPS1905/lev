@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { AuthInfo } from './../../../decorators/auth.decorator';
-import { ApiKeys } from './../../../entities/ApiKeys';
+import { Actors } from './../../../entities/Actors';
 import { CreatePropertyPrimitiveDto } from './../../dtos/create-property-primitive.dto';
 import { UpdatePropertyPrimitiveDto } from './../../dtos/update-property-primitive.dto';
 import { PropertyPrimitivesService } from './../../services/property-primitives.service';
@@ -25,7 +25,7 @@ export class GenPropertyPrimitivesController {
 		protected readonly propertyPrimitivesService: PropertyPrimitivesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys) {
+	async findAll(actor: Actors) {
 		return await this.propertyPrimitivesService.findAll();
 	}
 	

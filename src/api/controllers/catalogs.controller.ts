@@ -1,5 +1,5 @@
 import { AuthInfo } from './../../decorators/auth.decorator'
-import { ApiKeys } from './../../entities/ApiKeys'
+import { Actors } from './../../entities/Actors'
 import { CreateCatalogDto } from './../dtos/create-catalog.dto'
 import { UpdateCatalogDto } from './../dtos/update-catalog.dto'
 import { CatalogsService } from './../services/catalogs.service'
@@ -11,8 +11,8 @@ import { AuthGuard } from '@nestjs/passport'
 export class CatalogsController extends GenCatalogsController {
 	
 	@Get('all')
-	async findAll(@AuthInfo() apiKey: ApiKeys) {
-		return await super.findAll(apiKey);
+	async findAll(@AuthInfo() actor: Actors) {
+		return await super.findAll(actor);
 	}
 	
 	

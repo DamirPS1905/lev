@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { AuthInfo } from './../../../decorators/auth.decorator';
-import { ApiKeys } from './../../../entities/ApiKeys';
+import { Actors } from './../../../entities/Actors';
 import { CreatePriceTypeDto } from './../../dtos/create-price-type.dto';
 import { UpdatePriceTypeDto } from './../../dtos/update-price-type.dto';
 import { CurrenciesService } from './../../services/currencies.service';
@@ -27,25 +27,25 @@ export class GenPriceTypesController {
 		protected readonly priceTypesService: PriceTypesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys) {
-		return await this.priceTypesService.findAllByCompany(apiKey.company.id);
+	async findAll(actor: Actors) {
+		return await this.priceTypesService.findAllByCompany(actor.company.id);
 	}
 	
-	async findOne(apiKey: ApiKeys, id: number) {
+	async findOne(actor: Actors, id: number) {
 		const entity = await this.priceTypesService.findById(id);
-		if(entity===null || !(entity.company.id===apiKey.company.id)){
+		if(entity===null || !(entity.company.id===actor.company.id)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
-		await this.validateRead(entity, apiKey, id);
+		await this.validateRead(entity, actor, id);
 		return entity;
 	}
 	
-	async validateRead(entity, apiKey: ApiKeys, id: number) { }
+	async validateRead(entity, actor: Actors, id: number) { }
 	
-	async create(apiKey: ApiKeys, createDto: CreatePriceTypeDto) {
-		createDto.company = apiKey.company.id;
+	async create(actor: Actors, createDto: CreatePriceTypeDto) {
+		createDto.company = actor.company.id;
 		return await this.priceTypesService.transactional(async (em) => {
-			const existed0 = await this.priceTypesService.findByCompanyAndTitle(apiKey.company.id, createDto.title, em);
+			const existed0 = await this.priceTypesService.findByCompanyAndTitle(actor.company.id, createDto.title, em);
 			if(existed0!==null){
 				throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 			}
@@ -63,14 +63,14 @@ export class GenPriceTypesController {
 			if(baseCurrencyIns===null){
 				throw new HttpException('Base currency not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateCreate(apiKey, createDto, em);
+			await this.validateCreate(actor, createDto, em);
 			return await this.priceTypesService.create(createDto, em);
 		});
 	}
 	
-	async validateCreate(apiKey: ApiKeys, createDto: CreatePriceTypeDto, em: EntityManager) { }
+	async validateCreate(actor: Actors, createDto: CreatePriceTypeDto, em: EntityManager) { }
 	
-	async update(apiKey: ApiKeys, id: number, updateDto: UpdatePriceTypeDto) {
+	async update(actor: Actors, id: number, updateDto: UpdatePriceTypeDto) {
 		return await this.priceTypesService.transactional(async (em) => {
 			const entity = await this.priceTypesService.findById(id, em);
 			if(updateDto.displayCurrency!==null){
@@ -83,7 +83,7 @@ export class GenPriceTypesController {
 					}
 				}
 			}
-			if(entity===null || !(entity.company.id===apiKey.company.id)){
+			if(entity===null || !(entity.company.id===actor.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			if((updateDto.title!==undefined && updateDto.title!==entity.title)){
@@ -92,24 +92,24 @@ export class GenPriceTypesController {
 					throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 				}
 			}
-			await this.validateUpdate(entity, apiKey, id, updateDto, em);
+			await this.validateUpdate(entity, actor, id, updateDto, em);
 			return await this.priceTypesService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, id: number, updateDto: UpdatePriceTypeDto, em: EntityManager) { }
+	async validateUpdate(entity, actor: Actors, id: number, updateDto: UpdatePriceTypeDto, em: EntityManager) { }
 	
-	async delete(apiKey: ApiKeys, id: number) {
+	async delete(actor: Actors, id: number) {
 		return await this.priceTypesService.transactional(async (em) => {
 			const entity = await this.priceTypesService.findById(id, em);
-			if(entity===null || !(entity.company.id===apiKey.company.id)){
+			if(entity===null || !(entity.company.id===actor.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, apiKey, id, em);
+			await this.validateDelete(entity, actor, id, em);
 			return await this.priceTypesService.remove(entity, em);
 		});
 	}
 	
-	async validateDelete(entity, apiKey: ApiKeys, id: number, em: EntityManager) { }
+	async validateDelete(entity, actor: Actors, id: number, em: EntityManager) { }
 	
 }

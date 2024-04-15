@@ -221,7 +221,8 @@ ALTER SEQUENCE public.actor_types_id_seq OWNED BY public.actor_types.id;
 CREATE TABLE public.actors (
     id integer NOT NULL,
     type integer NOT NULL,
-    key integer
+    key integer,
+    company integer
 );
 
 
@@ -1346,8 +1347,8 @@ COPY public.actor_types (id, title) FROM stdin;
 -- Data for Name: actors; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.actors (id, type, key) FROM stdin;
-1	2	4
+COPY public.actors (id, type, key, company) FROM stdin;
+1	2	4	1
 \.
 
 
@@ -3408,6 +3409,14 @@ CREATE TRIGGER unit_groups_after_update AFTER UPDATE ON public.unit_groups FOR E
 
 ALTER TABLE ONLY public.actors
     ADD CONSTRAINT actors_actor_types_fk FOREIGN KEY (type) REFERENCES public.actor_types(id);
+
+
+--
+-- Name: actors actors_companies_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.actors
+    ADD CONSTRAINT actors_companies_fk FOREIGN KEY (company) REFERENCES public.companies(id) ON DELETE CASCADE;
 
 
 --

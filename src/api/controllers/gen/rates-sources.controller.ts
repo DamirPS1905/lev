@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { AuthInfo } from './../../../decorators/auth.decorator';
-import { ApiKeys } from './../../../entities/ApiKeys';
+import { Actors } from './../../../entities/Actors';
 import { CreateRatesSourceDto } from './../../dtos/create-rates-source.dto';
 import { UpdateRatesSourceDto } from './../../dtos/update-rates-source.dto';
 import { RatesSourcesService } from './../../services/rates-sources.service';
@@ -25,7 +25,7 @@ export class GenRatesSourcesController {
 		protected readonly ratesSourcesService: RatesSourcesService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys) {
+	async findAll(actor: Actors) {
 		return await this.ratesSourcesService.findAll();
 	}
 	

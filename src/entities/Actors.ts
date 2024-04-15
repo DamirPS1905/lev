@@ -1,5 +1,6 @@
 import { ActorTypes } from './ActorTypes';
 import { ApiKeys } from './ApiKeys';
+import { Companies } from './Companies';
 import { Users } from './Users';
 import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property } from '@mikro-orm/core';
 
@@ -14,6 +15,9 @@ export class Actors {
 
   @Property({ nullable: true })
   key?: number;
+
+  @ManyToOne({ entity: () => Companies, fieldName: 'company', deleteRule: 'cascade', nullable: true })
+  company?: Companies;
 
 	// gen - begin
 	

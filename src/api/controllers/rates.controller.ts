@@ -1,5 +1,5 @@
 import { AuthInfo } from './../../decorators/auth.decorator'
-import { ApiKeys } from './../../entities/ApiKeys'
+import { Actors } from './../../entities/Actors'
 import { CreateRateDto } from './../dtos/create-rate.dto'
 import { UpdateRateDto } from './../dtos/update-rate.dto'
 import { RatesService } from './../services/rates.service'
@@ -7,11 +7,16 @@ import { GenRatesController } from './gen/rates.controller'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { DefaultValuePipe, Get, Param, ParseIntPipe, Query, HttpException, HttpStatus } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
+import { ApiOperation, ApiParam } from '@nestjs/swagger'
 
 export class RatesController extends GenRatesController {
 		
 	@Get('/:source/:from-to-:to')
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('from') from: string, @Param('to') to: string, @Param('source', ParseIntPipe) sourceId: number) {
+	@ApiOperation({summary: "Получение курса валюты from по отношению к валюте to по информаци из источника source"})
+	@ApiParam({name: 'source', description: 'ID источника курсов валют'})
+	@ApiParam({name: 'from', description: 'Трехбуквенный код валюты'})
+	@ApiParam({name: 'to', description: 'Трехбуквенный код валюты'})
+	async findOne(@AuthInfo() actor: Actors, @Param('from') from: string, @Param('to') to: string, @Param('source', ParseIntPipe) sourceId: number) {
 		if(from===to) return 1;
 		const fromCurrency = await this.currenciesService.findByKey(from.toUpperCase()),
 					toCurrency = await this.currenciesService.findByKey(to.toUpperCase()),

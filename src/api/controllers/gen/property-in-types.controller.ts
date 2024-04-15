@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { AuthInfo } from './../../../decorators/auth.decorator';
-import { ApiKeys } from './../../../entities/ApiKeys';
+import { Actors } from './../../../entities/Actors';
 import { CreatePropertyInTypeDto } from './../../dtos/create-property-in-type.dto';
 import { UpdatePropertyInTypeDto } from './../../dtos/update-property-in-type.dto';
 import { CatalogPropertiesService } from './../../services/catalog-properties.service';
@@ -35,26 +35,26 @@ export class GenPropertyInTypesController {
 		protected readonly propertyTypesService: PropertyTypesService,
 	) { }
 	
-	async findOne(apiKey: ApiKeys, catalog: number, type: number, property: number) {
+	async findOne(actor: Actors, catalog: number, type: number, property: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		const entity = await this.propertyInTypesService.findByTypeAndProperty(type, property);
 		if(entity===null || !(entity.type.id===type)){
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
-		await this.validateRead(entity, apiKey, catalog, type, property);
+		await this.validateRead(entity, actor, catalog, type, property);
 		return entity;
 	}
 	
-	async validateRead(entity, apiKey: ApiKeys, catalog: number, type: number, property: number) { }
+	async validateRead(entity, actor: Actors, catalog: number, type: number, property: number) { }
 	
-	async update(apiKey: ApiKeys, catalog: number, type: number, property: number, updateDto: UpdatePropertyInTypeDto) {
+	async update(actor: Actors, catalog: number, type: number, property: number, updateDto: UpdatePropertyInTypeDto) {
 		updateDto.type = type;
 		updateDto.property = property;
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.propertyInTypesService.transactional(async (em) => {
@@ -67,7 +67,7 @@ export class GenPropertyInTypesController {
 			if(typeIns===null || !(typeIns.catalog.id===catalog)){
 				throw new HttpException('Product type not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateUpdate(entity, apiKey, catalog, type, property, updateDto, em);
+			await this.validateUpdate(entity, actor, catalog, type, property, updateDto, em);
 			if(entity!==null){
 				if(!(entity.type.id===type)){
 					throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
@@ -79,11 +79,11 @@ export class GenPropertyInTypesController {
 		});
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, type: number, property: number, updateDto: UpdatePropertyInTypeDto, em: EntityManager) { }
+	async validateUpdate(entity, actor: Actors, catalog: number, type: number, property: number, updateDto: UpdatePropertyInTypeDto, em: EntityManager) { }
 	
-	async delete(apiKey: ApiKeys, catalog: number, type: number, property: number) {
+	async delete(actor: Actors, catalog: number, type: number, property: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.propertyInTypesService.transactional(async (em) => {
@@ -91,11 +91,11 @@ export class GenPropertyInTypesController {
 			if(entity===null || !(entity.type.id===type)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, apiKey, catalog, type, property, em);
+			await this.validateDelete(entity, actor, catalog, type, property, em);
 			return await this.propertyInTypesService.remove(entity, em);
 		});
 	}
 	
-	async validateDelete(entity, apiKey: ApiKeys, catalog: number, type: number, property: number, em: EntityManager) { }
+	async validateDelete(entity, actor: Actors, catalog: number, type: number, property: number, em: EntityManager) { }
 	
 }

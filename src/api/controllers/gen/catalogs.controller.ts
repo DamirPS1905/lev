@@ -7,7 +7,7 @@
  * in a proper way.
  */
 import { AuthInfo } from './../../../decorators/auth.decorator';
-import { ApiKeys } from './../../../entities/ApiKeys';
+import { Actors } from './../../../entities/Actors';
 import { CreateCatalogDto } from './../../dtos/create-catalog.dto';
 import { UpdateCatalogDto } from './../../dtos/update-catalog.dto';
 import { CatalogsService } from './../../services/catalogs.service';
@@ -25,8 +25,8 @@ export class GenCatalogsController {
 		protected readonly catalogsService: CatalogsService,
 	) { }
 	
-	async findAll(apiKey: ApiKeys) {
-		return await this.catalogsService.findAllByCompany(apiKey.company.id);
+	async findAll(actor: Actors) {
+		return await this.catalogsService.findAllByCompany(actor.company.id);
 	}
 	
 }

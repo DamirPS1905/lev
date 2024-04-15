@@ -1,5 +1,5 @@
 import { AuthInfo } from './../../decorators/auth.decorator'
-import { ApiKeys } from './../../entities/ApiKeys'
+import { Actors } from './../../entities/Actors'
 import { CreateCatalogMetatypePropertyDto } from './../dtos/create-catalog-metatype-property.dto'
 import { UpdateCatalogMetatypePropertyDto } from './../dtos/update-catalog-metatype-property.dto'
 import { CatalogMetatypePropertiesService } from './../services/catalog-metatype-properties.service'
@@ -11,36 +11,36 @@ import { AuthGuard } from '@nestjs/passport'
 export class CatalogMetatypePropertiesController extends GenCatalogMetatypePropertiesController {
 	
 	@Get('all')
-	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('metatype', ParseIntPipe) metatype: number, @Param('catalog', ParseIntPipe) catalog: number) {
+	async findAll(@AuthInfo() actor: Actors, @Param('metatype', ParseIntPipe) metatype: number, @Param('catalog', ParseIntPipe) catalog: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===apiKey.company.id)){
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.CONFLICT);
 		}
 		return await this.catalogMetatypePropertiesService.findAllByCatalogAndMetatype(catalog, metatype);
 	}
 	
 	@Get('property/:property')
-	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property', ParseIntPipe) property: number, @Param('metatype', ParseIntPipe) metatype: number) {
-		return await super.findOne(apiKey, catalog, property, metatype);
+	async findOne(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property', ParseIntPipe) property: number, @Param('metatype', ParseIntPipe) metatype: number) {
+		return await super.findOne(actor, catalog, property, metatype);
 	}
 	
 	@Patch('property/:property')
-	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property', ParseIntPipe) property: number, @Param('metatype', ParseIntPipe) metatype: number, @Body() updateDto: UpdateCatalogMetatypePropertyDto) {
-		return await super.update(apiKey, catalog, property, metatype, updateDto);
+	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property', ParseIntPipe) property: number, @Param('metatype', ParseIntPipe) metatype: number, @Body() updateDto: UpdateCatalogMetatypePropertyDto) {
+		return await super.update(actor, catalog, property, metatype, updateDto);
 	}
 	
-	async validateUpdate(entity, apiKey: ApiKeys, catalog: number, property: number, metatype: number, updateDto: UpdateCatalogMetatypePropertyDto, em: EntityManager) {
+	async validateUpdate(entity, actor: Actors, catalog: number, property: number, metatype: number, updateDto: UpdateCatalogMetatypePropertyDto, em: EntityManager) {
 		try{
 			const propertyIns = await this.catalogPropertiesService.findById(property);
-			updateDto.scheme = await this.propertyTypesService.tunePropertyScheme(apiKey.company.id, propertyIns.scheme, updateDto.scheme, false);
+			updateDto.scheme = await this.propertyTypesService.tunePropertyScheme(actor.company.id, propertyIns.scheme, updateDto.scheme, false);
 		}catch(e){
 			throw new HttpException(e.message, HttpStatus.CONFLICT);
 		}
 	}
 	
 	@Delete('property/:property')
-	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('property', ParseIntPipe) property: number, @Param('metatype', ParseIntPipe) metatype: number) {
-		return await super.delete(apiKey, catalog, property, metatype);
+	async delete(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property', ParseIntPipe) property: number, @Param('metatype', ParseIntPipe) metatype: number) {
+		return await super.delete(actor, catalog, property, metatype);
 	}
 	
 	
