@@ -60,6 +60,13 @@ export class GenApiKeysService {
 		});
 	}
 	
+	findByActor(actor: number, emt: EntityManager = null) {
+		const em = this.getEm(emt);
+		return em.findOne(ApiKeys, {
+			actor: actor
+		});
+	}
+	
 	findAllByActor(actor: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(ApiKeys, {

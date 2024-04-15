@@ -30,7 +30,8 @@
             "dtoTrim": true,
             "dtoDisallow": false,
             "from": "body",
-            "fillDto": false
+            "fillDto": false,
+            "unique": false
         },
         "company": {
             "dto": "create",
@@ -46,7 +47,8 @@
             "allFilter": true,
             "hidden": true,
             "from": "other: actor.company.id",
-            "fillDto": "create"
+            "fillDto": "create",
+            "unique": false
         },
         "title": {
             "dto": true,
@@ -56,7 +58,8 @@
             "dtoTrim": true,
             "dtoDisallow": false,
             "from": "body",
-            "fillDto": false
+            "fillDto": false,
+            "unique": false
         },
         "catalog": {
             "dto": "create",
@@ -72,7 +75,8 @@
             "ignoreFk": true,
             "allFilter": true,
             "from": "extra",
-            "fillDto": "create"
+            "fillDto": "create",
+            "unique": false
         },
         "pk": {
             "dto": true,
@@ -82,7 +86,8 @@
             "dtoTrim": true,
             "dtoDisallow": true,
             "from": "path",
-            "fillDto": "create"
+            "fillDto": "create",
+            "unique": false
         },
         "id": {
             "dto": false,
@@ -92,7 +97,8 @@
             "dtoTrim": true,
             "dtoDisallow": false,
             "from": "body",
-            "fillDto": false
+            "fillDto": false,
+            "unique": true
         }
     },
     "entitiesDefaults": {
@@ -146,7 +152,8 @@
             "paginateByMax": 0,
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "title": {
                     "def": "title",
@@ -164,7 +171,8 @@
             "extraServices": "catalog_types_overload, property_in_types",
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "catalog": {
                     "def": "catalog"
@@ -198,7 +206,8 @@
             "apiPathName": "brand",
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "catalog": {
                     "def": "catalog"
@@ -222,7 +231,8 @@
             "apiPathName": "products",
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "catalog": {
                     "def": "catalog"
@@ -273,7 +283,8 @@
             "apiPrefix": "catalog\/:catalog\/product\/:product",
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "product": {
                     "def": "def",
@@ -329,7 +340,8 @@
             "paginateByMax": 0,
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "title": {
                     "def": "title"
@@ -426,7 +438,8 @@
             "extraServices": "property_types",
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "catalog": {
                     "def": "catalog"
@@ -477,7 +490,8 @@
                 },
                 "value": {
                     "def": "def",
-                    "dtoRequired": true
+                    "dtoRequired": true,
+                    "unique": true
                 },
                 "hash": {
                     "def": "def",
@@ -541,10 +555,12 @@
             "controller": false,
             "fields": {
                 "id": {
-                    "def": "def"
+                    "def": "def",
+                    "unique": true
                 },
                 "title": {
-                    "def": "def"
+                    "def": "def",
+                    "unique": true
                 }
             }
         },
@@ -553,7 +569,8 @@
             "controller": false,
             "fields": {
                 "id": {
-                    "def": "def"
+                    "def": "def",
+                    "unique": true
                 },
                 "type": {
                     "def": "def"
@@ -574,10 +591,12 @@
             "controller": false,
             "fields": {
                 "id": {
-                    "def": "def"
+                    "def": "id",
+                    "unique": true
                 },
                 "key": {
-                    "def": "def"
+                    "def": "def",
+                    "unique": true
                 },
                 "company": {
                     "def": "def"
@@ -592,7 +611,8 @@
                     "def": "def"
                 },
                 "actor": {
-                    "def": "def"
+                    "def": "def",
+                    "unique": true
                 }
             }
         },
@@ -601,10 +621,12 @@
             "controller": false,
             "fields": {
                 "id": {
-                    "def": "def"
+                    "def": "def",
+                    "unique": true
                 },
                 "login": {
-                    "def": "def"
+                    "def": "def",
+                    "unique": true
                 },
                 "pwd_hash": {
                     "def": "def",
@@ -612,7 +634,8 @@
                 },
                 "actor": {
                     "def": "def",
-                    "hidden": true
+                    "hidden": true,
+                    "unique": true
                 },
                 "created": {
                     "def": "def"
@@ -627,10 +650,12 @@
             "controller": false,
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "title": {
-                    "def": "title"
+                    "def": "title",
+                    "unique": true
                 }
             }
         },
@@ -644,10 +669,12 @@
             "paginateByMax": 0,
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "title": {
-                    "def": "def"
+                    "def": "def",
+                    "unique": true
                 }
             }
         },
@@ -656,7 +683,8 @@
             "paginateByMax": 0,
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "title": {
                     "def": "def",
@@ -691,7 +719,8 @@
             "paginateByMax": 0,
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "company": {
                     "def": "company",
@@ -752,13 +781,16 @@
             "paginateByMax": 0,
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "key": {
-                    "def": "def"
+                    "def": "def",
+                    "unique": true
                 },
                 "title": {
-                    "def": "def"
+                    "def": "def",
+                    "unique": true
                 },
                 "symbol": {
                     "def": "def",
@@ -784,10 +816,12 @@
             "paginateByMax": 0,
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "title": {
-                    "def": "def"
+                    "def": "def",
+                    "unique": true
                 },
                 "base_currency": {
                     "def": "def"
@@ -860,7 +894,8 @@
             "paginateByMax": 0,
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "company": {
                     "def": "company"
@@ -1041,7 +1076,8 @@
             "paginateByMax": 0,
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "company": {
                     "def": "company"
@@ -1124,7 +1160,8 @@
             "paginateByMax": 0,
             "fields": {
                 "value_key": {
-                    "def": "def"
+                    "def": "def",
+                    "unique": true
                 },
                 "type": {
                     "def": "def",
@@ -1199,10 +1236,12 @@
             "paginateByMax": 0,
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "title": {
-                    "def": "def"
+                    "def": "def",
+                    "unique": true
                 }
             }
         },
@@ -1326,7 +1365,8 @@
             "apiPrefix": "catalog\/:catalog\/brand\/:brand",
             "fields": {
                 "id": {
-                    "def": "id"
+                    "def": "id",
+                    "unique": true
                 },
                 "brand": {
                     "def": "def",

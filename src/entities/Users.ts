@@ -1,4 +1,4 @@
-import { Entity, type Hidden, ManyToOne, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Entity, type Hidden, ManyToOne, OneToOne, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 import { Actors } from './Actors';
 import { Companies } from './Companies';
 
@@ -15,7 +15,7 @@ export class Users {
   @Property({ type: 'string', hidden: true })
   pwdHash!: string & Hidden;
 
-  @ManyToOne({ entity: () => Actors, fieldName: 'actor', hidden: true })
+  @OneToOne({ entity: () => Actors, fieldName: 'actor', hidden: true, unique: 'users_actor_uind' })
   actor!: Actors & Hidden;
 
   @Property({ length: 6 })

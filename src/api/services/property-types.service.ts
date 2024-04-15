@@ -10,6 +10,9 @@ import { PropertyTuningDto } from './../dtos/property-tuning.dto'
 @Injectable()
 export class PropertyTypesService extends GenPropertyTypesService {
 	
+	private schemesCache = new Map<number, Object>();
+	private processorsCache = new Map<number, Function>();
+	
   //@Cron('* * * * * *')
 	async processPropertyTypes(){
 		const conn = this.em.fork().getConnection(),
@@ -42,6 +45,51 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		}
 	}
 	
+	private async requireScheme(type: number){
+		if(this.schemesCache.has(type)) return this.schemesCache.get(type);
+		const typeIns = await this.findById(type);
+		if(typeIns!==null){
+			this.schemesCache.set(type, typeIns.scheme);
+			return typeIns.scheme;
+		}else{
+			throw new Error('Unknown property type');
+		}
+	}
+	
+	public getPrimitiveTransform(primitive: number, key: string){
+		switch(primitive){
+			case 5: 
+			case 6: return `[o.${key}, o.${key}Unit]`;
+			default: return `o.${key}`;
+		}
+	}
+	
+	private async requireProcessor(type: number){
+		if(this.processorsCache.has(type)) return this.processorsCache.get(type);
+		const scheme = await this.requireScheme(type), keys = Object.keys(scheme);
+		let body = 'return ';
+		if(keys.length===1){
+			body += this.getPrimitiveTransform(scheme[keys[0]].kind, keys[0]);
+		}else{
+			body += '{'+keys
+				.map(key => `"${key}": `+this.getPrimitiveTransform(scheme[key].kind, key))
+				.join(',')+'}';
+		}
+		body += ';';
+		console.log(body);
+		const fn = new Function('o', body);
+		this.processorsCache.set(type, fn);
+		return fn;
+	}
+	
+	public async short(type: number, value: object | Array<object>){
+		const proc = await this.requireProcessor(type);
+		if(Array.isArray(value)){
+			return value.map(p => proc(p));
+		}else{
+			return proc(value);
+		}
+	}
 	
 	
 	private getUnit(id: number, company: number, emt: EntityManager = null){

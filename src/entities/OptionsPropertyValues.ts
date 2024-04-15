@@ -1,4 +1,4 @@
-import { Entity, type Hidden, ManyToOne, PrimaryKeyProp, Property } from '@mikro-orm/core';
+import { Entity, type Hidden, ManyToOne, OneToOne, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { CatalogProperties } from './CatalogProperties';
 import { PropertyValues } from './PropertyValues';
 
@@ -10,7 +10,7 @@ export class OptionsPropertyValues {
   @ManyToOne({ entity: () => CatalogProperties, fieldName: 'property', deleteRule: 'cascade', unique: 'options_property_values_property_hash_uind' })
   property!: CatalogProperties;
 
-  @ManyToOne({ entity: () => PropertyValues, fieldName: 'value', deleteRule: 'cascade', primary: true })
+  @OneToOne({ entity: () => PropertyValues, fieldName: 'value', deleteRule: 'cascade', primary: true })
   value!: PropertyValues;
 
   @Property({ type: 'string', length: 48, nullable: true, hidden: true })

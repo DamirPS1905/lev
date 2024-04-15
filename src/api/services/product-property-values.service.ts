@@ -20,7 +20,7 @@ export class ProductPropertyValuesService extends GenProductPropertyValuesServic
 	
 	async readValuesByInstance(product: bigint, emt: EntityManager = null){
 		const conn = this.getEm(emt).getConnection(),
-					qu = `SELECT ppv.property, pv.value, p.multiple
+					qu = `SELECT ppv.property, p.type, pv.value, p.multiple
 								FROM 
 									product_property_values ppv 
 									JOIN property_values pv ON pv.value_key = ppv.value

@@ -29,7 +29,7 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
 		await this.validateInstance(catalog, instance, null);
-		let tmp = null, prop = null, mul = null;
+		let tmp = null, prop = null, propType = null, mul = null;
 		const result = [],
 					raw = (await this.valuesService.readValuesByInstance(instance));
 		console.log(raw);
@@ -38,12 +38,13 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 				if(tmp!==null){
 					result.push({
 						property: prop,
-						value: mul? tmp: tmp[0]
+						value: await this.propertyTypesService.short(propType, mul? tmp: tmp[0])
 					});
 				}
 				tmp = [p.value];
 				prop = p.property;
 				mul = p.multiple;
+				propType = p.type;
 			}else{
 				tmp.push(p.value);
 			}
@@ -51,7 +52,7 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 		if(tmp!==null){
 			result.push({
 				property: prop,
-				value: mul? tmp: tmp[0]
+				value: await this.propertyTypesService.short(propType, mul? tmp: tmp[0])
 			});
 		}
 		return result;
@@ -65,11 +66,11 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 		await this.validateInstance(catalog, instance, null);
 		const [propertyIns, scheme] = await this.validateAttachment(catalog, property, instance, null);
 		if(propertyIns.multiple){
-			return (await this.valuesService.readValuesByInstanceAndProperty(instance, property))
-				.map(p => p.value);
+			return await this.propertyTypesService.short(propertyIns.type.id, (await this.valuesService.readValuesByInstanceAndProperty(instance, property))
+				.map(p => p.value));
 		}else{
 			const val = await this.valuesService.readValueByInstanceAndProperty(instance, property);
-			if(val!==null) return val.value;
+			if(val!==null) return await this.propertyTypesService.short(propertyIns.type.id, val.value);
 			else{
 				throw new HttpException('Proprty value not setted', HttpStatus.NOT_FOUND);
 			}

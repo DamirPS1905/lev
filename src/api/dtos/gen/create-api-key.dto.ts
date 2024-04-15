@@ -14,11 +14,6 @@ export class GenCreateApiKeyDto {
 	
 	@IsOptional()
 	@ApiProperty({ required: false })
-	@IsInt()
-	id:number;
-	
-	@IsOptional()
-	@ApiProperty({ required: false })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	key:string;

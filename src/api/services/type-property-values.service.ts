@@ -27,7 +27,7 @@ export class TypePropertyValuesService extends GenTypePropertyValuesService impl
 	
 	async readValuesByInstance(instance: number, emt: EntityManager = null){
 		const conn = this.getEm(emt).getConnection(),
-					qu = `SELECT tpv.property, pv.value, p.multiple
+					qu = `SELECT tpv.property, p.type, pv.value, p.multiple
 								FROM 
 									type_property_values tpv 
 									JOIN property_values pv ON pv.value_key = tpv.value

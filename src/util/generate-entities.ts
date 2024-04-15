@@ -51,9 +51,12 @@ require('dotenv').config();
 		    meta.indexes.forEach(p => {
 			    p.expression = p.expression.replace(/['']/g, "\\'");
 		    })
+		    const tbl = meta.collection;
 		    meta.relations.forEach(p => {
-			    if(p.kind===ReferenceKind.ONE_TO_ONE)
-			    	p.kind = ReferenceKind.MANY_TO_ONE
+			    if(p.kind===ReferenceKind.ONE_TO_ONE){
+				    if(!getVal(tbl, p.name, 'unique', false))
+			    		p.kind = ReferenceKind.MANY_TO_ONE
+			    }
 		    })
 	    });
 	  },

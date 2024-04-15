@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, type Opt, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Entity, ManyToOne, OneToOne, type Opt, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 import { Actors } from './Actors';
 import { Companies } from './Companies';
 
@@ -24,7 +24,7 @@ export class ApiKeys {
   @Property({ length: 6, nullable: true })
   disposedAt?: Date;
 
-  @ManyToOne({ entity: () => Actors, fieldName: 'actor' })
+  @OneToOne({ entity: () => Actors, fieldName: 'actor', unique: 'api_keys_actor_uind' })
   actor!: Actors;
 
 }

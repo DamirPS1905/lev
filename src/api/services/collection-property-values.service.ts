@@ -16,7 +16,7 @@ export class CollectionPropertyValuesService extends GenCollectionPropertyValues
 	
 	async readValuesByInstance(instance: number, emt: EntityManager = null){
 		const conn = this.getEm(emt).getConnection(),
-					qu = `SELECT tpv.property, pv.value, p.multiple
+					qu = `SELECT tpv.property, p.type, pv.value, p.multiple
 								FROM 
 									collection_property_values tpv 
 									JOIN property_values pv ON pv.value_key = tpv.value

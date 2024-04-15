@@ -20,7 +20,7 @@ export class OfferPropertyValuesService extends GenOfferPropertyValuesService im
 	
 	async readValuesByInstance(offer: bigint, emt: EntityManager = null){
 		const conn = this.getEm(emt).getConnection(),
-					qu = `SELECT opv.property, pv.value, p.multiple
+					qu = `SELECT opv.property, p.type, pv.value, p.multiple
 								FROM 
 									offer_property_values opv 
 									JOIN property_values pv ON pv.value_key = opv.value
