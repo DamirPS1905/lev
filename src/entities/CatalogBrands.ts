@@ -22,8 +22,6 @@ export class CatalogBrands {
   @Property({ columnType: 'jsonb', nullable: true })
   logo?: any;
 
-
-
 	// gen - begin
 	
 	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'brand' })
@@ -36,5 +34,4 @@ export class CatalogBrands {
 	catalogBrandCollectionsByBrand = new Collection<CatalogBrandCollections>(this);
 	
 	// gen - end
-
 }

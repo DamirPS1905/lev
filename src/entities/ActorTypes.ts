@@ -11,13 +11,10 @@ export class ActorTypes {
   @Property()
   title!: string;
 
-
-
 	// gen - begin
 	
 	@OneToMany({ entity: () => Actors, mappedBy: 'type' })
 	actorsByType = new Collection<Actors>(this);
 	
 	// gen - end
-
 }

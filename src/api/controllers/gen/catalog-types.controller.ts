@@ -68,10 +68,14 @@ export class GenCatalogTypesController {
 			if(existed1!==null){
 				throw new HttpException('Duplicate (title, parent)', HttpStatus.CONFLICT);
 			}
-			if(createDto.parent!==undefined){
-				const parentIns = await this.catalogTypesService.findById(createDto.parent);
-				if(parentIns===null || !(parentIns.catalog.id===catalog)){
-					throw new HttpException('Parent type not found', HttpStatus.CONFLICT);
+			if(createDto.parent!==null){
+				if(createDto.parent!==undefined){
+					const parentIns = await this.catalogTypesService.findById(createDto.parent);
+					if(createDto.parent!==null){
+						if(parentIns===null || !(parentIns.catalog.id===catalog)){
+							throw new HttpException('Parent type not found', HttpStatus.CONFLICT);
+						}
+					}
 				}
 			}
 			await this.validateCreate(apiKey, catalog, createDto, em);
@@ -88,10 +92,14 @@ export class GenCatalogTypesController {
 		}
 		return await this.catalogTypesService.transactional(async (em) => {
 			const entity = await this.catalogTypesService.findById(id, em);
-			if(updateDto.parent!==undefined){
-				const parentIns = await this.catalogTypesService.findById(updateDto.parent);
-				if(parentIns===null || !(parentIns.catalog.id===catalog)){
-					throw new HttpException('Parent type not found', HttpStatus.CONFLICT);
+			if(updateDto.parent!==null){
+				if(updateDto.parent!==undefined){
+					const parentIns = await this.catalogTypesService.findById(updateDto.parent);
+					if(updateDto.parent!==null){
+						if(parentIns===null || !(parentIns.catalog.id===catalog)){
+							throw new HttpException('Parent type not found', HttpStatus.CONFLICT);
+						}
+					}
 				}
 			}
 			if(entity===null || !(entity.catalog.id===catalog)){

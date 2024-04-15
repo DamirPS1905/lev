@@ -15,7 +15,7 @@ export class GenCreateCatalogTypeDto {
 	catalog:number;
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Наименование типа товара' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	@MinLength(1)
@@ -23,7 +23,7 @@ export class GenCreateCatalogTypeDto {
 	title:string;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'ID родительского типа; для корневого типа можно указать 0' })
 	@IsInt()
 	parent:number;
 	

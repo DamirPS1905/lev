@@ -15,7 +15,7 @@ export class GenCreateCatalogBrandCollectionDto {
 	brand:number;
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Наименование коллекции бренда; должно быть уникально для бренда' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	@MinLength(1)

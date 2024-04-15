@@ -20,13 +20,10 @@ export class PropertyValues {
   @Property({ columnType: 'jsonb' })
   value!: any;
 
-
-
 	// gen - begin
 	
 	@OneToMany({ entity: () => OptionsPropertyValues, mappedBy: 'value' })
 	optionsPropertyValuesByValue = new Collection<OptionsPropertyValues>(this);
 	
 	// gen - end
-
 }

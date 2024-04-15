@@ -31,7 +31,8 @@ export class CatalogProducts {
   @ManyToOne({ entity: () => CatalogBrandCollections, fieldName: 'collection', deleteRule: 'set null', nullable: true })
   collection?: CatalogBrandCollections;
 
-
+  @Property({ type: 'number', columnType: 'smallint' })
+  offersCount: number & Opt = 0;
 
 	// gen - begin
 	
@@ -45,5 +46,4 @@ export class CatalogProducts {
 	productPropertyValuesByProduct = new Collection<ProductPropertyValues>(this);
 	
 	// gen - end
-
 }

@@ -11,7 +11,7 @@ import { OptionsPropertyValuesService } from './../../services/options-property-
 import { PropertyTypesService } from './../../services/property-types.service'
 
 
-@ApiHeader({ name: 'X-API-KEY', required: true })
+@ApiHeader({ name: 'X-API-KEY', required: true, description: 'Ваш идентефикатор апи' })
 @UseGuards(AuthGuard('api-key'))
 export abstract class AbstractValuesController<P, S extends IMetatypeVauesService<P>> {
 		

@@ -4,8 +4,8 @@ import { CreateCatalogProductOfferDto } from './../dtos/create-catalog-product-o
 import { UpdateCatalogProductOfferDto } from './../dtos/update-catalog-product-offer.dto'
 import { CatalogProductOffersService } from './../services/catalog-product-offers.service'
 import { GenCatalogProductOffersController } from './gen/catalog-product-offers.controller'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { Body, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common'
+import { EntityManager, wrap } from '@mikro-orm/postgresql'
+import { Body, DefaultValuePipe, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ParseBigIntPipe } from './../../pipes/parse-bigint.pipe'
 
@@ -36,5 +36,10 @@ export class CatalogProductOffersController extends GenCatalogProductOffersContr
 		return await super.delete(apiKey, catalog, product, id);
 	}
 	
-	
+	async validateDelete(entity, apiKey: ApiKeys, catalog: number, product: bigint, id: bigint, em: EntityManager) {
+		await wrap(entity.product).init();
+		if(entity.product.offersCount<2){
+			throw new HttpException('This is the only product offer', HttpStatus.CONFLICT);
+		}
+	}
 }

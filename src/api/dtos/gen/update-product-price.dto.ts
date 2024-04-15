@@ -17,13 +17,13 @@ export class GenUpdateProductPriceDto {
 	priceType:number;
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Значение цены' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	value:string;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Валюта в которой указано значение цены; если не задано, то бует использована базовая валюта для данного типа цены' })
 	@IsInt()
 	currency:number;
 	

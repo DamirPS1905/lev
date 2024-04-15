@@ -49,15 +49,19 @@ export class GenPriceTypesController {
 			if(existed0!==null){
 				throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 			}
-			if(createDto.displayCurrency!==undefined){
-				const displayCurrencyIns = await this.currenciesService.findById(createDto.displayCurrency);
-				if(displayCurrencyIns===null){
-					throw new HttpException('Display currency not found', HttpStatus.NOT_FOUND);
+			if(createDto.displayCurrency!==null){
+				if(createDto.displayCurrency!==undefined){
+					const displayCurrencyIns = await this.currenciesService.findById(createDto.displayCurrency);
+					if(createDto.displayCurrency!==null){
+						if(displayCurrencyIns===null){
+							throw new HttpException('Display currency not found', HttpStatus.NOT_FOUND);
+						}
+					}
 				}
 			}
 			const baseCurrencyIns = await this.currenciesService.findById(createDto.baseCurrency);
 			if(baseCurrencyIns===null){
-				throw new HttpException('Store currency not found', HttpStatus.NOT_FOUND);
+				throw new HttpException('Base currency not found', HttpStatus.NOT_FOUND);
 			}
 			await this.validateCreate(apiKey, createDto, em);
 			return await this.priceTypesService.create(createDto, em);
@@ -69,10 +73,14 @@ export class GenPriceTypesController {
 	async update(apiKey: ApiKeys, id: number, updateDto: UpdatePriceTypeDto) {
 		return await this.priceTypesService.transactional(async (em) => {
 			const entity = await this.priceTypesService.findById(id, em);
-			if(updateDto.displayCurrency!==undefined){
-				const displayCurrencyIns = await this.currenciesService.findById(updateDto.displayCurrency);
-				if(displayCurrencyIns===null){
-					throw new HttpException('Display currency not found', HttpStatus.NOT_FOUND);
+			if(updateDto.displayCurrency!==null){
+				if(updateDto.displayCurrency!==undefined){
+					const displayCurrencyIns = await this.currenciesService.findById(updateDto.displayCurrency);
+					if(updateDto.displayCurrency!==null){
+						if(displayCurrencyIns===null){
+							throw new HttpException('Display currency not found', HttpStatus.NOT_FOUND);
+						}
+					}
 				}
 			}
 			if(entity===null || !(entity.company.id===apiKey.company.id)){

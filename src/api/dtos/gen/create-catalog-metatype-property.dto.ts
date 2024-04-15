@@ -18,7 +18,7 @@ export class GenCreateCatalogMetatypePropertyDto {
 	property:number;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Настройка параметров свойства' })
 	scheme:any;
 	
 }

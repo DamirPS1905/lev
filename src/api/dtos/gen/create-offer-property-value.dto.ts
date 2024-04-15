@@ -21,7 +21,7 @@ export class GenCreateOfferPropertyValueDto {
 	order:number;
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Устанавливаемое значение' })
 	value:bigint;
 	
 }

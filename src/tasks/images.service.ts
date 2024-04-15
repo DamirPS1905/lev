@@ -20,7 +20,7 @@ export class ImagesService {
 		private readonly httpService: HttpService,
 	){}
 
-  @Cron('* * * * * *')
+  //@Cron('* * * * * *')
   async handleCron() {
 	  const ukey = uid(5);
 	  if(this.loading) {

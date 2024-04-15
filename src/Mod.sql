@@ -270,3 +270,37 @@ CREATE OR REPLACE TRIGGER catalog_types_after_update
 	FOR EACH ROW
 	WHEN (OLD.parent IS DISTINCT FROM NEW.parent)
 	EXECUTE FUNCTION catalog_types_after_update_fnc();
+
+CREATE OR REPLACE FUNCTION public.catalog_product_offers_after_insert_fnc()
+RETURNS trigger 
+AS $function$
+	BEGIN
+UPDATE catalog_products
+SET offers_count = offers_count + 1
+WHERE id=NEW.product;
+RETURN NEW;
+	END;
+$function$
+LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION public.catalog_product_offers_after_delete_fnc()
+RETURNS trigger 
+AS $function$
+	BEGIN
+UPDATE catalog_products
+SET offers_count = offers_count - 1
+WHERE id=NEW.product;
+RETURN NEW;
+	END;
+$function$
+LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE TRIGGER catalog_product_offers_after_insert
+	AFTER INSERT ON catalog_product_offers
+	FOR EACH ROW
+	EXECUTE FUNCTION catalog_product_offers_after_insert_fnc();
+
+CREATE OR REPLACE TRIGGER catalog_product_offers_after_delete
+	AFTER DELETE ON catalog_product_offers
+	FOR EACH ROW
+	EXECUTE FUNCTION catalog_product_offers_after_delete_fnc();

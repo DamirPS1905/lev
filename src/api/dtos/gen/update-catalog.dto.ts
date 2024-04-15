@@ -13,7 +13,7 @@ import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 export class GenUpdateCatalogDto {
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Наименование каталога' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	@MinLength(1)

@@ -13,19 +13,19 @@ import { IsInt, IsOptional, IsString } from 'class-validator';
 export class GenUpdateUnitGroupDto {
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Наименование группы единиц измерений; должно быть уникально среди доступных' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	title:string;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Описание группы единиц измерений' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	description:string;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Базовая единица измерения, относительно котрой указываются коэффициенты пересчета в данной группе единиц измерения' })
 	@IsInt()
 	base:number;
 	

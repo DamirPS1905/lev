@@ -13,7 +13,7 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class GenCreateUnitGroupDto {
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Наименование группы единиц измерений; должно быть уникально среди доступных' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	title:string;
@@ -21,7 +21,7 @@ export class GenCreateUnitGroupDto {
 	company:number;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Описание группы единиц измерений' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	description:string;

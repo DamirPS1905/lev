@@ -23,9 +23,9 @@ require('dotenv').config();
   });
   const data = fs.readFileSync(process.cwd() + '/src/util/pref.json', 'utf8'),
     		info = JSON.parse(data),
-			  getVal = (tbl, col, key, def) => {
-				  if(!info.entities.hasOwnProperty(tbl)) return def;
-				  if(!info.entities[tbl].fields.hasOwnProperty(col)) return def;
+			  getVal = (tbl, col, key, defValue) => {
+				  if(!info.entities.hasOwnProperty(tbl)) return defValue;
+				  if(!info.entities[tbl].fields.hasOwnProperty(col)) return defValue;
 				  const finfo = info.entities[tbl].fields[col],
 				  			def = info.fieldsDefaults[finfo.def];
 				  return finfo.hasOwnProperty(key)? finfo[key]: def[key];

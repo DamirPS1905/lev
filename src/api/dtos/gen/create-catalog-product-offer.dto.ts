@@ -17,7 +17,7 @@ export class GenCreateCatalogProductOfferDto {
 	catalog:number;
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Артикул товарного предложения' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	@MinLength(1)

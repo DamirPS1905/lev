@@ -15,18 +15,18 @@ export class GenCreatePriceTypeDto {
 	company:number;
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Наименование типа цены; должно быть уникально' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	title:string;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Валюта в котрой следует отобажать цены данного типа' })
 	@IsInt()
 	displayCurrency:number;
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Валюта по умолчанию для цен данного типа' })
 	@IsInt()
 	baseCurrency:number;
 	

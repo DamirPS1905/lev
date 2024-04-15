@@ -13,17 +13,17 @@ import { IsInt, IsOptional, IsString, MaxLength, MinLength } from 'class-validat
 export class GenUpdateCatalogProductDto {
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Тип товара к которому принадлежит данный товар' })
 	@IsInt()
 	type:number;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Бренд товара к которому принадлежит данный товар' })
 	@IsInt()
 	brand:number;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Наименование товара; должно быть уникально в рамках каталога' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	@MinLength(1)
@@ -31,7 +31,7 @@ export class GenUpdateCatalogProductDto {
 	title:string;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Коллекция бренда, к которой принадлежит данный товар' })
 	@IsInt()
 	collection:number;
 	

@@ -15,8 +15,6 @@ export class CatalogBrandCollections {
   @Property()
   title!: string;
 
-
-
 	// gen - begin
 	
 	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'collection' })
@@ -26,5 +24,4 @@ export class CatalogBrandCollections {
 	collectionPropertyValuesByInstance = new Collection<CollectionPropertyValues>(this);
 	
 	// gen - end
-
 }

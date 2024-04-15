@@ -78,10 +78,12 @@ export class GenCatalogProductsController {
 			if(typeIns===null || !(typeIns.catalog.id===catalog)){
 				throw new HttpException('Type not found', HttpStatus.CONFLICT);
 			}
-			if(createDto.collection!==undefined){
-				const tmp = await this.catalogBrandCollectionsService.findById(createDto.collection, em);
-				if(tmp===null){
-					throw new HttpException('Not found contrainst (collection)', HttpStatus.CONFLICT);
+			if(createDto.collection!==null){
+				if(createDto.collection!==undefined){
+					const tmp = await this.catalogBrandCollectionsService.findById(createDto.collection, em);
+					if(tmp===null){
+						throw new HttpException('Not found contrainst (collection)', HttpStatus.CONFLICT);
+					}
 				}
 			}
 			await this.validateCreate(apiKey, catalog, createDto, em);
@@ -110,10 +112,12 @@ export class GenCatalogProductsController {
 					throw new HttpException('Type not found', HttpStatus.CONFLICT);
 				}
 			}
-			if(updateDto.collection!==undefined){
-				const tmp = await this.catalogBrandCollectionsService.findById(updateDto.collection, em);
-				if(tmp===null){
-					throw new HttpException('Not found contrainst (collection)', HttpStatus.CONFLICT);
+			if(updateDto.collection!==null){
+				if(updateDto.collection!==undefined){
+					const tmp = await this.catalogBrandCollectionsService.findById(updateDto.collection, em);
+					if(tmp===null){
+						throw new HttpException('Not found contrainst (collection)', HttpStatus.CONFLICT);
+					}
 				}
 			}
 			if(entity===null || !(entity.catalog.id===catalog)){

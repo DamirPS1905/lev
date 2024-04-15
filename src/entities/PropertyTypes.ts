@@ -20,8 +20,6 @@ export class PropertyTypes {
   @ManyToOne({ entity: () => Catalogs, fieldName: 'catalog', nullable: true, unique: 'property_types_catalog_title_uind' })
   catalog?: Catalogs;
 
-
-
 	// gen - begin
 	
 	@OneToMany({ entity: () => CatalogProperties, mappedBy: 'type' })
@@ -31,5 +29,4 @@ export class PropertyTypes {
 	propertyValuesByType = new Collection<PropertyValues>(this);
 	
 	// gen - end
-
 }

@@ -23,13 +23,10 @@ export class Stores {
   @Property({ columnType: 'numeric(10,0)', nullable: true })
   geoLong?: string;
 
-
-
 	// gen - begin
 	
 	@OneToMany({ entity: () => OfferAmounts, mappedBy: 'store' })
 	offerAmountsByStore = new Collection<OfferAmounts>(this);
 	
 	// gen - end
-
 }

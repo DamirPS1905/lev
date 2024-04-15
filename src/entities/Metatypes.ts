@@ -11,13 +11,10 @@ export class Metatypes {
   @Property()
   title!: string;
 
-
-
 	// gen - begin
 	
 	@OneToMany({ entity: () => CatalogMetatypeProperties, mappedBy: 'metatype' })
 	catalogMetatypePropertiesByMetatype = new Collection<CatalogMetatypeProperties>(this);
 	
 	// gen - end
-
 }

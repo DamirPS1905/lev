@@ -55,10 +55,14 @@ export class GenUnitGroupsController {
 	async update(apiKey: ApiKeys, id: number, updateDto: UpdateUnitGroupDto) {
 		return await this.unitGroupsService.transactional(async (em) => {
 			const entity = await this.unitGroupsService.findById(id, em);
-			if(updateDto.base!==undefined){
-				const baseIns = await this.unitsService.findById(updateDto.base);
-				if(baseIns===null || !(baseIns.group.id===entity.id)){
-					throw new HttpException('Unit not found in group', HttpStatus.NOT_FOUND);
+			if(updateDto.base!==null){
+				if(updateDto.base!==undefined){
+					const baseIns = await this.unitsService.findById(updateDto.base);
+					if(updateDto.base!==null){
+						if(baseIns===null || !(baseIns.group.id===entity.id)){
+							throw new HttpException('Unit not found in group', HttpStatus.NOT_FOUND);
+						}
+					}
 				}
 			}
 			if(entity===null || !(entity.company!==null && entity.company.id===apiKey.company.id)){

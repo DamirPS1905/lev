@@ -17,8 +17,6 @@ export class Companies {
   @Property()
   title!: string;
 
-
-
 	// gen - begin
 	
 	@OneToMany({ entity: () => Catalogs, mappedBy: 'company' })
@@ -43,5 +41,4 @@ export class Companies {
 	priceTypesByCompany = new Collection<PriceTypes>(this);
 	
 	// gen - end
-
 }

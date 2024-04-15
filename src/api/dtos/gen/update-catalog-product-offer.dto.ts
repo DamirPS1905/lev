@@ -15,7 +15,7 @@ export class GenUpdateCatalogProductOfferDto {
 	product:bigint;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Артикул товарного предложения' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	@MinLength(1)

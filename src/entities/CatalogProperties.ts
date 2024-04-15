@@ -34,8 +34,6 @@ export class CatalogProperties {
   @Property({ columnType: 'jsonb' })
   scheme!: any;
 
-
-
 	// gen - begin
 	
 	@OneToMany({ entity: () => OptionsPropertyValues, mappedBy: 'property' })
@@ -63,5 +61,4 @@ export class CatalogProperties {
 	collectionPropertyValuesByProperty = new Collection<CollectionPropertyValues>(this);
 	
 	// gen - end
-
 }

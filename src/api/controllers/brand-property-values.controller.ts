@@ -5,7 +5,7 @@ import { MetatypeValuesController } from './abstract/metatype-property-values.co
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, Controller, DefaultValuePipe, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { ApiQuery, ApiTags, ApiExtraModels, ApiBody } from '@nestjs/swagger'
+import { ApiQuery, ApiOperation, ApiParam, ApiTags, ApiExtraModels, ApiBody } from '@nestjs/swagger'
 import { CatalogMetatypePropertiesService } from './../services/catalog-metatype-properties.service'
 import { CatalogsService } from './../services/catalogs.service'
 import { OptionsPropertyValuesService } from './../services/options-property-values.service'
@@ -43,15 +43,27 @@ export class BrandPropertyValuesController extends MetatypeValuesController<Bran
 	}
 			
 	@Get('property/all')
+	@ApiOperation({summary: "Получение значений всех свойств бренда"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'brand', description: 'ID бренда'})
 	async findAll(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('brand', ParseIntPipe) brand: number) {
 		return await super.findAll(apiKey, catalog, brand);
 	}
 	
 	@Get('property/:property')
+	@ApiOperation({summary: "Получение значения свойства бренда"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'brand', description: 'ID бренда'})
+	@ApiParam({name: 'property', description: 'ID свойства'})
 	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('brand', ParseIntPipe) brand: number, @Param('property', ParseIntPipe) property: number) {
 		return await super.findOne(apiKey, catalog, brand, property);
 	}
 	
+	@Patch('property/:property')
+	@ApiOperation({summary: "Задание или обновление значения свойства бренда"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'brand', description: 'ID бренда'})
+	@ApiParam({name: 'property', description: 'ID свойства'})
 	@ApiExtraModels(Object, Array<Object>)
 	@ApiBody({
 	  schema: {
@@ -64,12 +76,15 @@ export class BrandPropertyValuesController extends MetatypeValuesController<Bran
 	    ],
 	  },
 	})
-	@Patch('property/:property')
 	async update(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('brand', ParseIntPipe) brand: number, @Param('property', ParseIntPipe) property: number, @Body() updateDto: Object | Array<Object>) {
 		return super.update(apiKey, catalog, brand, property, updateDto);
 	}	
 	
 	@Delete('property/:property')
+	@ApiOperation({summary: "Удаление значения свойства бренда"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'brand', description: 'ID бренда'})
+	@ApiParam({name: 'property', description: 'ID свойства'})
 	async delete(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('brand', ParseIntPipe) brand: number, @Param('property', ParseIntPipe) property: number) {
 		return super.delete(apiKey, catalog, brand, property);
 	}	

@@ -15,17 +15,17 @@ export class GenCreateCatalogProductDto {
 	catalog:number;
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Тип товара к которому принадлежит данный товар' })
 	@IsInt()
 	type:number;
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Бренд товара к которому принадлежит данный товар' })
 	@IsInt()
 	brand:number;
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Наименование товара; должно быть уникально в рамках каталога' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	@MinLength(1)
@@ -33,7 +33,7 @@ export class GenCreateCatalogProductDto {
 	title:string;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Коллекция бренда, к которой принадлежит данный товар' })
 	@IsInt()
 	collection:number;
 	

@@ -18,8 +18,6 @@ export class CatalogProductsController extends GenCatalogProductsController {
 	
 	@Get(':id')
 	async findOne(@AuthInfo() apiKey: ApiKeys, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseBigIntPipe) id: bigint) {
-		console.log(id);
-		console.log(typeof id);
 		return await super.findOne(apiKey, catalog, id);
 	}
 	

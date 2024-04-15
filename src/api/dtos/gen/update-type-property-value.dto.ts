@@ -7,13 +7,10 @@
  * in a proper way.
  */
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsOptional } from 'class-validator';
+import { IsOptional } from 'class-validator';
 
 export class GenUpdateTypePropertyValueDto {
 	
-	@IsOptional()
-	@ApiProperty({ required: false })
-	@IsInt()
 	instance:number;
 	
 	property:number;

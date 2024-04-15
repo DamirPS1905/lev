@@ -27,13 +27,10 @@ export class RatesSources {
   @Property({ type: 'string', columnType: 'text', nullable: true, hidden: true })
   problemInfo?: string & Hidden;
 
-
-
 	// gen - begin
 	
 	@OneToMany({ entity: () => Rates, mappedBy: 'source' })
 	ratesBySource = new Collection<Rates>(this);
 	
 	// gen - end
-
 }

@@ -15,7 +15,7 @@ export class GenCreateCatalogPropertyDto {
 	catalog:number;
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Наименование свойства; должно быть уникально в рамках каталога' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	@MinLength(1)
@@ -23,20 +23,20 @@ export class GenCreateCatalogPropertyDto {
 	title:string;
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Тип свойства' })
 	@IsInt()
 	type:number;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Может ли своймтво иметь несколько значений' })
 	multiple:boolean;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Заполняется ли свойство опциями' })
 	options:boolean;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Настройки параметров свойства' })
 	scheme:any;
 	
 }

@@ -149,7 +149,8 @@
                     "def": "id"
                 },
                 "title": {
-                    "def": "title"
+                    "def": "title",
+                    "apiDescription": "Наименование каталога"
                 },
                 "company": {
                     "def": "company",
@@ -169,10 +170,12 @@
                     "def": "catalog"
                 },
                 "title": {
-                    "def": "title"
+                    "def": "title",
+                    "apiDescription": "Наименование типа товара"
                 },
                 "parent": {
                     "def": "def",
+                    "apiDescription": "ID родительского типа; для корневого типа можно указать 0",
                     "load": {
                         "as": "catalog_types",
                         "validate": "@@.catalog.id===catalog",
@@ -202,15 +205,15 @@
                 },
                 "title": {
                     "def": "title",
-                    "apiDescription": "\u041d\u0430\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u0438\u0435 \u0431\u0440\u0435\u043d\u0434\u0430"
+                    "apiDescription": "Наименование бренда"
                 },
                 "description": {
                     "def": "def",
-                    "apiDescription": "\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u0431\u0440\u0435\u043d\u0434\u0430"
+                    "apiDescription": "Описание бренда"
                 },
                 "logo": {
                     "def": "def",
-                    "apiDescription": "\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 \u0431\u0440\u0435\u043d\u0434\u0430"
+                    "apiDescription": "Изображение бренда"
                 }
             }
         },
@@ -227,6 +230,7 @@
                 "type": {
                     "def": "def",
                     "dtoRequired": "create",
+                    "apiDescription": "Тип товара к которому принадлежит данный товар",
                     "load": {
                         "as": "catalog_types",
                         "validate": "@@.catalog.id===catalog",
@@ -237,6 +241,7 @@
                 "brand": {
                     "def": "def",
                     "dtoRequired": "create",
+                    "apiDescription": "Бренд товара к которому принадлежит данный товар",
                     "load": {
                         "as": "catalog_brands",
                         "validate": "@@.catalog.id===catalog",
@@ -245,14 +250,20 @@
                     }
                 },
                 "title": {
-                    "def": "title"
+                    "def": "title",
+                    "apiDescription": "Наименование товара; должно быть уникально в рамках каталога"
                 },
                 "created": {
                     "def": "def",
                     "dto": false
                 },
                 "collection": {
-                    "def": "def"
+                    "def": "def",
+                    "apiDescription": "Коллекция бренда, к которой принадлежит данный товар"
+                },
+                "offers_count": {
+                    "def": "def",
+                    "dto": false
                 }
             }
         },
@@ -276,7 +287,8 @@
                     "def": "catalog"
                 },
                 "article": {
-                    "def": "title"
+                    "def": "title",
+                    "apiDescription": "Артикул товарного предложения"
                 },
                 "created": {
                     "def": "def",
@@ -376,10 +388,8 @@
                 },
                 "value": {
                     "def": "def",
-                    "dtoRequired": true
-                },
-                "value_key": {
-                    "def": "def"
+                    "dtoRequired": true,
+                    "apiDescription": "Устанавливаемое значение"
                 },
                 "order": {
                     "def": "def"
@@ -422,23 +432,28 @@
                     "def": "catalog"
                 },
                 "title": {
-                    "def": "title"
+                    "def": "title",
+                    "apiDescription": "Наименование свойства; должно быть уникально в рамках каталога"
                 },
                 "type": {
                     "def": "def",
                     "dto": "create",
-                    "dtoRequired": "create"
+                    "dtoRequired": "create",
+                    "apiDescription": "Тип свойства"
                 },
                 "multiple": {
                     "def": "def",
-                    "dto": "create"
+                    "dto": "create",
+                    "apiDescription": "Может ли своймтво иметь несколько значений"
                 },
                 "options": {
                     "def": "def",
-                    "dto": "create"
+                    "dto": "create",
+                    "apiDescription": "Заполняется ли свойство опциями"
                 },
                 "scheme": {
-                    "def": "def"
+                    "def": "def",
+                    "apiDescription": "Настройки параметров свойства"
                 }
             }
         },
@@ -451,9 +466,6 @@
             "list": false,
             "extraServices": "property_types",
             "fields": {
-                "id": {
-                    "def": "id"
-                },
                 "property": {
                     "def": "def",
                     "load": {
@@ -505,9 +517,6 @@
                 "value": {
                     "def": "def",
                     "dtoRequired": true
-                },
-                "value_key": {
-                    "def": "def"
                 },
                 "order": {
                     "def": "def"
@@ -645,7 +654,8 @@
                 },
                 "title": {
                     "def": "def",
-                    "dtoRequired": "create"
+                    "dtoRequired": "create",
+                    "apiDescription": "Наименование группы единиц измерений; должно быть уникально среди доступных"
                 },
                 "company": {
                     "def": "company",
@@ -653,11 +663,13 @@
                     "readForWriteValidate": "@#!==null && @@===apiKey.company.id"
                 },
                 "description": {
-                    "def": "def"
+                    "def": "def",
+                    "apiDescription": "Описание группы единиц измерений"
                 },
                 "base": {
                     "def": "def",
                     "dto": "update",
+                    "apiDescription": "Базовая единица измерения, относительно котрой указываются коэффициенты пересчета в данной группе единиц измерения",
                     "load": {
                         "as": "units",
                         "validate": "@@.group.id===entity.id",
@@ -682,11 +694,13 @@
                 },
                 "title": {
                     "def": "def",
-                    "dtoRequired": "create"
+                    "dtoRequired": "create",
+                    "apiDescription": "Наименование единицы измерения; должно быть уникально в его группе единиц измерения"
                 },
                 "abbr": {
                     "def": "def",
-                    "dtoRequired": "create"
+                    "dtoRequired": "create",
+                    "apiDescription": "Аббревиатура единицы измерения; должно быть уникально в его группе единиц измерения"
                 },
                 "group": {
                     "def": "def",
@@ -700,10 +714,12 @@
                     "fillDto": "create"
                 },
                 "add": {
-                    "def": "def"
+                    "def": "def",
+                    "apiDescription": "Добавочный коэффициент для пересчета из базовой единицы измерения группы"
                 },
                 "factor": {
-                    "def": "def"
+                    "def": "def",
+                    "apiDescription": "Множитель для пересчета из базовой единицы измерения группы"
                 }
             },
             "extraRouteParams": [
@@ -845,10 +861,12 @@
                 },
                 "title": {
                     "def": "def",
-                    "dtoRequired": "create"
+                    "dtoRequired": "create",
+                    "apiDescription": "Наименование типа цены; должно быть уникально"
                 },
                 "display_currency": {
                     "def": "def",
+                    "apiDescription": "Валюта в котрой следует отобажать цены данного типа",
                     "load": {
                         "as": "currencies",
                         "eCode": "NOT_FOUND",
@@ -859,10 +877,11 @@
                     "def": "def",
                     "dto": "create",
                     "dtoRequired": "create",
+                    "apiDescription": "Валюта по умолчанию для цен данного типа",
                     "load": {
                         "as": "currencies",
                         "eCode": "NOT_FOUND",
-                        "eMessage": "Store currency not found"
+                        "eMessage": "Base currency not found"
                     }
                 }
             }
@@ -901,10 +920,12 @@
                 },
                 "value": {
                     "def": "def",
-                    "dtoRequired": true
+                    "dtoRequired": true,
+                    "apiDescription": "Значение цены"
                 },
                 "currency": {
-                    "def": "def"
+                    "def": "def",
+                    "apiDescription": "Валюта в которой указано значение цены; если не задано, то бует использована базовая валюта для данного типа цены"
                 },
                 "updated_at": {
                     "def": "def",
@@ -971,10 +992,12 @@
                 },
                 "value": {
                     "def": "def",
-                    "dtoRequired": true
+                    "dtoRequired": true,
+                    "apiDescription": "Значение цены"
                 },
                 "currency": {
-                    "def": "def"
+                    "def": "def",
+                    "apiDescription": "Валюта в которой указано значение цены; если не задано, то бует использована базовая валюта для данного типа цены"
                 },
                 "updated_at": {
                     "def": "def",
@@ -1019,16 +1042,20 @@
                 },
                 "title": {
                     "def": "def",
-                    "dtoRequired": "create"
+                    "dtoRequired": "create",
+                    "apiDescription": "Наименование склада; должно быть уникально"
                 },
                 "address": {
-                    "def": "def"
+                    "def": "def",
+                    "apiDescription": "Адрес склада"
                 },
                 "geo_lat": {
-                    "def": "def"
+                    "def": "def",
+                    "apiDescription": "Широта геопозиции склада"
                 },
                 "geo_long": {
-                    "def": "def"
+                    "def": "def",
+                    "apiDescription": "Долгота геопозиции склада"
                 }
             }
         },
@@ -1139,7 +1166,8 @@
                     }
                 },
                 "scheme": {
-                    "def": "def"
+                    "def": "def",
+                    "apiDescription": "Настройка параметров свойства"
                 }
             },
             "extraRouteParams": [
@@ -1217,7 +1245,8 @@
                     }
                 },
                 "scheme": {
-                    "def": "def"
+                    "def": "def",
+                    "apiDescription": "Настройка параметров свойства"
                 }
             }
         },
@@ -1233,7 +1262,7 @@
             "methodPath": "property\/:property",
             "extraServices": "catalog_metatype_properties, catalogs, catalog_types, catalog_properties, property_types, property_values, options_property_values",
             "fields": {
-                "type": {
+                "instance": {
                     "def": "pk",
                     "allFilter": true,
                     "from": "path",
@@ -1259,9 +1288,6 @@
                 "order": {
                     "def": "pk",
                     "dtoDisallow": true
-                },
-                "instance": {
-                    "def": "def"
                 }
             }
         },
@@ -1305,7 +1331,8 @@
                     "fillDto": "create"
                 },
                 "title": {
-                    "def": "title"
+                    "def": "title",
+                    "apiDescription": "Наименование коллекции бренда; должно быть уникально для бренда"
                 }
             },
             "extraRouteParams": [

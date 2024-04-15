@@ -10,7 +10,7 @@ import { PropertyTuningDto } from './../dtos/property-tuning.dto'
 @Injectable()
 export class PropertyTypesService extends GenPropertyTypesService {
 	
-  @Cron('* * * * * *')
+  //@Cron('* * * * * *')
 	async processPropertyTypes(){
 		const conn = this.em.fork().getConnection(),
 					query = `select id,

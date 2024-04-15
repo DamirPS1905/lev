@@ -15,13 +15,13 @@ export class GenCreateUnitDto {
 	company:number;
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Наименование единицы измерения; должно быть уникально в его группе единиц измерения' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	title:string;
 	
 	@IsNotEmpty()
-	@ApiProperty()
+	@ApiProperty({ description: 'Аббревиатура единицы измерения; должно быть уникально в его группе единиц измерения' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	abbr:string;
@@ -29,12 +29,12 @@ export class GenCreateUnitDto {
 	group:number;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Добавочный коэффициент для пересчета из базовой единицы измерения группы' })
 	@IsNumber()
 	add:number;
 	
 	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, description: 'Множитель для пересчета из базовой единицы измерения группы' })
 	@IsNumber()
 	factor:number;
 	

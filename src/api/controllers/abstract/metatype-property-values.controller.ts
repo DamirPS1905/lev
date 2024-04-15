@@ -1,10 +1,6 @@
-import { AuthInfo } from './../../../decorators/auth.decorator'
-import { ApiKeys } from './../../../entities/ApiKeys'
 import { PropertyValues } from './../../../entities/PropertyValues'
 import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Body, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiBody, ApiExtraModels, ApiHeader } from '@nestjs/swagger'
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { IMetatypeVauesService } from './../../services/interface/i-metatype-values.service'
 import { CatalogMetatypePropertiesService } from './../../services/catalog-metatype-properties.service'
 import { CatalogsService } from './../../services/catalogs.service'
@@ -13,8 +9,6 @@ import { PropertyTypesService } from './../../services/property-types.service'
 import { AbstractValuesController } from './abstract-values.controller'
 
 
-@ApiHeader({ name: 'X-API-KEY', required: true })
-@UseGuards(AuthGuard('api-key'))
 export abstract class MetatypeValuesController<S extends IMetatypeVauesService<number>> extends AbstractValuesController<number, S> {
 		
 	constructor(
