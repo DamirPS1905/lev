@@ -5,6 +5,7 @@ import { CatalogProducts } from './CatalogProducts';
 import { CatalogProperties } from './CatalogProperties';
 import { CatalogTypes } from './CatalogTypes';
 import { Companies } from './Companies';
+import { ProductRelations } from './ProductRelations';
 import { PropertyTypes } from './PropertyTypes';
 import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Hidden } from '@mikro-orm/core';
 
@@ -42,6 +43,9 @@ export class Catalogs {
 	
 	@OneToMany({ entity: () => CatalogMetatypeProperties, mappedBy: 'catalog' })
 	catalogMetatypePropertiesByCatalog = new Collection<CatalogMetatypeProperties>(this);
+	
+	@OneToMany({ entity: () => ProductRelations, mappedBy: 'catalog' })
+	productRelationsByCatalog = new Collection<ProductRelations>(this);
 	
 	// gen - end
 }

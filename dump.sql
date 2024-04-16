@@ -758,6 +758,32 @@ CREATE TABLE public.offer_property_values (
 ALTER TABLE public.offer_property_values OWNER TO dev;
 
 --
+-- Name: oo_relation_values; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.oo_relation_values (
+    relation integer NOT NULL,
+    source bigint NOT NULL,
+    target bigint NOT NULL
+);
+
+
+ALTER TABLE public.oo_relation_values OWNER TO dev;
+
+--
+-- Name: op_relation_values; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.op_relation_values (
+    relation integer NOT NULL,
+    source bigint NOT NULL,
+    target bigint NOT NULL
+);
+
+
+ALTER TABLE public.op_relation_values OWNER TO dev;
+
+--
 -- Name: options_property_values; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -769,6 +795,32 @@ CREATE TABLE public.options_property_values (
 
 
 ALTER TABLE public.options_property_values OWNER TO dev;
+
+--
+-- Name: po_relation_values; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.po_relation_values (
+    relation integer NOT NULL,
+    source bigint NOT NULL,
+    target bigint NOT NULL
+);
+
+
+ALTER TABLE public.po_relation_values OWNER TO dev;
+
+--
+-- Name: pp_relation_values; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.pp_relation_values (
+    relation integer NOT NULL,
+    source bigint NOT NULL,
+    target bigint NOT NULL
+);
+
+
+ALTER TABLE public.pp_relation_values OWNER TO dev;
 
 --
 -- Name: price_types; Type: TABLE; Schema: public; Owner: dev
@@ -839,6 +891,77 @@ CREATE TABLE public.product_property_values (
 
 
 ALTER TABLE public.product_property_values OWNER TO dev;
+
+--
+-- Name: product_relations; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.product_relations (
+    id integer NOT NULL,
+    catalog integer NOT NULL,
+    title character varying NOT NULL,
+    kind smallint NOT NULL,
+    "symmetric" boolean NOT NULL
+);
+
+
+ALTER TABLE public.product_relations OWNER TO dev;
+
+--
+-- Name: product_relations_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.product_relations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.product_relations_id_seq OWNER TO dev;
+
+--
+-- Name: product_relations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
+--
+
+ALTER SEQUENCE public.product_relations_id_seq OWNED BY public.product_relations.id;
+
+
+--
+-- Name: products_relation_kinds; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.products_relation_kinds (
+    id smallint NOT NULL,
+    title character varying NOT NULL
+);
+
+
+ALTER TABLE public.products_relation_kinds OWNER TO dev;
+
+--
+-- Name: products_relation_kinds_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.products_relation_kinds_id_seq
+    AS smallint
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.products_relation_kinds_id_seq OWNER TO dev;
+
+--
+-- Name: products_relation_kinds_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
+--
+
+ALTER SEQUENCE public.products_relation_kinds_id_seq OWNED BY public.products_relation_kinds.id;
+
 
 --
 -- Name: property_in_types; Type: TABLE; Schema: public; Owner: dev
@@ -1284,6 +1407,20 @@ ALTER TABLE ONLY public.price_types ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: product_relations id; Type: DEFAULT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.product_relations ALTER COLUMN id SET DEFAULT nextval('public.product_relations_id_seq'::regclass);
+
+
+--
+-- Name: products_relation_kinds id; Type: DEFAULT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.products_relation_kinds ALTER COLUMN id SET DEFAULT nextval('public.products_relation_kinds_id_seq'::regclass);
+
+
+--
 -- Name: property_primitives id; Type: DEFAULT; Schema: public; Owner: dev
 --
 
@@ -1607,12 +1744,44 @@ COPY public.offer_property_values (offer, property, "order", value) FROM stdin;
 
 
 --
+-- Data for Name: oo_relation_values; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.oo_relation_values (relation, source, target) FROM stdin;
+\.
+
+
+--
+-- Data for Name: op_relation_values; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.op_relation_values (relation, source, target) FROM stdin;
+\.
+
+
+--
 -- Data for Name: options_property_values; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
 COPY public.options_property_values (property, value, hash) FROM stdin;
 6	24	ooIhiyxiF7rZjh5pf9o91Q6+WSkXyrYuPMUQgRJLdpE=
 6	25	zLK33O7hYjy+3dkxhSUNgerG3FgNw2MXCE1MT8/ggXg=
+\.
+
+
+--
+-- Data for Name: po_relation_values; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.po_relation_values (relation, source, target) FROM stdin;
+\.
+
+
+--
+-- Data for Name: pp_relation_values; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.pp_relation_values (relation, source, target) FROM stdin;
 \.
 
 
@@ -1639,6 +1808,26 @@ COPY public.product_prices (product, price_type, value, currency, last_change, u
 --
 
 COPY public.product_property_values (product, property, "order", value) FROM stdin;
+\.
+
+
+--
+-- Data for Name: product_relations; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.product_relations (id, catalog, title, kind, "symmetric") FROM stdin;
+\.
+
+
+--
+-- Data for Name: products_relation_kinds; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.products_relation_kinds (id, title) FROM stdin;
+1	Product-to-product
+2	Product-to-offer
+3	Offer-to-product
+4	Offer-to-offer
 \.
 
 
@@ -1706,92 +1895,92 @@ COPY public.property_values (value_key, type, value) FROM stdin;
 --
 
 COPY public.rates ("from", "to", source, rate, updated_at) FROM stdin;
-3	2	1	60.720600000	2024-04-16 01:45:00.759+03
-2	3	1	0.016468875	2024-04-16 01:45:00.759+03
-4	2	1	55.052400000	2024-04-16 01:45:00.759+03
-2	4	1	0.018164512	2024-04-16 01:45:00.759+03
-5	2	1	116.378000000	2024-04-16 01:45:00.759+03
-2	5	1	0.008592689	2024-04-16 01:45:00.759+03
-6	2	1	0.236479000	2024-04-16 01:45:00.759+03
-2	6	1	4.228705297	2024-04-16 01:45:00.759+03
-7	2	1	28.652900000	2024-04-16 01:45:00.759+03
-2	7	1	0.034900481	2024-04-16 01:45:00.759+03
-8	2	1	50.971100000	2024-04-16 01:45:00.759+03
-2	8	1	0.019618961	2024-04-16 01:45:00.759+03
-9	2	1	18.221800000	2024-04-16 01:45:00.759+03
-2	9	1	0.054879320	2024-04-16 01:45:00.759+03
-10	2	1	0.253732000	2024-04-16 01:45:00.759+03
-2	10	1	3.941166270	2024-04-16 01:45:00.759+03
-11	2	1	0.003884010	2024-04-16 01:45:00.759+03
-2	11	1	257.465866463	2024-04-16 01:45:00.759+03
-12	2	1	11.977100000	2024-04-16 01:45:00.759+03
-2	12	1	0.083492665	2024-04-16 01:45:00.759+03
-13	2	1	35.040300000	2024-04-16 01:45:00.759+03
-2	13	1	0.028538568	2024-04-16 01:45:00.759+03
-14	2	1	13.362800000	2024-04-16 01:45:00.759+03
-2	14	1	0.074834615	2024-04-16 01:45:00.759+03
-15	2	1	25.483800000	2024-04-16 01:45:00.759+03
-2	15	1	0.039240616	2024-04-16 01:45:00.759+03
-16	2	1	93.589100000	2024-04-16 01:45:00.759+03
-2	16	1	0.010685005	2024-04-16 01:45:00.759+03
-17	2	1	99.793400000	2024-04-16 01:45:00.759+03
-2	28	1	0.116229334	2024-04-16 01:45:00.759+03
-29	2	1	23.275700000	2024-04-16 01:45:00.759+03
-2	29	1	0.042963262	2024-04-16 01:45:00.759+03
-30	2	1	20.056000000	2024-04-16 01:45:00.759+03
-2	30	1	0.049860391	2024-04-16 01:45:00.759+03
-31	2	1	123.166100000	2024-04-16 01:45:00.759+03
-2	31	1	0.008119117	2024-04-16 01:45:00.759+03
-32	2	1	68.795300000	2024-04-16 01:45:00.759+03
-2	32	1	0.014535877	2024-04-16 01:45:00.759+03
-33	2	1	8.566590000	2024-04-16 01:45:00.759+03
-2	33	1	0.116732562	2024-04-16 01:45:00.759+03
-34	2	1	2.554850000	2024-04-16 01:45:00.759+03
-2	34	1	0.391412412	2024-04-16 01:45:00.759+03
-44	2	1	0.067622200	2024-04-16 01:45:00.759+03
-2	44	1	14.788042980	2024-04-16 01:45:00.759+03
-45	2	1	0.610138000	2024-04-16 01:45:00.759+03
-2	45	1	1.638973478	2024-04-16 01:45:00.759+03
-2	17	1	0.010020703	2024-04-16 01:45:00.759+03
-18	2	1	1.935270000	2024-04-16 01:45:00.759+03
-2	18	1	0.516723765	2024-04-16 01:45:00.759+03
-19	2	1	1.121600000	2024-04-16 01:45:00.759+03
-2	19	1	0.891583452	2024-04-16 01:45:00.759+03
-20	2	1	0.005883520	2024-04-16 01:45:00.759+03
-2	20	1	169.966278690	2024-04-16 01:45:00.759+03
-21	2	1	0.208956000	2024-04-16 01:45:00.759+03
-2	21	1	4.785696510	2024-04-16 01:45:00.759+03
-22	2	1	67.985700000	2024-04-16 01:45:00.759+03
-2	22	1	0.014708976	2024-04-16 01:45:00.759+03
-23	2	1	25.711300000	2024-04-16 01:45:00.759+03
-2	23	1	0.038893405	2024-04-16 01:45:00.759+03
-24	2	1	1.050150000	2024-04-16 01:45:00.759+03
-2	24	1	0.952244917	2024-04-16 01:45:00.759+03
-25	2	1	12.884400000	2024-04-16 01:45:00.759+03
-2	25	1	0.077613238	2024-04-16 01:45:00.759+03
-26	2	1	5.286800000	2024-04-16 01:45:00.759+03
-2	26	1	0.189150337	2024-04-16 01:45:00.759+03
-27	2	1	55.610600000	2024-04-16 01:45:00.759+03
-2	27	1	0.017982183	2024-04-16 01:45:00.759+03
-28	2	1	8.603680000	2024-04-16 01:45:00.759+03
-35	2	1	2.921480000	2024-04-16 01:45:00.759+03
-2	35	1	0.342292263	2024-04-16 01:45:00.759+03
-36	2	1	26.739700000	2024-04-16 01:45:00.759+03
-2	36	1	0.037397577	2024-04-16 01:45:00.759+03
-37	2	1	0.007388420	2024-04-16 01:45:00.759+03
-2	37	1	135.346934798	2024-04-16 01:45:00.759+03
-38	2	1	2.375420000	2024-04-16 01:45:00.759+03
-2	38	1	0.420978185	2024-04-16 01:45:00.759+03
-39	2	1	3.937610000	2024-04-16 01:45:00.759+03
-2	39	1	0.253961159	2024-04-16 01:45:00.759+03
-40	2	1	8.616420000	2024-04-16 01:45:00.759+03
-2	40	1	0.116057481	2024-04-16 01:45:00.759+03
-41	2	1	102.529700000	2024-04-16 01:45:00.759+03
-2	41	1	0.009753271	2024-04-16 01:45:00.759+03
-42	2	1	0.851302000	2024-04-16 01:45:00.759+03
-2	42	1	1.174671268	2024-04-16 01:45:00.759+03
-43	2	1	5.008350000	2024-04-16 01:45:00.759+03
-2	43	1	0.199666557	2024-04-16 01:45:00.759+03
+3	2	1	60.452100000	2024-04-17 02:20:53.939+03
+2	3	1	0.016542023	2024-04-17 02:20:53.939+03
+4	2	1	55.337800000	2024-04-17 02:20:53.939+03
+2	4	1	0.018070830	2024-04-17 02:20:53.939+03
+5	2	1	117.131800000	2024-04-17 02:20:53.939+03
+2	5	1	0.008537391	2024-04-17 02:20:53.939+03
+6	2	1	0.238018000	2024-04-17 02:20:53.939+03
+2	6	1	4.201362922	2024-04-17 02:20:53.939+03
+7	2	1	28.721400000	2024-04-17 02:20:53.939+03
+2	7	1	0.034817244	2024-04-17 02:20:53.939+03
+8	2	1	51.254600000	2024-04-17 02:20:53.939+03
+2	8	1	0.019510444	2024-04-17 02:20:53.939+03
+9	2	1	18.181000000	2024-04-17 02:20:53.939+03
+2	9	1	0.055002475	2024-04-17 02:20:53.939+03
+10	2	1	0.252935000	2024-04-17 02:20:53.939+03
+2	10	1	3.953584913	2024-04-17 02:20:53.939+03
+11	2	1	0.003896860	2024-04-17 02:20:53.939+03
+2	11	1	256.616865887	2024-04-17 02:20:53.939+03
+12	2	1	12.033000000	2024-04-17 02:20:53.939+03
+2	12	1	0.083104795	2024-04-17 02:20:53.939+03
+13	2	1	35.235100000	2024-04-17 02:20:53.939+03
+2	13	1	0.028380791	2024-04-17 02:20:53.939+03
+14	2	1	13.436700000	2024-04-17 02:20:53.939+03
+2	14	1	0.074423035	2024-04-17 02:20:53.939+03
+15	2	1	25.615800000	2024-04-17 02:20:53.939+03
+2	15	1	0.039038406	2024-04-17 02:20:53.939+03
+16	2	1	94.074200000	2024-04-17 02:20:53.939+03
+2	16	1	0.010629907	2024-04-17 02:20:53.939+03
+17	2	1	99.934100000	2024-04-17 02:20:53.939+03
+2	28	1	0.115975511	2024-04-17 02:20:53.939+03
+29	2	1	23.121400000	2024-04-17 02:20:53.939+03
+2	29	1	0.043249976	2024-04-17 02:20:53.939+03
+30	2	1	20.093600000	2024-04-17 02:20:53.939+03
+2	30	1	0.049767090	2024-04-17 02:20:53.939+03
+31	2	1	123.836500000	2024-04-17 02:20:53.939+03
+2	31	1	0.008075164	2024-04-17 02:20:53.939+03
+32	2	1	68.828100000	2024-04-17 02:20:53.939+03
+2	32	1	0.014528950	2024-04-17 02:20:53.939+03
+33	2	1	8.612570000	2024-04-17 02:20:53.939+03
+2	33	1	0.116109361	2024-04-17 02:20:53.939+03
+34	2	1	2.568090000	2024-04-17 02:20:53.939+03
+2	34	1	0.389394453	2024-04-17 02:20:53.939+03
+44	2	1	0.067460900	2024-04-17 02:20:53.939+03
+2	44	1	14.823401407	2024-04-17 02:20:53.939+03
+45	2	1	0.609447000	2024-04-17 02:20:53.939+03
+2	45	1	1.640831770	2024-04-17 02:20:53.939+03
+2	17	1	0.010006594	2024-04-17 02:20:53.939+03
+18	2	1	1.937600000	2024-04-17 02:20:53.939+03
+2	18	1	0.516102395	2024-04-17 02:20:53.939+03
+19	2	1	1.126660000	2024-04-17 02:20:53.939+03
+2	19	1	0.887579216	2024-04-17 02:20:53.939+03
+20	2	1	0.005926680	2024-04-17 02:20:53.939+03
+2	20	1	168.728529295	2024-04-17 02:20:53.939+03
+21	2	1	0.209725000	2024-04-17 02:20:53.939+03
+2	21	1	4.768148766	2024-04-17 02:20:53.939+03
+22	2	1	68.348000000	2024-04-17 02:20:53.939+03
+2	22	1	0.014631006	2024-04-17 02:20:53.939+03
+23	2	1	25.844600000	2024-04-17 02:20:53.939+03
+2	23	1	0.038692802	2024-04-17 02:20:53.939+03
+24	2	1	1.055750000	2024-04-17 02:20:53.939+03
+2	24	1	0.947193938	2024-04-17 02:20:53.939+03
+25	2	1	12.933100000	2024-04-17 02:20:53.939+03
+2	25	1	0.077320983	2024-04-17 02:20:53.939+03
+26	2	1	5.296760000	2024-04-17 02:20:53.939+03
+2	26	1	0.188794659	2024-04-17 02:20:53.939+03
+27	2	1	55.381500000	2024-04-17 02:20:53.939+03
+2	27	1	0.018056571	2024-04-17 02:20:53.939+03
+28	2	1	8.622510000	2024-04-17 02:20:53.939+03
+35	2	1	2.907450000	2024-04-17 02:20:53.939+03
+2	35	1	0.343944006	2024-04-17 02:20:53.939+03
+36	2	1	26.878300000	2024-04-17 02:20:53.939+03
+2	36	1	0.037204734	2024-04-17 02:20:53.939+03
+37	2	1	0.007434010	2024-04-17 02:20:53.939+03
+2	37	1	134.516902721	2024-04-17 02:20:53.939+03
+38	2	1	2.377190000	2024-04-17 02:20:53.939+03
+2	38	1	0.420664734	2024-04-17 02:20:53.939+03
+39	2	1	3.967200000	2024-04-17 02:20:53.939+03
+2	39	1	0.252066949	2024-04-17 02:20:53.939+03
+40	2	1	8.673030000	2024-04-17 02:20:53.939+03
+2	40	1	0.115299959	2024-04-17 02:20:53.939+03
+41	2	1	102.993400000	2024-04-17 02:20:53.939+03
+2	41	1	0.009709360	2024-04-17 02:20:53.939+03
+42	2	1	0.852548000	2024-04-17 02:20:53.939+03
+2	42	1	1.172954485	2024-04-17 02:20:53.939+03
+43	2	1	4.923130000	2024-04-17 02:20:53.939+03
+2	43	1	0.203122810	2024-04-17 02:20:53.939+03
 \.
 
 
@@ -2660,6 +2849,92 @@ COPY public.rates_history ("from", "to", source, date, rate) FROM stdin;
 2	44	1	2024-04-16	14.788042980
 45	2	1	2024-04-16	0.610138000
 2	45	1	2024-04-16	1.638973478
+3	2	1	2024-04-17	60.452100000
+2	3	1	2024-04-17	0.016542023
+4	2	1	2024-04-17	55.337800000
+2	4	1	2024-04-17	0.018070830
+5	2	1	2024-04-17	117.131800000
+2	5	1	2024-04-17	0.008537391
+6	2	1	2024-04-17	0.238018000
+2	6	1	2024-04-17	4.201362922
+7	2	1	2024-04-17	28.721400000
+2	7	1	2024-04-17	0.034817244
+8	2	1	2024-04-17	51.254600000
+2	8	1	2024-04-17	0.019510444
+9	2	1	2024-04-17	18.181000000
+2	9	1	2024-04-17	0.055002475
+10	2	1	2024-04-17	0.252935000
+2	10	1	2024-04-17	3.953584913
+11	2	1	2024-04-17	0.003896860
+2	11	1	2024-04-17	256.616865887
+12	2	1	2024-04-17	12.033000000
+2	12	1	2024-04-17	0.083104795
+13	2	1	2024-04-17	35.235100000
+2	13	1	2024-04-17	0.028380791
+14	2	1	2024-04-17	13.436700000
+2	14	1	2024-04-17	0.074423035
+15	2	1	2024-04-17	25.615800000
+2	15	1	2024-04-17	0.039038406
+16	2	1	2024-04-17	94.074200000
+2	16	1	2024-04-17	0.010629907
+17	2	1	2024-04-17	99.934100000
+2	17	1	2024-04-17	0.010006594
+18	2	1	2024-04-17	1.937600000
+2	18	1	2024-04-17	0.516102395
+19	2	1	2024-04-17	1.126660000
+2	19	1	2024-04-17	0.887579216
+20	2	1	2024-04-17	0.005926680
+2	20	1	2024-04-17	168.728529295
+21	2	1	2024-04-17	0.209725000
+2	21	1	2024-04-17	4.768148766
+22	2	1	2024-04-17	68.348000000
+2	22	1	2024-04-17	0.014631006
+23	2	1	2024-04-17	25.844600000
+2	23	1	2024-04-17	0.038692802
+24	2	1	2024-04-17	1.055750000
+2	24	1	2024-04-17	0.947193938
+25	2	1	2024-04-17	12.933100000
+2	25	1	2024-04-17	0.077320983
+26	2	1	2024-04-17	5.296760000
+2	26	1	2024-04-17	0.188794659
+27	2	1	2024-04-17	55.381500000
+2	27	1	2024-04-17	0.018056571
+28	2	1	2024-04-17	8.622510000
+2	28	1	2024-04-17	0.115975511
+29	2	1	2024-04-17	23.121400000
+2	29	1	2024-04-17	0.043249976
+30	2	1	2024-04-17	20.093600000
+2	30	1	2024-04-17	0.049767090
+31	2	1	2024-04-17	123.836500000
+2	31	1	2024-04-17	0.008075164
+32	2	1	2024-04-17	68.828100000
+2	32	1	2024-04-17	0.014528950
+33	2	1	2024-04-17	8.612570000
+2	33	1	2024-04-17	0.116109361
+34	2	1	2024-04-17	2.568090000
+2	34	1	2024-04-17	0.389394453
+35	2	1	2024-04-17	2.907450000
+2	35	1	2024-04-17	0.343944006
+36	2	1	2024-04-17	26.878300000
+2	36	1	2024-04-17	0.037204734
+37	2	1	2024-04-17	0.007434010
+2	37	1	2024-04-17	134.516902721
+38	2	1	2024-04-17	2.377190000
+2	38	1	2024-04-17	0.420664734
+39	2	1	2024-04-17	3.967200000
+2	39	1	2024-04-17	0.252066949
+40	2	1	2024-04-17	8.673030000
+2	40	1	2024-04-17	0.115299959
+41	2	1	2024-04-17	102.993400000
+2	41	1	2024-04-17	0.009709360
+42	2	1	2024-04-17	0.852548000
+2	42	1	2024-04-17	1.172954485
+43	2	1	2024-04-17	4.923130000
+2	43	1	2024-04-17	0.203122810
+44	2	1	2024-04-17	0.067460900
+2	44	1	2024-04-17	14.823401407
+45	2	1	2024-04-17	0.609447000
+2	45	1	2024-04-17	1.640831770
 \.
 
 
@@ -2668,7 +2943,7 @@ COPY public.rates_history ("from", "to", source, date, rate) FROM stdin;
 --
 
 COPY public.rates_sources (id, title, base_currency, timezone, fine, fine_at, problem_info) FROM stdin;
-1	Rus CB	2	Europe/Moscow	f	2024-04-16 01:45:01.826+03	-3007
+1	Rus CB	2	Europe/Moscow	t	2024-04-17 02:20:55.243+03	-3007
 \.
 
 
@@ -2815,6 +3090,20 @@ SELECT pg_catalog.setval('public.currencies_id_seq', 69, true);
 --
 
 SELECT pg_catalog.setval('public.price_types_id_seq', 2, true);
+
+
+--
+-- Name: product_relations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.product_relations_id_seq', 1, false);
+
+
+--
+-- Name: products_relation_kinds_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.products_relation_kinds_id_seq', 4, true);
 
 
 --
@@ -3154,6 +3443,22 @@ ALTER TABLE ONLY public.offer_property_values
 
 
 --
+-- Name: oo_relation_values oo_relation_values_pk; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.oo_relation_values
+    ADD CONSTRAINT oo_relation_values_pk PRIMARY KEY (relation, source, target);
+
+
+--
+-- Name: op_relation_values op_relation_values_pk; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.op_relation_values
+    ADD CONSTRAINT op_relation_values_pk PRIMARY KEY (relation, source, target);
+
+
+--
 -- Name: options_property_values options_property_values_pk; Type: CONSTRAINT; Schema: public; Owner: dev
 --
 
@@ -3167,6 +3472,22 @@ ALTER TABLE ONLY public.options_property_values
 
 ALTER TABLE ONLY public.options_property_values
     ADD CONSTRAINT options_property_values_property_hash_uind UNIQUE (property, hash);
+
+
+--
+-- Name: po_relation_values po_relation_values_pk; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.po_relation_values
+    ADD CONSTRAINT po_relation_values_pk PRIMARY KEY (relation, source, target);
+
+
+--
+-- Name: pp_relation_values pp_relation_values_pk; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.pp_relation_values
+    ADD CONSTRAINT pp_relation_values_pk PRIMARY KEY (relation, source, target);
 
 
 --
@@ -3199,6 +3520,38 @@ ALTER TABLE ONLY public.product_prices
 
 ALTER TABLE ONLY public.product_property_values
     ADD CONSTRAINT product_property_values_pk PRIMARY KEY (product, property, "order");
+
+
+--
+-- Name: product_relations product_relations_catalog_title_uind; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.product_relations
+    ADD CONSTRAINT product_relations_catalog_title_uind UNIQUE (catalog, title);
+
+
+--
+-- Name: product_relations product_relations_pk; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.product_relations
+    ADD CONSTRAINT product_relations_pk PRIMARY KEY (id);
+
+
+--
+-- Name: products_relation_kinds products_relation_kinds_pk; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.products_relation_kinds
+    ADD CONSTRAINT products_relation_kinds_pk PRIMARY KEY (id);
+
+
+--
+-- Name: products_relation_kinds products_relation_kinds_title_uind; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.products_relation_kinds
+    ADD CONSTRAINT products_relation_kinds_title_uind UNIQUE (title);
 
 
 --
@@ -3762,6 +4115,54 @@ ALTER TABLE ONLY public.offer_property_values
 
 
 --
+-- Name: oo_relation_values oo_relation_values_catalog_product_offers_source_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.oo_relation_values
+    ADD CONSTRAINT oo_relation_values_catalog_product_offers_source_id_fk FOREIGN KEY (source) REFERENCES public.catalog_product_offers(id) ON DELETE CASCADE;
+
+
+--
+-- Name: oo_relation_values oo_relation_values_catalog_product_offers_target_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.oo_relation_values
+    ADD CONSTRAINT oo_relation_values_catalog_product_offers_target_id_fk FOREIGN KEY (target) REFERENCES public.catalog_product_offers(id) ON DELETE CASCADE;
+
+
+--
+-- Name: oo_relation_values oo_relation_values_product_relations_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.oo_relation_values
+    ADD CONSTRAINT oo_relation_values_product_relations_fk FOREIGN KEY (relation) REFERENCES public.product_relations(id) ON DELETE CASCADE;
+
+
+--
+-- Name: op_relation_values op_relation_values_catalog_product_offers_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.op_relation_values
+    ADD CONSTRAINT op_relation_values_catalog_product_offers_fk FOREIGN KEY (source) REFERENCES public.catalog_product_offers(id) ON DELETE CASCADE;
+
+
+--
+-- Name: op_relation_values op_relation_values_catalog_products_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.op_relation_values
+    ADD CONSTRAINT op_relation_values_catalog_products_fk FOREIGN KEY (target) REFERENCES public.catalog_products(id) ON DELETE CASCADE;
+
+
+--
+-- Name: op_relation_values op_relation_values_product_relations_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.op_relation_values
+    ADD CONSTRAINT op_relation_values_product_relations_fk FOREIGN KEY (relation) REFERENCES public.product_relations(id) ON DELETE CASCADE;
+
+
+--
 -- Name: options_property_values options_property_values_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
 --
 
@@ -3775,6 +4176,54 @@ ALTER TABLE ONLY public.options_property_values
 
 ALTER TABLE ONLY public.options_property_values
     ADD CONSTRAINT options_property_values_property_values_fk FOREIGN KEY (value) REFERENCES public.property_values(value_key) ON DELETE CASCADE;
+
+
+--
+-- Name: po_relation_values po_relation_values_catalog_producs_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.po_relation_values
+    ADD CONSTRAINT po_relation_values_catalog_producs_fk FOREIGN KEY (source) REFERENCES public.catalog_products(id) ON DELETE CASCADE;
+
+
+--
+-- Name: po_relation_values po_relation_values_catalog_product_offers_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.po_relation_values
+    ADD CONSTRAINT po_relation_values_catalog_product_offers_fk FOREIGN KEY (target) REFERENCES public.catalog_product_offers(id) ON DELETE CASCADE;
+
+
+--
+-- Name: po_relation_values po_relation_values_product_relations_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.po_relation_values
+    ADD CONSTRAINT po_relation_values_product_relations_fk FOREIGN KEY (relation) REFERENCES public.product_relations(id) ON DELETE CASCADE;
+
+
+--
+-- Name: pp_relation_values pp_relation_values_catalog_products_source_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.pp_relation_values
+    ADD CONSTRAINT pp_relation_values_catalog_products_source_id_fk FOREIGN KEY (source) REFERENCES public.catalog_products(id) ON DELETE CASCADE;
+
+
+--
+-- Name: pp_relation_values pp_relation_values_catalog_products_target_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.pp_relation_values
+    ADD CONSTRAINT pp_relation_values_catalog_products_target_id_fk FOREIGN KEY (target) REFERENCES public.catalog_products(id) ON DELETE CASCADE;
+
+
+--
+-- Name: pp_relation_values pp_relation_values_product_relations_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.pp_relation_values
+    ADD CONSTRAINT pp_relation_values_product_relations_fk FOREIGN KEY (relation) REFERENCES public.product_relations(id) ON DELETE CASCADE;
 
 
 --
@@ -3831,6 +4280,22 @@ ALTER TABLE ONLY public.product_property_values
 
 ALTER TABLE ONLY public.product_property_values
     ADD CONSTRAINT product_property_values_catalog_properties_fk FOREIGN KEY (property) REFERENCES public.catalog_properties(id) ON DELETE CASCADE;
+
+
+--
+-- Name: product_relations product_relations_catalogs_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.product_relations
+    ADD CONSTRAINT product_relations_catalogs_fk FOREIGN KEY (catalog) REFERENCES public.catalogs(id) ON DELETE CASCADE;
+
+
+--
+-- Name: product_relations product_relations_product_relations_kinds_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.product_relations
+    ADD CONSTRAINT product_relations_product_relations_kinds_fk FOREIGN KEY (kind) REFERENCES public.products_relation_kinds(id) ON DELETE RESTRICT;
 
 
 --

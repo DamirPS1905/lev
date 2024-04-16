@@ -1427,6 +1427,110 @@
                     "def": "def"
                 }
             }
+        },
+        "po_relation_values": {
+            "def": "def",
+            "controller": false,
+            "fields": {
+                "relation": {
+                    "def": "def"
+                },
+                "source": {
+                    "def": "def"
+                },
+                "target": {
+                    "def": "def"
+                }
+            }
+        },
+        "op_relation_values": {
+            "def": "def",
+            "controller": false,
+            "fields": {
+                "relation": {
+                    "def": "def"
+                },
+                "source": {
+                    "def": "def"
+                },
+                "target": {
+                    "def": "def"
+                }
+            }
+        },
+        "oo_relation_values": {
+            "def": "def",
+            "controller": false,
+            "fields": {
+                "relation": {
+                    "def": "def"
+                },
+                "source": {
+                    "def": "def"
+                },
+                "target": {
+                    "def": "def"
+                }
+            }
+        },
+        "products_relation_kinds": {
+            "def": "def",
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": false,
+            "paginateByMax": 0,
+            "fields": {
+                "id": {
+                    "def": "id",
+                    "unique": true
+                },
+                "title": {
+                    "def": "title",
+                    "unique": true
+                }
+            }
+        },
+        "pp_relation_values": {
+            "def": "def",
+            "controller": false,
+            "fields": {
+                "relation": {
+                    "def": "def"
+                },
+                "source": {
+                    "def": "def"
+                },
+                "target": {
+                    "def": "def"
+                }
+            }
+        },
+        "product_relations": {
+            "def": "catDef",
+            "paginateByMax": 0,
+            "fields": {
+                "id": {
+                    "def": "id",
+                    "unique": true
+                },
+                "catalog": {
+                    "def": "catalog",
+                    "allFilter": true
+                },
+                "title": {
+                    "def": "title",
+                    "apiDescription": "Наименование типа взаимоотношений"
+                },
+                "kind": {
+                    "def": "def",
+                    "apiDescription": "Вид взаимоотношений"
+                },
+                "symmetric": {
+                    "def": "def",
+                    "apiDescription": "Является ли взаимоотношение симметричным"
+                }
+            }
         }
     }
 }

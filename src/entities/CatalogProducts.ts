@@ -3,6 +3,9 @@ import { CatalogBrands } from './CatalogBrands';
 import { CatalogProductOffers } from './CatalogProductOffers';
 import { CatalogTypes } from './CatalogTypes';
 import { Catalogs } from './Catalogs';
+import { OpRelationValues } from './OpRelationValues';
+import { PoRelationValues } from './PoRelationValues';
+import { PpRelationValues } from './PpRelationValues';
 import { ProductPrices } from './ProductPrices';
 import { ProductPropertyValues } from './ProductPropertyValues';
 import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Opt } from '@mikro-orm/core';
@@ -44,6 +47,18 @@ export class CatalogProducts {
 	
 	@OneToMany({ entity: () => ProductPropertyValues, mappedBy: 'product' })
 	productPropertyValuesByProduct = new Collection<ProductPropertyValues>(this);
+	
+	@OneToMany({ entity: () => PoRelationValues, mappedBy: 'source' })
+	poRelationValuesBySource = new Collection<PoRelationValues>(this);
+	
+	@OneToMany({ entity: () => OpRelationValues, mappedBy: 'target' })
+	opRelationValuesByTarget = new Collection<OpRelationValues>(this);
+	
+	@OneToMany({ entity: () => PpRelationValues, mappedBy: 'target' })
+	ppRelationValuesByTarget = new Collection<PpRelationValues>(this);
+	
+	@OneToMany({ entity: () => PpRelationValues, mappedBy: 'source' })
+	ppRelationValuesBySource = new Collection<PpRelationValues>(this);
 	
 	// gen - end
 }
