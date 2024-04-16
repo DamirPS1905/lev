@@ -7,7 +7,7 @@ import { GenOptionsPropertyValuesController } from './gen/options-property-value
 import { EntityManager, wrap } from '@mikro-orm/postgresql'
 import { Body, Controller, DefaultValuePipe, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { ApiQuery, ApiBody, ApiExtraModels, ApiHeader, ApiTags } from '@nestjs/swagger'
+import { ApiQuery, ApiOperation, ApiParam, ApiBody, ApiExtraModels, ApiHeader, ApiTags } from '@nestjs/swagger'
 import { createHash } from 'crypto'
 import { PropertyValues } from './../../entities/PropertyValues'
 import { CatalogPropertiesService } from './../services/catalog-properties.service'
@@ -32,6 +32,9 @@ export class OptionsPropertyValuesController {
 
 	
 	@Get('all')
+	@ApiOperation({summary: "Получение списка доступных опций для свойства (с пагинацией)"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'property', description: 'ID свойства'})
 	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
 	@ApiQuery({ name: 'offset', description: 'Count of skipping entities', required: false})
 	async findAll(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
@@ -40,6 +43,10 @@ export class OptionsPropertyValuesController {
 	}
 	
 	@Get(':value')
+	@ApiOperation({summary: "Получение определенной опции для свойства"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'property', description: 'ID свойства'})
+	@ApiParam({name: 'value', description: 'ID опции'})
 	async findOne(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value', ParseBigIntPipe) value: bigint) {
 		await this.validatePath(actor, catalog, property);
 		const optionIns = await this.optionsPropertyValuesService.findByValue(value);
@@ -50,8 +57,13 @@ export class OptionsPropertyValuesController {
 		return optionIns.value;
 	}
 	
+	@Post()
+	@ApiOperation({summary: "Создание опции для свойства"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'property', description: 'ID свойства'})
 	@ApiExtraModels(Object, Array<Object>)
 	@ApiBody({
+		description: 'Значение опции',
 	  schema: {
 	    oneOf: [
 	      {type: 'object'},
@@ -62,7 +74,6 @@ export class OptionsPropertyValuesController {
 	    ],
 	  },
 	})
-	@Post()
 	async create(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Body() createDto: Object | Array<Object>) {
 		const propertyIns = await this.validatePath(actor, catalog, property),
 					val = await this.propertyTypesService.validateSingleValue(actor.company.id, propertyIns.scheme, createDto),
@@ -90,8 +101,14 @@ export class OptionsPropertyValuesController {
 		
 	}
 	
+	@Patch(':value')
+	@ApiOperation({summary: "Обновление значения опции для свойства"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'property', description: 'ID свойства'})
+	@ApiParam({name: 'value', description: 'ID опции'})
 	@ApiExtraModels(Object, Array<Object>)
 	@ApiBody({
+		description: 'Новое значение опции',
 	  schema: {
 	    oneOf: [
 	      {type: 'object'},
@@ -102,7 +119,6 @@ export class OptionsPropertyValuesController {
 	    ],
 	  },
 	})
-	@Patch(':value')
 	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value', ParseBigIntPipe) value: bigint, @Body() updateDto: Object | Array<Object>) {
 		const propertyIns = await this.validatePath(actor, catalog, property),
 					val = await this.propertyTypesService.validateSingleValue(actor.company.id, propertyIns.scheme, updateDto),
@@ -126,6 +142,10 @@ export class OptionsPropertyValuesController {
 	}
 	
 	@Delete(':value')
+	@ApiOperation({summary: "Удаление опции для свойства"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'property', description: 'ID свойства'})
+	@ApiParam({name: 'value', description: 'ID опции'})
 	async delete(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value', ParseBigIntPipe) value: bigint) {
 		await this.validatePath(actor, catalog, property);
 		return this.optionsPropertyValuesService.transactional(async (em) => {

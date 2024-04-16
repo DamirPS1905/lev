@@ -7,21 +7,30 @@ import { GenCatalogTypesController } from './gen/catalog-types.controller'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, Delete, Get, Param, ParseIntPipe, Patch, Post, HttpException, HttpStatus } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
+import { ApiOperation, ApiParam } from '@nestjs/swagger'
 
 export class CatalogTypesController extends GenCatalogTypesController {
 	
 	@Get(':id')
+	@ApiOperation({summary: "Получение определенного типа товаров"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'id', description: 'ID типа товара (для корневого типа можно использовать 0)'})
 	async findOne(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
 		return await super.findOne(actor, catalog, await this.processInputType(catalog, id));
 	}
 	
 	@Get(':id/tree')
+	@ApiOperation({summary: "Получение определенного типа товаров с деревом его подтипов"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'id', description: 'ID типа товара (для корневого типа можно использовать 0)'})
 	async getTree(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
 		const one = await super.findOne(actor, catalog, await this.processInputType(catalog, id));
 		return await this.catalogTypesService.readTree(one);
 	}
 	
 	@Post()
+	@ApiOperation({summary: "Создание типа товаров"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	async create(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Body() createDto: CreateCatalogTypeDto) {
 		createDto.parent = await this.processInputType(catalog, createDto.parent);
 		return await super.create(actor, catalog, createDto);
@@ -36,6 +45,9 @@ export class CatalogTypesController extends GenCatalogTypesController {
 	}
 	
 	@Patch(':id')
+	@ApiOperation({summary: "Обновление определенного типа товаров"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'id', description: 'ID типа товара (для корневого типа можно использовать 0)'})
 	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateCatalogTypeDto) {
 		updateDto.parent = await this.processInputType(catalog, updateDto.parent);
 		return await super.update(actor, catalog, id, updateDto);
@@ -58,8 +70,17 @@ export class CatalogTypesController extends GenCatalogTypesController {
 	}
 	
 	@Delete(':id')
+	@ApiOperation({summary: "Уадление определенного типа товаров"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'id', description: 'ID типа товара (корневой тип удалить нельзя)'})
 	async delete(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
 		return await super.delete(actor, catalog, id);
+	}
+	
+	async validateDelete(entity, actor: Actors, catalog: number, id: number, em: EntityManager) {
+		if(entity.root){
+			throw new HttpException("Unable to remove catalog root type", HttpStatus.NOT_FOUND);
+		}
 	}
 	
 	async processInputType(catalog: number, parent: number, em: EntityManager = null){
