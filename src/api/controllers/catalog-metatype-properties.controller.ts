@@ -7,10 +7,14 @@ import { GenCatalogMetatypePropertiesController } from './gen/catalog-metatype-p
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
+import { ApiOperation, ApiParam } from '@nestjs/swagger'
 
 export class CatalogMetatypePropertiesController extends GenCatalogMetatypePropertiesController {
 	
 	@Get('all')
+	@ApiOperation({summary: "Получение списка всех свойств метатипа"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'metatype', description: 'ID метатипа'})
 	async findAll(@AuthInfo() actor: Actors, @Param('metatype', ParseIntPipe) metatype: number, @Param('catalog', ParseIntPipe) catalog: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
@@ -20,11 +24,19 @@ export class CatalogMetatypePropertiesController extends GenCatalogMetatypePrope
 	}
 	
 	@Get('property/:property')
+	@ApiOperation({summary: "Получение параметров прикрепленния определенного свойства к данному метатипу"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'metatype', description: 'ID метатипа'})
+	@ApiParam({name: 'property', description: 'ID свойства'})
 	async findOne(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property', ParseIntPipe) property: number, @Param('metatype', ParseIntPipe) metatype: number) {
 		return await super.findOne(actor, catalog, property, metatype);
 	}
 	
 	@Patch('property/:property')
+	@ApiOperation({summary: "Прикрепление свойства к данному метатипу или обновление его параметров"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'metatype', description: 'ID метатипа'})
+	@ApiParam({name: 'property', description: 'ID свойства'})
 	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property', ParseIntPipe) property: number, @Param('metatype', ParseIntPipe) metatype: number, @Body() updateDto: UpdateCatalogMetatypePropertyDto) {
 		return await super.update(actor, catalog, property, metatype, updateDto);
 	}
@@ -39,6 +51,10 @@ export class CatalogMetatypePropertiesController extends GenCatalogMetatypePrope
 	}
 	
 	@Delete('property/:property')
+	@ApiOperation({summary: "Удаление свойства из данного метатипа"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'metatype', description: 'ID метатипа'})
+	@ApiParam({name: 'property', description: 'ID свойства'})
 	async delete(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property', ParseIntPipe) property: number, @Param('metatype', ParseIntPipe) metatype: number) {
 		return await super.delete(actor, catalog, property, metatype);
 	}

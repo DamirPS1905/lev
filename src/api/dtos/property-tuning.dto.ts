@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsInt, IsUrl, IsOptional } from 'class-validator'
-import { Transform, TransformFnParams } from 'class-transformer'
 
 export class PropertyTuningDto {
 	
@@ -12,28 +11,28 @@ export class PropertyTuningDto {
       { type: 'number' },
       { type: 'boolean' }
     ],
-		description: 'Value used by default if value not provided'
+		description: 'Значение используемое по умолчанию, если значение части свойства не предоставлено'
 	})
 	defaultValue:number|string|boolean;
 	
 	@IsOptional()
 	@IsInt()
-	@ApiProperty({ required: false, description: 'For values with measure units can be used as unit setted by default if unit not provided' })
+	@ApiProperty({ required: false, description: 'Единица измерения, используемая по умолчанию, если в передаваемом значении она не задана (только для частей значений с единицами измерений)' })
 	defaultUnit:number;
 	
 	@IsOptional()
 	@IsInt()
-	@ApiProperty({ required: false, description: 'Required for values with measure units; it defines group of units that can be used in this property' })
+	@ApiProperty({ required: false, description: 'Группа единиц имерения, в которых измеряется данная часть свойства (только для частей значений с единицами измерений)' })
 	unitsGroup:number;
 	
 	@IsOptional()
 	@IsInt()
-	@ApiProperty({ required: false, description: 'Required for values with measure units; it defines unit that will be used for filtering and ordering this property values' })
+	@ApiProperty({ required: false, description: 'Единица измерения в которой должно происходить сортировка и сравнение различных значений части свойства (только для частей значений с единицами измерений)' })
 	storageUnit:number;
 	
 	@IsOptional()
 	@IsInt()
-	@ApiProperty({ required: false, description: 'For values with measure units can be used as unit that will be used for presenting values' })
+	@ApiProperty({ required: false, description: 'Единица измерений, в которой должна отображаться данная часть знчения свойства (только для частей значений с единицами измерений)' })
 	displayUnit:number;
 	
 }

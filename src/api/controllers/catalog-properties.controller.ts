@@ -7,11 +7,13 @@ import { GenCatalogPropertiesController } from './gen/catalog-properties.control
 import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, DefaultValuePipe, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { ApiQuery } from '@nestjs/swagger'
+import { ApiQuery, ApiOperation, ApiParam } from '@nestjs/swagger'
 
 export class CatalogPropertiesController extends GenCatalogPropertiesController {
 	
 	@Get('all')
+	@ApiOperation({summary: "Получение списка свойств в каталоге (с пагинацией)"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
 	@ApiQuery({ name: 'offset', description: 'Count of skipping entities', required: false})
 	async findAll(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
@@ -19,17 +21,25 @@ export class CatalogPropertiesController extends GenCatalogPropertiesController 
 	}
 	
 	@Get(':id')
+	@ApiOperation({summary: "Получение определенного свойства"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'id', description: 'ID свойства'})
 	async findOne(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
 		return await super.findOne(actor, catalog, id);
 	}
 	
 	@Get(':id/value-scheme')
+	@ApiOperation({summary: "Получение схемы применяемой для задания значения данного свойства"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'id', description: 'ID свойства'})
 	async getScheme(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
 		const propertyIns = await super.findOne(actor, catalog, id);
 		return this.propertyTypesService.getValueScheme(propertyIns.scheme);
 	}
 	
 	@Post()
+	@ApiOperation({summary: "Создание свойства"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	async create(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Body() createDto: CreateCatalogPropertyDto) {
 		return await super.create(actor, catalog, createDto);
 	}
@@ -44,6 +54,9 @@ export class CatalogPropertiesController extends GenCatalogPropertiesController 
 	}
 	
 	@Patch(':id')
+	@ApiOperation({summary: "Обновление информации об определенном свойстве"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'id', description: 'ID свойства'})
 	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateCatalogPropertyDto) {
 		return await super.update(actor, catalog, id, updateDto);
 	}
@@ -60,6 +73,9 @@ export class CatalogPropertiesController extends GenCatalogPropertiesController 
 	}
 	
 	@Delete(':id')
+	@ApiOperation({summary: "Удаление свойства"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'id', description: 'ID свойства'})
 	async delete(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number) {
 		return await super.delete(actor, catalog, id);
 	}
