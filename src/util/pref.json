@@ -21,6 +21,12 @@
     "authDecoratorVar": "actor",
     "authDecoratorVarClass": "Actors",
     "authDecoratorVarClassPath": "entities\/Actors",
+    "extraControllers": [
+        {
+            "path": "api\/controllers\/relations.controller",
+            "class": "RelationsController"
+        }
+    ],
     "fieldsDefaults": {
         "def": {
             "dto": true,
@@ -1524,7 +1530,12 @@
                 },
                 "kind": {
                     "def": "def",
-                    "apiDescription": "Вид взаимоотношений"
+                    "apiDescription": "Вид взаимоотношений",
+                    "load": {
+                        "as": "products_relation_kinds",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Unknown relations kind"
+                    }
                 },
                 "symmetric": {
                     "def": "def",

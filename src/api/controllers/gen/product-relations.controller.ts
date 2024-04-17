@@ -64,9 +64,9 @@ export class GenProductRelationsController {
 				throw new HttpException('Duplicate (catalog, title)', HttpStatus.CONFLICT);
 			}
 			if(createDto.kind!==undefined){
-				const tmp = await this.productsRelationKindsService.findById(createDto.kind, em);
-				if(tmp===null){
-					throw new HttpException('Not found contrainst (kind)', HttpStatus.CONFLICT);
+				const kindIns = await this.productsRelationKindsService.findById(createDto.kind);
+				if(kindIns===null){
+					throw new HttpException('Unknown relations kind', HttpStatus.NOT_FOUND);
 				}
 			}
 			await this.validateCreate(actor, catalog, createDto, em);
@@ -84,9 +84,9 @@ export class GenProductRelationsController {
 		return await this.productRelationsService.transactional(async (em) => {
 			const entity = await this.productRelationsService.findById(id, em);
 			if(updateDto.kind!==undefined){
-				const tmp = await this.productsRelationKindsService.findById(updateDto.kind, em);
-				if(tmp===null){
-					throw new HttpException('Not found contrainst (kind)', HttpStatus.CONFLICT);
+				const kindIns = await this.productsRelationKindsService.findById(updateDto.kind);
+				if(kindIns===null){
+					throw new HttpException('Unknown relations kind', HttpStatus.NOT_FOUND);
 				}
 			}
 			if(entity===null || !(entity.catalog.id===catalog)){

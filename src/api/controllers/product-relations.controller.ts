@@ -31,6 +31,7 @@ export class ProductRelationsController extends GenProductRelationsController {
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'id', description: 'ID типа взаимоотношениия'})
 	async create(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Body() createDto: CreateProductRelationDto) {
+		createDto.symmetric = createDto.symmetric && (createDto.kind===1 || createDto.kind===4);
 		return await super.create(actor, catalog, createDto);
 	}
 	
@@ -39,6 +40,7 @@ export class ProductRelationsController extends GenProductRelationsController {
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'id', description: 'ID типа взаимоотношениия'})
 	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateProductRelationDto) {
+		updateDto.symmetric = updateDto.symmetric && (updateDto.kind===1 || updateDto.kind===4);
 		return await super.update(actor, catalog, id, updateDto);
 	}
 	
