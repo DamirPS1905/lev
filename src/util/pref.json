@@ -280,6 +280,17 @@
                 "offers_count": {
                     "def": "def",
                     "dto": false
+                },
+                "accounting_unit": {
+                    "def": "def",
+                    "dtoRequired": "create",
+                    "apiDescription": "Единица измерения, в которой будет учитываться товар",
+                    "load": {
+                        "as": "units",
+                        "validate": "@@.company===null || @@.company.id===actor.company.id",
+                        "eCode": "NOT_FOUND",
+                        "eMessage": "Unit not found"
+                    }
                 }
             }
         },

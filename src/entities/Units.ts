@@ -1,3 +1,4 @@
+import { CatalogProducts } from './CatalogProducts';
 import { Companies } from './Companies';
 import { UnitGroups } from './UnitGroups';
 import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, Unique, type Hidden, type Opt } from '@mikro-orm/core';
@@ -30,6 +31,9 @@ export class Units {
   factor: number & Opt = 1;
 
 	// gen - begin
+	
+	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'accountingUnit' })
+	catalogProductsByAccountingUnit = new Collection<CatalogProducts>(this);
 	
 	@OneToMany({ entity: () => UnitGroups, mappedBy: 'base' })
 	unitGroupsByBase = new Collection<UnitGroups>(this);

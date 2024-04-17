@@ -8,6 +8,7 @@ import { PoRelationValues } from './PoRelationValues';
 import { PpRelationValues } from './PpRelationValues';
 import { ProductPrices } from './ProductPrices';
 import { ProductPropertyValues } from './ProductPropertyValues';
+import { Units } from './Units';
 import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Opt } from '@mikro-orm/core';
 
 @Entity()
@@ -36,6 +37,9 @@ export class CatalogProducts {
 
   @Property({ type: 'number', columnType: 'smallint' })
   offersCount: number & Opt = 0;
+
+  @ManyToOne({ entity: () => Units, fieldName: 'accounting_unit' })
+  accountingUnit!: Units;
 
 	// gen - begin
 	

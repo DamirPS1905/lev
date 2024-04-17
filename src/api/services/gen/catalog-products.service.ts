@@ -132,6 +132,24 @@ export class GenCatalogProductsService {
 		});
 	}
 	
+	findAllByAccountingUnit(accountingUnit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogProducts, {
+			accountingUnit: accountingUnit
+		});
+	}
+	
+	listByAccountingUnit(accountingUnit: number, offset: number, limit: number, emt: EntityManager = null) {
+		const em = emt || this.em.fork();
+		return em.find(CatalogProducts, {
+			accountingUnit: accountingUnit
+		}, {
+			limit: limit,
+			offset: offset,
+			orderBy: { id: "ASC" },
+		});
+	}
+	
 	listAll(offset: number, limit: number, emt: EntityManager = null) {
 		const em = emt || this.em.fork();
 		return em.find(CatalogProducts, { }, {

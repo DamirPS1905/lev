@@ -35,4 +35,9 @@ export class GenUpdateCatalogProductDto {
 	@IsInt()
 	collection:number;
 	
+	@IsOptional()
+	@ApiProperty({ required: false, description: 'Единица измерения, в которой будет учитываться товар' })
+	@IsInt()
+	accountingUnit:number;
+	
 }

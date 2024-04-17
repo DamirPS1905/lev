@@ -28,14 +28,14 @@ export class CatalogTypes {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'type' })
-	catalogProductsByType = new Collection<CatalogProducts>(this);
-	
 	@OneToMany({ entity: () => CatalogTypesOverload, mappedBy: 'child' })
 	catalogTypesOverloadByChild = new Collection<CatalogTypesOverload>(this);
 	
 	@OneToMany({ entity: () => CatalogTypesOverload, mappedBy: 'parent' })
 	catalogTypesOverloadByParent = new Collection<CatalogTypesOverload>(this);
+	
+	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'type' })
+	catalogProductsByType = new Collection<CatalogProducts>(this);
 	
 	@OneToMany({ entity: () => PropertyInTypes, mappedBy: 'type' })
 	propertyInTypesByType = new Collection<PropertyInTypes>(this);

@@ -15,6 +15,7 @@ import { CatalogBrandsService } from './../../services/catalog-brands.service';
 import { CatalogProductsService } from './../../services/catalog-products.service';
 import { CatalogTypesService } from './../../services/catalog-types.service';
 import { CatalogsService } from './../../services/catalogs.service';
+import { UnitsService } from './../../services/units.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -31,6 +32,7 @@ export class GenCatalogProductsController {
 		protected readonly catalogProductsService: CatalogProductsService,
 		protected readonly catalogTypesService: CatalogTypesService,
 		protected readonly catalogsService: CatalogsService,
+		protected readonly unitsService: UnitsService,
 	) { }
 	
 	async findAll(actor: Actors, catalog: number, offset: number, limit: number) {
@@ -86,6 +88,10 @@ export class GenCatalogProductsController {
 					}
 				}
 			}
+			const accountingUnitIns = await this.unitsService.findById(createDto.accountingUnit);
+			if(accountingUnitIns===null || !(accountingUnitIns.company===null || accountingUnitIns.company.id===actor.company.id)){
+				throw new HttpException('Unit not found', HttpStatus.NOT_FOUND);
+			}
 			await this.validateCreate(actor, catalog, createDto, em);
 			return await this.catalogProductsService.create(createDto, em);
 		});
@@ -118,6 +124,12 @@ export class GenCatalogProductsController {
 					if(tmp===null){
 						throw new HttpException('Not found contrainst (collection)', HttpStatus.CONFLICT);
 					}
+				}
+			}
+			if(updateDto.accountingUnit!==undefined){
+				const accountingUnitIns = await this.unitsService.findById(updateDto.accountingUnit);
+				if(accountingUnitIns===null || !(accountingUnitIns.company===null || accountingUnitIns.company.id===actor.company.id)){
+					throw new HttpException('Unit not found', HttpStatus.NOT_FOUND);
 				}
 			}
 			if(entity===null || !(entity.catalog.id===catalog)){

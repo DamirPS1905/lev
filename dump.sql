@@ -509,7 +509,8 @@ CREATE TABLE public.catalog_products (
     title character varying NOT NULL,
     created timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     collection integer,
-    offers_count smallint DEFAULT 0 NOT NULL
+    offers_count smallint DEFAULT 0 NOT NULL,
+    accounting_unit integer NOT NULL
 );
 
 
@@ -1573,8 +1574,8 @@ COPY public.catalog_product_offers (id, product, catalog, article, created) FROM
 -- Data for Name: catalog_products; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.catalog_products (id, catalog, type, brand, title, created, collection, offers_count) FROM stdin;
-1	1	9	6	Fucken first	2024-04-10 02:50:17.864553+03	\N	1
+COPY public.catalog_products (id, catalog, type, brand, title, created, collection, offers_count, accounting_unit) FROM stdin;
+1	1	9	6	Fucken first	2024-04-10 02:50:17.864553+03	\N	1	1
 \.
 
 
@@ -3992,6 +3993,14 @@ ALTER TABLE ONLY public.catalog_products
 
 ALTER TABLE ONLY public.catalog_products
     ADD CONSTRAINT catalog_products_catalogs_fk FOREIGN KEY (catalog) REFERENCES public.catalogs(id);
+
+
+--
+-- Name: catalog_products catalog_products_units_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.catalog_products
+    ADD CONSTRAINT catalog_products_units_fk FOREIGN KEY (accounting_unit) REFERENCES public.units(id);
 
 
 --
