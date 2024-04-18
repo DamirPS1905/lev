@@ -22,7 +22,7 @@ export class PropertyValues {
 
 	// gen - begin
 	
-	@OneToOne({ entity: () => OptionsPropertyValues, mappedBy: 'value' })
+	@OneToOne({ entity: () => OptionsPropertyValues, mappedBy: 'value', hidden: true })
 	optionsPropertyValuesByValue: OptionsPropertyValues;
 	
 	// gen - end

@@ -1,5 +1,5 @@
 import { ProductRelations } from './ProductRelations';
-import { Collection, Entity, OneToMany, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Collection, Entity, OneToMany, PrimaryKey, Property, Unique, type Hidden } from '@mikro-orm/core';
 
 @Entity()
 export class ProductsRelationKinds {
@@ -13,8 +13,8 @@ export class ProductsRelationKinds {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => ProductRelations, mappedBy: 'kind' })
-	productRelationsByKind = new Collection<ProductRelations>(this);
+	@OneToMany({ entity: () => ProductRelations, mappedBy: 'kind', hidden: true })
+	productRelationsByKind: Collection<ProductRelations> & Hidden = new Collection<ProductRelations>(this);
 	
 	// gen - end
 }

@@ -52,6 +52,11 @@ require('dotenv').config();
 			    p.expression = p.expression.replace(/['']/g, "\\'");
 		    })
 		    const tbl = meta.collection;
+		    meta.props.forEach(prop => {
+	        if (prop.kind === ReferenceKind.MANY_TO_MANY) {
+	          prop.hidden = true;
+	        }
+	      });
 		    meta.relations.forEach(p => {
 			    if(p.kind===ReferenceKind.ONE_TO_ONE){
 				    if(!getVal(tbl, p.name, 'unique', false))

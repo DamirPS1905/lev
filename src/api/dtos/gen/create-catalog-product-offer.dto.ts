@@ -24,4 +24,6 @@ export class GenCreateCatalogProductOfferDto {
 	@MaxLength(255)
 	article:string;
 	
+	created:Date;
+	
 }

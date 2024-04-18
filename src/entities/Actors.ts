@@ -2,7 +2,7 @@ import { ActorTypes } from './ActorTypes';
 import { ApiKeys } from './ApiKeys';
 import { Companies } from './Companies';
 import { Users } from './Users';
-import { Collection, Entity, ManyToOne, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { Collection, Entity, ManyToOne, OneToOne, PrimaryKey, Property, type Hidden } from '@mikro-orm/core';
 
 @Entity()
 export class Actors {
@@ -21,10 +21,10 @@ export class Actors {
 
 	// gen - begin
 	
-	@OneToOne({ entity: () => ApiKeys, mappedBy: 'actor' })
+	@OneToOne({ entity: () => ApiKeys, mappedBy: 'actor', hidden: true })
 	apiKeysByActor: ApiKeys;
 	
-	@OneToOne({ entity: () => Users, mappedBy: 'actor' })
+	@OneToOne({ entity: () => Users, mappedBy: 'actor', hidden: true })
 	usersByActor: Users;
 	
 	// gen - end

@@ -2,22 +2,34 @@ import { AuthInfo } from './../../decorators/auth.decorator'
 import { Actors } from './../../entities/Actors'
 import { CreateCatalogProductOfferDto } from './../dtos/create-catalog-product-offer.dto'
 import { UpdateCatalogProductOfferDto } from './../dtos/update-catalog-product-offer.dto'
-import { CatalogProductOffersService } from './../services/catalog-product-offers.service'
-import { GenCatalogProductOffersController } from './gen/catalog-product-offers.controller'
+import { CatalogProductOffersService } from './../services/catalog-product-offers.service';
+import { CatalogProductsService } from './../services/catalog-products.service';
+import { CatalogsService } from './../services/catalogs.service';
 import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Body, DefaultValuePipe, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common'
+import { Body, Controller, DefaultValuePipe, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ParseBigIntPipe } from './../../pipes/parse-bigint.pipe'
-import { ApiOperation, ApiParam } from '@nestjs/swagger'
+import { ApiHeader, ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger'
 
-export class CatalogProductOffersController extends GenCatalogProductOffersController {
+@ApiHeader({ name: 'X-API-KEY', required: true, description: 'Ваш идентефикатор апи' })
+@UseGuards(AuthGuard('api-key'))
+@ApiTags('Catalog product offers')
+@Controller('catalog/:catalog/product/:product/offer')
+export class CatalogProductOffersController{
+	
+	constructor(
+		protected readonly catalogProductOffersService: CatalogProductOffersService,
+		protected readonly catalogProductsService: CatalogProductsService,
+		protected readonly catalogsService: CatalogsService,
+	) { }
 	
 	@Get('all')
 	@ApiOperation({summary: "Получение списка товарных предложений товара"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'product', description: 'ID товара'})
-	async findAll(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('product', ParseBigIntPipe) product: bigint, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
-		return await super.findAll(actor, catalog, product, offset, limit);
+	async findAll(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('product', ParseBigIntPipe) product: bigint) {
+		const productIns = await this.validatePath(actor, catalog, product);
+		return await this.catalogProductOffersService.findAllNotNullByProduct(product);
 	}
 	
 	@Get(':id')
@@ -26,7 +38,12 @@ export class CatalogProductOffersController extends GenCatalogProductOffersContr
 	@ApiParam({name: 'product', description: 'ID товара'})
 	@ApiParam({name: 'id', description: 'ID товарного предложения'})
 	async findOne(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('product', ParseBigIntPipe) product: bigint, @Param('id', ParseBigIntPipe) id: bigint) {
-		return await super.findOne(actor, catalog, product, id);
+		const productIns = await this.validatePath(actor, catalog, product);
+		const entity = await this.catalogProductOffersService.findById(id);
+		if(entity===null || entity.article===null || !(entity.product.id===product) || !(entity.catalog.id===catalog)){
+			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
+		}
+		return entity;
 	}
 	
 	@Post()
@@ -34,7 +51,27 @@ export class CatalogProductOffersController extends GenCatalogProductOffersContr
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'product', description: 'ID товара'})
 	async create(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('product', ParseBigIntPipe) product: bigint, @Body() createDto: CreateCatalogProductOfferDto) {
-		return await super.create(actor, catalog, product, createDto);
+		createDto.product = product;
+		createDto.catalog = catalog;
+		if(createDto.article===undefined || createDto.article===null){
+			throw new HttpException('Article cannot be empty', HttpStatus.CONFLICT);
+		}
+		const productIns = await this.validatePath(actor, catalog, product);
+		return await this.catalogProductOffersService.transactional(async (em) => {
+			const existed0 = await this.catalogProductOffersService.findByCatalogAndArticle(catalog, createDto.article, em);
+			if(existed0!==null){
+				throw new HttpException('Offer with the same artice already exists in catalog', HttpStatus.CONFLICT);
+			}
+			if(productIns.offersCount===0){
+				const nullOffer = await this.catalogProductOffersService.findNullOfferByProduct(product, em);
+				return await this.catalogProductOffersService.update(nullOffer, {
+					article: createDto.article,
+					product: product,
+					created: new Date()
+				}, em);
+			}
+			return await this.catalogProductOffersService.create(createDto, em);
+		});
 	}
 	
 	@Patch(':id')
@@ -43,7 +80,25 @@ export class CatalogProductOffersController extends GenCatalogProductOffersContr
 	@ApiParam({name: 'product', description: 'ID товара'})
 	@ApiParam({name: 'id', description: 'ID товарного предложения'})
 	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('product', ParseBigIntPipe) product: bigint, @Param('id', ParseBigIntPipe) id: bigint, @Body() updateDto: UpdateCatalogProductOfferDto) {
-		return await super.update(actor, catalog, product, id, updateDto);
+		if(updateDto.hasOwnProperty('article')){
+			if(updateDto.article===undefined || updateDto.article===null){
+				throw new HttpException('Article cannot be empty', HttpStatus.CONFLICT);
+			}
+		}
+		const productIns = await this.validatePath(actor, catalog, product);
+		return await this.catalogProductOffersService.transactional(async (em) => {
+			const entity = await this.catalogProductOffersService.findById(id, em);
+			if(entity===null || entity.article===null || !(entity.product.id===product) || !(entity.catalog.id===catalog)){
+				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
+			}
+			if((updateDto.article!==undefined && updateDto.article!==entity.article)){
+				const existed = await this.catalogProductOffersService.findByCatalogAndArticle(entity.catalog.id, updateDto.article, em);
+				if(existed!==null && entity.id!==existed.id){
+					throw new HttpException('Offer with the same artice already exists in catalog', HttpStatus.CONFLICT);
+				}
+			}
+			return await this.catalogProductOffersService.update(entity, updateDto, em);
+		});
 	}
 	
 	@Delete(':id')
@@ -52,13 +107,37 @@ export class CatalogProductOffersController extends GenCatalogProductOffersContr
 	@ApiParam({name: 'product', description: 'ID товара'})
 	@ApiParam({name: 'id', description: 'ID товарного предложения'})
 	async delete(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('product', ParseBigIntPipe) product: bigint, @Param('id', ParseBigIntPipe) id: bigint) {
-		return await super.delete(actor, catalog, product, id);
+		const productIns = await this.validatePath(actor, catalog, product);
+		return await this.catalogProductOffersService.transactional(async (em) => {
+			const entity = await this.catalogProductOffersService.findById(id, em);
+			if(entity===null || entity.article===null || !(entity.product.id===product) || !(entity.catalog.id===catalog)){
+				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
+			}
+			await wrap(entity.product).init();
+			if(entity.product.offersCount===1){
+				await this.catalogProductOffersService.remove(entity, em);
+				await this.catalogProductOffersService.create({
+					article: null,
+					product: product,
+					catalog: catalog,
+					created: undefined
+				}, em);
+			}else{
+				await this.catalogProductOffersService.remove(entity, em);
+			}
+		});
 	}
 	
-	async validateDelete(entity, actor: Actors, catalog: number, product: bigint, id: bigint, em: EntityManager) {
-		await wrap(entity.product).init();
-		if(entity.product.offersCount<2){
-			throw new HttpException('This is the only product offer', HttpStatus.CONFLICT);
+	private async validatePath(actor: Actors, catalog: number, product: bigint){
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
+		const productIns = await this.catalogProductsService.findById(product);
+		if(productIns===null || !(productIns.catalog.id===catalog)){
+			throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+		}
+		return productIns;
 	}
+	
 }

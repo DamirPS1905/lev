@@ -6,6 +6,7 @@
  * in nested class file
  * in a proper way.
  */
+import { AmountsController } from './controllers/amounts.controller';
 import { BrandPropertyValuesController } from './controllers/brand-property-values.controller';
 import { CatalogBrandCollectionsController } from './controllers/catalog-brand-collections.controller';
 import { CatalogBrandsController } from './controllers/catalog-brands.controller';
@@ -18,7 +19,6 @@ import { CatalogsController } from './controllers/catalogs.controller';
 import { CollectionPropertyValuesController } from './controllers/collection-property-values.controller';
 import { CurrenciesController } from './controllers/currencies.controller';
 import { MetatypesController } from './controllers/metatypes.controller';
-import { OfferAmountsController } from './controllers/offer-amounts.controller';
 import { OfferPricesController } from './controllers/offer-prices.controller';
 import { OfferPropertyValuesController } from './controllers/offer-property-values.controller';
 import { OptionsPropertyValuesController } from './controllers/options-property-values.controller';
@@ -82,7 +82,7 @@ import { UsersService } from './services/users.service';
 import { Module } from '@nestjs/common';
 
 @Module({
-	controllers: [BrandPropertyValuesController, CatalogBrandCollectionsController, CatalogBrandsController, CatalogMetatypePropertiesController, CatalogProductOffersController, CatalogProductsController, CatalogPropertiesController, CatalogTypesController, CatalogsController, CollectionPropertyValuesController, CurrenciesController, MetatypesController, OfferAmountsController, OfferPricesController, OfferPropertyValuesController, OptionsPropertyValuesController, PriceTypesController, ProductPricesController, ProductPropertyValuesController, ProductRelationsController, ProductsRelationKindsController, PropertyInTypesController, PropertyPrimitivesController, PropertyTypesController, RatesController, RatesSourcesController, RelationsController, StoresController, TypePropertyValuesController, UnitGroupsController, UnitsController],
+	controllers: [AmountsController, BrandPropertyValuesController, CatalogBrandCollectionsController, CatalogBrandsController, CatalogMetatypePropertiesController, CatalogProductOffersController, CatalogProductsController, CatalogPropertiesController, CatalogTypesController, CatalogsController, CollectionPropertyValuesController, CurrenciesController, MetatypesController, OfferPricesController, OfferPropertyValuesController, OptionsPropertyValuesController, PriceTypesController, ProductPricesController, ProductPropertyValuesController, ProductRelationsController, ProductsRelationKindsController, PropertyInTypesController, PropertyPrimitivesController, PropertyTypesController, RatesController, RatesSourcesController, RelationsController, StoresController, TypePropertyValuesController, UnitGroupsController, UnitsController],
 	providers: [ActorTypesService, ActorsService, ApiKeysService, BrandPropertyValuesService, CatalogBrandCollectionsService, CatalogBrandsService, CatalogMetatypePropertiesService, CatalogProductOffersService, CatalogProductsService, CatalogPropertiesService, CatalogTypesOverloadService, CatalogTypesService, CatalogsService, CollectionPropertyValuesService, CompaniesService, CurrenciesService, MetatypesService, OfferAmountsService, OfferPricesService, OfferPropertyValuesService, OoRelationValuesService, OpRelationValuesService, OptionsPropertyValuesService, PoRelationValuesService, PpRelationValuesService, PriceTypesService, ProductPricesService, ProductPropertyValuesService, ProductRelationsService, ProductsRelationKindsService, PropertyInTypesService, PropertyPrimitivesService, PropertyTypesService, PropertyValuesService, RatesHistoryService, RatesService, RatesSourcesService, StoresService, TypePropertyValuesService, UnitGroupsService, UnitsService, UsersService],
 	exports: [ActorTypesService, ActorsService, ApiKeysService, BrandPropertyValuesService, CatalogBrandCollectionsService, CatalogBrandsService, CatalogMetatypePropertiesService, CatalogProductOffersService, CatalogProductsService, CatalogPropertiesService, CatalogTypesOverloadService, CatalogTypesService, CatalogsService, CollectionPropertyValuesService, CompaniesService, CurrenciesService, MetatypesService, OfferAmountsService, OfferPricesService, OfferPropertyValuesService, OoRelationValuesService, OpRelationValuesService, OptionsPropertyValuesService, PoRelationValuesService, PpRelationValuesService, PriceTypesService, ProductPricesService, ProductPropertyValuesService, ProductRelationsService, ProductsRelationKindsService, PropertyInTypesService, PropertyPrimitivesService, PropertyTypesService, PropertyValuesService, RatesHistoryService, RatesService, RatesSourcesService, StoresService, TypePropertyValuesService, UnitGroupsService, UnitsService, UsersService]
 })

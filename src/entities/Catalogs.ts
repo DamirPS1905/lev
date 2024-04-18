@@ -23,29 +23,29 @@ export class Catalogs {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => CatalogTypes, mappedBy: 'catalog' })
-	catalogTypesByCatalog = new Collection<CatalogTypes>(this);
+	@OneToMany({ entity: () => CatalogTypes, mappedBy: 'catalog', hidden: true })
+	catalogTypesByCatalog: Collection<CatalogTypes> & Hidden = new Collection<CatalogTypes>(this);
 	
-	@OneToMany({ entity: () => CatalogProductOffers, mappedBy: 'catalog' })
-	catalogProductOffersByCatalog = new Collection<CatalogProductOffers>(this);
+	@OneToMany({ entity: () => CatalogProductOffers, mappedBy: 'catalog', hidden: true })
+	catalogProductOffersByCatalog: Collection<CatalogProductOffers> & Hidden = new Collection<CatalogProductOffers>(this);
 	
-	@OneToMany({ entity: () => PropertyTypes, mappedBy: 'catalog' })
-	propertyTypesByCatalog = new Collection<PropertyTypes>(this);
+	@OneToMany({ entity: () => PropertyTypes, mappedBy: 'catalog', hidden: true })
+	propertyTypesByCatalog: Collection<PropertyTypes> & Hidden = new Collection<PropertyTypes>(this);
 	
-	@OneToMany({ entity: () => CatalogBrands, mappedBy: 'catalog' })
-	catalogBrandsByCatalog = new Collection<CatalogBrands>(this);
+	@OneToMany({ entity: () => CatalogBrands, mappedBy: 'catalog', hidden: true })
+	catalogBrandsByCatalog: Collection<CatalogBrands> & Hidden = new Collection<CatalogBrands>(this);
 	
-	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'catalog' })
-	catalogProductsByCatalog = new Collection<CatalogProducts>(this);
+	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'catalog', hidden: true })
+	catalogProductsByCatalog: Collection<CatalogProducts> & Hidden = new Collection<CatalogProducts>(this);
 	
-	@OneToMany({ entity: () => CatalogProperties, mappedBy: 'catalog' })
-	catalogPropertiesByCatalog = new Collection<CatalogProperties>(this);
+	@OneToMany({ entity: () => CatalogProperties, mappedBy: 'catalog', hidden: true })
+	catalogPropertiesByCatalog: Collection<CatalogProperties> & Hidden = new Collection<CatalogProperties>(this);
 	
-	@OneToMany({ entity: () => CatalogMetatypeProperties, mappedBy: 'catalog' })
-	catalogMetatypePropertiesByCatalog = new Collection<CatalogMetatypeProperties>(this);
+	@OneToMany({ entity: () => CatalogMetatypeProperties, mappedBy: 'catalog', hidden: true })
+	catalogMetatypePropertiesByCatalog: Collection<CatalogMetatypeProperties> & Hidden = new Collection<CatalogMetatypeProperties>(this);
 	
-	@OneToMany({ entity: () => ProductRelations, mappedBy: 'catalog' })
-	productRelationsByCatalog = new Collection<ProductRelations>(this);
+	@OneToMany({ entity: () => ProductRelations, mappedBy: 'catalog', hidden: true })
+	productRelationsByCatalog: Collection<ProductRelations> & Hidden = new Collection<ProductRelations>(this);
 	
 	// gen - end
 }

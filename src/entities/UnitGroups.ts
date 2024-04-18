@@ -24,8 +24,8 @@ export class UnitGroups {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => Units, mappedBy: 'group' })
-	unitsByGroup = new Collection<Units>(this);
+	@OneToMany({ entity: () => Units, mappedBy: 'group', hidden: true })
+	unitsByGroup: Collection<Units> & Hidden = new Collection<Units>(this);
 	
 	// gen - end
 }

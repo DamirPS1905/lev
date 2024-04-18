@@ -32,11 +32,11 @@ export class Units {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'accountingUnit' })
-	catalogProductsByAccountingUnit = new Collection<CatalogProducts>(this);
+	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'accountingUnit', hidden: true })
+	catalogProductsByAccountingUnit: Collection<CatalogProducts> & Hidden = new Collection<CatalogProducts>(this);
 	
-	@OneToMany({ entity: () => UnitGroups, mappedBy: 'base' })
-	unitGroupsByBase = new Collection<UnitGroups>(this);
+	@OneToMany({ entity: () => UnitGroups, mappedBy: 'base', hidden: true })
+	unitGroupsByBase: Collection<UnitGroups> & Hidden = new Collection<UnitGroups>(this);
 	
 	// gen - end
 }

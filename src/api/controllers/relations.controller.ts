@@ -149,15 +149,9 @@ export class RelationsController{
 					break;
 				case 2:
 					await this.poRelationValuesService.create(base, em);
-					if(relationIns.symmetric){
-						await this.opRelationValuesService.create(inverse, em);
-					}
 					break;
 				case 3:
 					await this.opRelationValuesService.create(base, em);
-					if(relationIns.symmetric){
-						await this.poRelationValuesService.create(inverse, em);
-					}
 					break;
 				case 4:
 					await this.ooRelationValuesService.create(base, em);
@@ -194,15 +188,9 @@ export class RelationsController{
 					break;
 				case 2:
 					await this.poRelationValuesService.removeByRelationAndSourceAndTarget(relation, source, target, em);
-					if(relationIns.symmetric){
-						await this.opRelationValuesService.removeByRelationAndSourceAndTarget(relation, target, source, em);
-					}
 					break;
 				case 3:
 					await this.opRelationValuesService.removeByRelationAndSourceAndTarget(relation, source, target, em);
-					if(relationIns.symmetric){
-						await this.poRelationValuesService.removeByRelationAndSourceAndTarget(relation, target, source, em);
-					}
 					break;
 				case 4:
 					await this.ooRelationValuesService.removeByRelationAndSourceAndTarget(relation, source, target, em);

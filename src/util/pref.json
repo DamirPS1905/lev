@@ -25,6 +25,14 @@
         {
             "path": "api\/controllers\/relations.controller",
             "class": "RelationsController"
+        },
+        {
+            "path": "api\/controllers\/catalog-product-offers.controller",
+            "class": "CatalogProductOffersController"
+        },
+        {
+            "path": "api\/controllers\/amounts.controller",
+            "class": "AmountsController"
         }
     ],
     "fieldsDefaults": {
@@ -296,7 +304,9 @@
         },
         "catalog_product_offers": {
             "def": "catDef",
+            "controller": false,
             "apiPathName": "offer",
+            "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog\/product\/:product",
             "fields": {
                 "id": {
@@ -308,6 +318,7 @@
                     "dtoDisallow": true,
                     "readValidate": "@@===product",
                     "readForWriteValidate": "@@===product",
+                    "allFilter": true,
                     "from": "path",
                     "fillDto": "create"
                 },
@@ -320,7 +331,7 @@
                 },
                 "created": {
                     "def": "def",
-                    "dto": false
+                    "dtoDisallow": true
                 }
             },
             "extraRouteParams": [
@@ -1120,11 +1131,12 @@
         },
         "offer_amounts": {
             "def": "def",
+            "controller": false,
             "apiPathName": "offer\/:offer\/store",
-            "create": false,
             "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": ":store\/amount",
+            "extraServices": "property_types, units",
             "fields": {
                 "offer": {
                     "def": "pk",

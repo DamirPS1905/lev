@@ -1,5 +1,5 @@
 import { Actors } from './Actors';
-import { Collection, Entity, OneToMany, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Collection, Entity, OneToMany, PrimaryKey, Property, Unique, type Hidden } from '@mikro-orm/core';
 
 @Entity()
 export class ActorTypes {
@@ -13,8 +13,8 @@ export class ActorTypes {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => Actors, mappedBy: 'type' })
-	actorsByType = new Collection<Actors>(this);
+	@OneToMany({ entity: () => Actors, mappedBy: 'type', hidden: true })
+	actorsByType: Collection<Actors> & Hidden = new Collection<Actors>(this);
 	
 	// gen - end
 }

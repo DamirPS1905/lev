@@ -4,7 +4,7 @@ import { OpRelationValues } from './OpRelationValues';
 import { PoRelationValues } from './PoRelationValues';
 import { PpRelationValues } from './PpRelationValues';
 import { ProductsRelationKinds } from './ProductsRelationKinds';
-import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property } from '@mikro-orm/core';
+import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Hidden } from '@mikro-orm/core';
 
 @Entity()
 export class ProductRelations {
@@ -26,17 +26,17 @@ export class ProductRelations {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => PoRelationValues, mappedBy: 'relation' })
-	poRelationValuesByRelation = new Collection<PoRelationValues>(this);
+	@OneToMany({ entity: () => PoRelationValues, mappedBy: 'relation', hidden: true })
+	poRelationValuesByRelation: Collection<PoRelationValues> & Hidden = new Collection<PoRelationValues>(this);
 	
-	@OneToMany({ entity: () => OpRelationValues, mappedBy: 'relation' })
-	opRelationValuesByRelation = new Collection<OpRelationValues>(this);
+	@OneToMany({ entity: () => OpRelationValues, mappedBy: 'relation', hidden: true })
+	opRelationValuesByRelation: Collection<OpRelationValues> & Hidden = new Collection<OpRelationValues>(this);
 	
-	@OneToMany({ entity: () => OoRelationValues, mappedBy: 'relation' })
-	ooRelationValuesByRelation = new Collection<OoRelationValues>(this);
+	@OneToMany({ entity: () => OoRelationValues, mappedBy: 'relation', hidden: true })
+	ooRelationValuesByRelation: Collection<OoRelationValues> & Hidden = new Collection<OoRelationValues>(this);
 	
-	@OneToMany({ entity: () => PpRelationValues, mappedBy: 'relation' })
-	ppRelationValuesByRelation = new Collection<PpRelationValues>(this);
+	@OneToMany({ entity: () => PpRelationValues, mappedBy: 'relation', hidden: true })
+	ppRelationValuesByRelation: Collection<PpRelationValues> & Hidden = new Collection<PpRelationValues>(this);
 	
 	// gen - end
 }

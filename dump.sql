@@ -53,6 +53,41 @@ $$;
 ALTER FUNCTION public.catalog_product_offers_after_insert_fnc() OWNER TO dev;
 
 --
+-- Name: catalog_product_offers_after_update_fnc(); Type: FUNCTION; Schema: public; Owner: dev
+--
+
+CREATE FUNCTION public.catalog_product_offers_after_update_fnc() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+	BEGIN
+UPDATE catalog_products
+SET offers_count = offers_count - (NEW.article IS NULL)::int + (OLD.article IS NULL)::int
+WHERE id=NEW.product;
+RETURN NEW;
+	END;
+$$;
+
+
+ALTER FUNCTION public.catalog_product_offers_after_update_fnc() OWNER TO dev;
+
+--
+-- Name: catalog_products_after_insert_fnc(); Type: FUNCTION; Schema: public; Owner: dev
+--
+
+CREATE FUNCTION public.catalog_products_after_insert_fnc() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+	BEGIN
+INSERT INTO catalog_product_offers (catalog, product, article)
+VALUES(NEW.catalog, NEW.id, NULL);
+RETURN NEW;
+	END;
+$$;
+
+
+ALTER FUNCTION public.catalog_products_after_insert_fnc() OWNER TO dev;
+
+--
 -- Name: catalog_types_after_insert_fnc(); Type: FUNCTION; Schema: public; Owner: dev
 --
 
@@ -469,7 +504,7 @@ CREATE TABLE public.catalog_product_offers (
     id bigint NOT NULL,
     product bigint NOT NULL,
     catalog integer NOT NULL,
-    article character varying NOT NULL,
+    article character varying,
     created timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
@@ -1519,6 +1554,7 @@ COPY public.brand_property_values (instance, property, "order", value) FROM stdi
 --
 
 COPY public.catalog_brand_collections (id, brand, title) FROM stdin;
+1	6	ops
 \.
 
 
@@ -1566,7 +1602,16 @@ COPY public.catalog_metatype_properties (metatype, catalog, property, scheme) FR
 --
 
 COPY public.catalog_product_offers (id, product, catalog, article, created) FROM stdin;
-1	1	1	FF	2024-04-11 04:54:35.363165+03
+2	3	1	\N	2024-04-18 00:20:04.525351+03
+1	1	1	FFh	2024-04-11 04:54:35.363165+03
+3	4	1	first...	2024-04-18 00:20:56.432115+03
+5	4	1	second...	2024-04-18 00:46:56.357825+03
+6	4	1	third...	2024-04-18 00:58:32.429522+03
+7	4	1	third..	2024-04-18 01:05:47.822241+03
+8	4	1	third.	2024-04-18 01:12:11.552872+03
+9	4	1	third	2024-04-18 01:14:51.889892+03
+10	4	1	yyy	2024-04-18 01:20:05.26237+03
+12	5	1	\N	2024-04-18 02:33:06.201808+03
 \.
 
 
@@ -1576,6 +1621,9 @@ COPY public.catalog_product_offers (id, product, catalog, article, created) FROM
 
 COPY public.catalog_products (id, catalog, type, brand, title, created, collection, offers_count, accounting_unit) FROM stdin;
 1	1	9	6	Fucken first	2024-04-10 02:50:17.864553+03	\N	1	1
+3	1	9	6	Single	2024-04-18 00:20:04.525351+03	\N	0	1
+4	1	9	6	two offers	2024-04-18 00:20:56.432115+03	\N	7	1
+5	1	9	6	loos	2024-04-18 01:49:21.271494+03	1	1	1
 \.
 
 
@@ -1724,6 +1772,7 @@ COPY public.metatypes (id, title) FROM stdin;
 --
 
 COPY public.offer_amounts (offer, store, amount, changed_at) FROM stdin;
+2	1	40.560000	2024-04-18 04:22:35.851778+03
 \.
 
 
@@ -1896,41 +1945,41 @@ COPY public.property_values (value_key, type, value) FROM stdin;
 --
 
 COPY public.rates ("from", "to", source, rate, updated_at) FROM stdin;
-3	2	1	60.452100000	2024-04-17 02:20:53.939+03
-2	3	1	0.016542023	2024-04-17 02:20:53.939+03
-4	2	1	55.337800000	2024-04-17 02:20:53.939+03
-2	4	1	0.018070830	2024-04-17 02:20:53.939+03
-5	2	1	117.131800000	2024-04-17 02:20:53.939+03
-2	5	1	0.008537391	2024-04-17 02:20:53.939+03
-6	2	1	0.238018000	2024-04-17 02:20:53.939+03
-2	6	1	4.201362922	2024-04-17 02:20:53.939+03
-7	2	1	28.721400000	2024-04-17 02:20:53.939+03
-2	7	1	0.034817244	2024-04-17 02:20:53.939+03
-8	2	1	51.254600000	2024-04-17 02:20:53.939+03
-2	8	1	0.019510444	2024-04-17 02:20:53.939+03
-9	2	1	18.181000000	2024-04-17 02:20:53.939+03
-2	9	1	0.055002475	2024-04-17 02:20:53.939+03
-10	2	1	0.252935000	2024-04-17 02:20:53.939+03
-2	10	1	3.953584913	2024-04-17 02:20:53.939+03
-11	2	1	0.003896860	2024-04-17 02:20:53.939+03
-2	11	1	256.616865887	2024-04-17 02:20:53.939+03
-12	2	1	12.033000000	2024-04-17 02:20:53.939+03
-2	12	1	0.083104795	2024-04-17 02:20:53.939+03
-13	2	1	35.235100000	2024-04-17 02:20:53.939+03
-2	13	1	0.028380791	2024-04-17 02:20:53.939+03
-14	2	1	13.436700000	2024-04-17 02:20:53.939+03
-2	14	1	0.074423035	2024-04-17 02:20:53.939+03
-15	2	1	25.615800000	2024-04-17 02:20:53.939+03
-2	15	1	0.039038406	2024-04-17 02:20:53.939+03
-16	2	1	94.074200000	2024-04-17 02:20:53.939+03
-2	16	1	0.010629907	2024-04-17 02:20:53.939+03
-17	2	1	99.934100000	2024-04-17 02:20:53.939+03
+3	2	1	60.442900000	2024-04-18 01:15:00.731+03
+2	3	1	0.016544540	2024-04-18 01:15:00.731+03
+4	2	1	55.484800000	2024-04-18 01:15:00.731+03
+2	4	1	0.018022954	2024-04-18 01:15:00.731+03
+5	2	1	117.358200000	2024-04-18 01:15:00.731+03
+2	5	1	0.008520921	2024-04-18 01:15:00.731+03
+6	2	1	0.238735000	2024-04-18 01:15:00.731+03
+2	6	1	4.188744843	2024-04-18 01:15:00.731+03
+7	2	1	28.749500000	2024-04-18 01:15:00.731+03
+2	7	1	0.034783214	2024-04-18 01:15:00.731+03
+8	2	1	51.299400000	2024-04-18 01:15:00.731+03
+2	8	1	0.019493405	2024-04-18 01:15:00.731+03
+9	2	1	17.921600000	2024-04-18 01:15:00.731+03
+2	9	1	0.055798589	2024-04-18 01:15:00.731+03
+10	2	1	0.255137000	2024-04-18 01:15:00.731+03
+2	10	1	3.919462877	2024-04-18 01:15:00.731+03
+11	2	1	0.003892710	2024-04-18 01:15:00.731+03
+2	11	1	256.890443932	2024-04-18 01:15:00.731+03
+12	2	1	12.066500000	2024-04-18 01:15:00.731+03
+2	12	1	0.082874073	2024-04-18 01:15:00.731+03
+13	2	1	35.314200000	2024-04-18 01:15:00.731+03
+2	13	1	0.028317221	2024-04-18 01:15:00.731+03
+14	2	1	13.447800000	2024-04-18 01:15:00.731+03
+2	14	1	0.074361606	2024-04-18 01:15:00.731+03
+15	2	1	25.683900000	2024-04-18 01:15:00.731+03
+2	15	1	0.038934897	2024-04-18 01:15:00.731+03
+16	2	1	94.324200000	2024-04-18 01:15:00.731+03
+2	16	1	0.010601733	2024-04-18 01:15:00.731+03
 2	28	1	0.115975511	2024-04-17 02:20:53.939+03
 29	2	1	23.121400000	2024-04-17 02:20:53.939+03
 2	29	1	0.043249976	2024-04-17 02:20:53.939+03
 30	2	1	20.093600000	2024-04-17 02:20:53.939+03
 2	30	1	0.049767090	2024-04-17 02:20:53.939+03
 31	2	1	123.836500000	2024-04-17 02:20:53.939+03
+17	2	1	100.278700000	2024-04-18 01:15:00.731+03
 2	31	1	0.008075164	2024-04-17 02:20:53.939+03
 32	2	1	68.828100000	2024-04-17 02:20:53.939+03
 2	32	1	0.014528950	2024-04-17 02:20:53.939+03
@@ -1942,21 +1991,21 @@ COPY public.rates ("from", "to", source, rate, updated_at) FROM stdin;
 2	44	1	14.823401407	2024-04-17 02:20:53.939+03
 45	2	1	0.609447000	2024-04-17 02:20:53.939+03
 2	45	1	1.640831770	2024-04-17 02:20:53.939+03
-2	17	1	0.010006594	2024-04-17 02:20:53.939+03
-18	2	1	1.937600000	2024-04-17 02:20:53.939+03
-2	18	1	0.516102395	2024-04-17 02:20:53.939+03
-19	2	1	1.126660000	2024-04-17 02:20:53.939+03
-2	19	1	0.887579216	2024-04-17 02:20:53.939+03
-20	2	1	0.005926680	2024-04-17 02:20:53.939+03
-2	20	1	168.728529295	2024-04-17 02:20:53.939+03
-21	2	1	0.209725000	2024-04-17 02:20:53.939+03
-2	21	1	4.768148766	2024-04-17 02:20:53.939+03
-22	2	1	68.348000000	2024-04-17 02:20:53.939+03
-2	22	1	0.014631006	2024-04-17 02:20:53.939+03
-23	2	1	25.844600000	2024-04-17 02:20:53.939+03
-2	23	1	0.038692802	2024-04-17 02:20:53.939+03
-24	2	1	1.055750000	2024-04-17 02:20:53.939+03
-2	24	1	0.947193938	2024-04-17 02:20:53.939+03
+2	17	1	0.009972207	2024-04-18 01:15:00.731+03
+18	2	1	1.944350000	2024-04-18 01:15:00.731+03
+2	18	1	0.514310695	2024-04-18 01:15:00.731+03
+19	2	1	1.129660000	2024-04-18 01:15:00.731+03
+2	19	1	0.885222102	2024-04-18 01:15:00.731+03
+20	2	1	0.005831120	2024-04-18 01:15:00.731+03
+2	20	1	171.493641016	2024-04-18 01:15:00.731+03
+21	2	1	0.210165000	2024-04-18 01:15:00.731+03
+2	21	1	4.758166203	2024-04-18 01:15:00.731+03
+22	2	1	68.247000000	2024-04-18 01:15:00.731+03
+2	22	1	0.014652659	2024-04-18 01:15:00.731+03
+23	2	1	25.913200000	2024-04-18 01:15:00.731+03
+2	23	1	0.038590371	2024-04-18 01:15:00.731+03
+24	2	1	1.059760000	2024-04-18 01:15:00.731+03
+2	24	1	0.943609874	2024-04-18 01:15:00.731+03
 25	2	1	12.933100000	2024-04-17 02:20:53.939+03
 2	25	1	0.077320983	2024-04-17 02:20:53.939+03
 26	2	1	5.296760000	2024-04-17 02:20:53.939+03
@@ -2936,6 +2985,50 @@ COPY public.rates_history ("from", "to", source, date, rate) FROM stdin;
 2	44	1	2024-04-17	14.823401407
 45	2	1	2024-04-17	0.609447000
 2	45	1	2024-04-17	1.640831770
+3	2	1	2024-04-18	60.442900000
+2	3	1	2024-04-18	0.016544540
+4	2	1	2024-04-18	55.484800000
+2	4	1	2024-04-18	0.018022954
+5	2	1	2024-04-18	117.358200000
+2	5	1	2024-04-18	0.008520921
+6	2	1	2024-04-18	0.238735000
+2	6	1	2024-04-18	4.188744843
+7	2	1	2024-04-18	28.749500000
+2	7	1	2024-04-18	0.034783214
+8	2	1	2024-04-18	51.299400000
+2	8	1	2024-04-18	0.019493405
+9	2	1	2024-04-18	17.921600000
+2	9	1	2024-04-18	0.055798589
+10	2	1	2024-04-18	0.255137000
+2	10	1	2024-04-18	3.919462877
+11	2	1	2024-04-18	0.003892710
+2	11	1	2024-04-18	256.890443932
+12	2	1	2024-04-18	12.066500000
+2	12	1	2024-04-18	0.082874073
+13	2	1	2024-04-18	35.314200000
+2	13	1	2024-04-18	0.028317221
+14	2	1	2024-04-18	13.447800000
+2	14	1	2024-04-18	0.074361606
+15	2	1	2024-04-18	25.683900000
+2	15	1	2024-04-18	0.038934897
+16	2	1	2024-04-18	94.324200000
+2	16	1	2024-04-18	0.010601733
+17	2	1	2024-04-18	100.278700000
+2	17	1	2024-04-18	0.009972207
+18	2	1	2024-04-18	1.944350000
+2	18	1	2024-04-18	0.514310695
+19	2	1	2024-04-18	1.129660000
+2	19	1	2024-04-18	0.885222102
+20	2	1	2024-04-18	0.005831120
+2	20	1	2024-04-18	171.493641016
+21	2	1	2024-04-18	0.210165000
+2	21	1	2024-04-18	4.758166203
+22	2	1	2024-04-18	68.247000000
+2	22	1	2024-04-18	0.014652659
+23	2	1	2024-04-18	25.913200000
+2	23	1	2024-04-18	0.038590371
+24	2	1	2024-04-18	1.059760000
+2	24	1	2024-04-18	0.943609874
 \.
 
 
@@ -2944,7 +3037,7 @@ COPY public.rates_history ("from", "to", source, date, rate) FROM stdin;
 --
 
 COPY public.rates_sources (id, title, base_currency, timezone, fine, fine_at, problem_info) FROM stdin;
-1	Rus CB	2	Europe/Moscow	t	2024-04-17 02:20:55.243+03	-3007
+1	Rus CB	2	Europe/Moscow	f	2024-04-17 02:20:55.243+03	-3007
 \.
 
 
@@ -3027,7 +3120,7 @@ SELECT pg_catalog.setval('public.brands_id_seq', 13, true);
 -- Name: catalog_brand_collections_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.catalog_brand_collections_id_seq', 1, false);
+SELECT pg_catalog.setval('public.catalog_brand_collections_id_seq', 1, true);
 
 
 --
@@ -3048,14 +3141,14 @@ SELECT pg_catalog.setval('public.catalog_metatypes_id_seq', 6, true);
 -- Name: catalog_product_offers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.catalog_product_offers_id_seq', 1, true);
+SELECT pg_catalog.setval('public.catalog_product_offers_id_seq', 12, true);
 
 
 --
 -- Name: catalog_products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.catalog_products_id_seq', 1, true);
+SELECT pg_catalog.setval('public.catalog_products_id_seq', 5, true);
 
 
 --
@@ -3281,6 +3374,14 @@ ALTER TABLE ONLY public.catalog_product_offers
 
 ALTER TABLE ONLY public.catalog_product_offers
     ADD CONSTRAINT catalog_product_offers_pk PRIMARY KEY (id);
+
+
+--
+-- Name: catalog_product_offers catalog_product_offers_product_article_uind; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.catalog_product_offers
+    ADD CONSTRAINT catalog_product_offers_product_article_uind UNIQUE NULLS NOT DISTINCT (product, article);
 
 
 --
@@ -3793,14 +3894,28 @@ CREATE UNIQUE INDEX units_group_title_cuind ON public.units USING btree ("group"
 -- Name: catalog_product_offers catalog_product_offers_after_delete; Type: TRIGGER; Schema: public; Owner: dev
 --
 
-CREATE TRIGGER catalog_product_offers_after_delete AFTER DELETE ON public.catalog_product_offers FOR EACH ROW EXECUTE FUNCTION public.catalog_product_offers_after_delete_fnc();
+CREATE TRIGGER catalog_product_offers_after_delete AFTER DELETE ON public.catalog_product_offers FOR EACH ROW WHEN ((old.article IS NOT NULL)) EXECUTE FUNCTION public.catalog_product_offers_after_delete_fnc();
 
 
 --
 -- Name: catalog_product_offers catalog_product_offers_after_insert; Type: TRIGGER; Schema: public; Owner: dev
 --
 
-CREATE TRIGGER catalog_product_offers_after_insert AFTER INSERT ON public.catalog_product_offers FOR EACH ROW EXECUTE FUNCTION public.catalog_product_offers_after_insert_fnc();
+CREATE TRIGGER catalog_product_offers_after_insert AFTER INSERT ON public.catalog_product_offers FOR EACH ROW WHEN ((new.article IS NOT NULL)) EXECUTE FUNCTION public.catalog_product_offers_after_insert_fnc();
+
+
+--
+-- Name: catalog_product_offers catalog_product_offers_after_update_fnc; Type: TRIGGER; Schema: public; Owner: dev
+--
+
+CREATE TRIGGER catalog_product_offers_after_update_fnc AFTER UPDATE ON public.catalog_product_offers FOR EACH ROW WHEN (((old.article IS NULL) <> (new.article IS NULL))) EXECUTE FUNCTION public.catalog_product_offers_after_update_fnc();
+
+
+--
+-- Name: catalog_products catalog_products_after_insert; Type: TRIGGER; Schema: public; Owner: dev
+--
+
+CREATE TRIGGER catalog_products_after_insert AFTER INSERT ON public.catalog_products FOR EACH ROW EXECUTE FUNCTION public.catalog_products_after_insert_fnc();
 
 
 --

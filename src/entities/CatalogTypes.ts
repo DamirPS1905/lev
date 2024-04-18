@@ -3,7 +3,7 @@ import { CatalogTypesOverload } from './CatalogTypesOverload';
 import { Catalogs } from './Catalogs';
 import { PropertyInTypes } from './PropertyInTypes';
 import { TypePropertyValues } from './TypePropertyValues';
-import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Opt } from '@mikro-orm/core';
+import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Hidden, type Opt } from '@mikro-orm/core';
 
 @Entity()
 export class CatalogTypes {
@@ -28,20 +28,20 @@ export class CatalogTypes {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => CatalogTypesOverload, mappedBy: 'child' })
-	catalogTypesOverloadByChild = new Collection<CatalogTypesOverload>(this);
+	@OneToMany({ entity: () => CatalogTypesOverload, mappedBy: 'child', hidden: true })
+	catalogTypesOverloadByChild: Collection<CatalogTypesOverload> & Hidden = new Collection<CatalogTypesOverload>(this);
 	
-	@OneToMany({ entity: () => CatalogTypesOverload, mappedBy: 'parent' })
-	catalogTypesOverloadByParent = new Collection<CatalogTypesOverload>(this);
+	@OneToMany({ entity: () => CatalogTypesOverload, mappedBy: 'parent', hidden: true })
+	catalogTypesOverloadByParent: Collection<CatalogTypesOverload> & Hidden = new Collection<CatalogTypesOverload>(this);
 	
-	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'type' })
-	catalogProductsByType = new Collection<CatalogProducts>(this);
+	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'type', hidden: true })
+	catalogProductsByType: Collection<CatalogProducts> & Hidden = new Collection<CatalogProducts>(this);
 	
-	@OneToMany({ entity: () => PropertyInTypes, mappedBy: 'type' })
-	propertyInTypesByType = new Collection<PropertyInTypes>(this);
+	@OneToMany({ entity: () => PropertyInTypes, mappedBy: 'type', hidden: true })
+	propertyInTypesByType: Collection<PropertyInTypes> & Hidden = new Collection<PropertyInTypes>(this);
 	
-	@OneToMany({ entity: () => TypePropertyValues, mappedBy: 'instance' })
-	typePropertyValuesByInstance = new Collection<TypePropertyValues>(this);
+	@OneToMany({ entity: () => TypePropertyValues, mappedBy: 'instance', hidden: true })
+	typePropertyValuesByInstance: Collection<TypePropertyValues> & Hidden = new Collection<TypePropertyValues>(this);
 	
 	// gen - end
 }

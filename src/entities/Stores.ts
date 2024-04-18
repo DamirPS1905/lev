@@ -25,8 +25,8 @@ export class Stores {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => OfferAmounts, mappedBy: 'store' })
-	offerAmountsByStore = new Collection<OfferAmounts>(this);
+	@OneToMany({ entity: () => OfferAmounts, mappedBy: 'store', hidden: true })
+	offerAmountsByStore: Collection<OfferAmounts> & Hidden = new Collection<OfferAmounts>(this);
 	
 	// gen - end
 }

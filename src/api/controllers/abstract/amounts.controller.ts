@@ -1,11 +1,3 @@
-/*
- * This code was generated automatically
- * and should not be modifiyed manyally,
- * becouse it can be overwritten in any
- * moment. All modifications are allowed
- * in api/controllers/offer-amounts.controller
- * in a proper way.
- */
 import { AuthInfo } from './../../../decorators/auth.decorator';
 import { Actors } from './../../../entities/Actors';
 import { CreateOfferAmountDto } from './../../dtos/create-offer-amount.dto';
@@ -13,6 +5,7 @@ import { UpdateOfferAmountDto } from './../../dtos/update-offer-amount.dto';
 import { CatalogProductOffersService } from './../../services/catalog-product-offers.service';
 import { CatalogsService } from './../../services/catalogs.service';
 import { OfferAmountsService } from './../../services/offer-amounts.service';
+import { PropertyTypesService } from './../../services/property-types.service';
 import { StoresService } from './../../services/stores.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
@@ -29,7 +22,11 @@ export class GenOfferAmountsController {
 		protected readonly catalogsService: CatalogsService,
 		protected readonly offerAmountsService: OfferAmountsService,
 		protected readonly storesService: StoresService,
+		protected readonly propertyTypesService: PropertyTypesService
 	) { }
+	
+	protected async setOfferAmount(offer: bigint, amount: number, unit)
+	
 	
 	async findAll(actor: Actors, catalog: number, offer: bigint) {
 		const catalogIns = await this.catalogsService.findById(catalog);

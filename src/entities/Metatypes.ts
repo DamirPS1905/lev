@@ -1,5 +1,5 @@
 import { CatalogMetatypeProperties } from './CatalogMetatypeProperties';
-import { Collection, Entity, OneToMany, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Collection, Entity, OneToMany, PrimaryKey, Property, Unique, type Hidden } from '@mikro-orm/core';
 
 @Entity()
 export class Metatypes {
@@ -13,8 +13,8 @@ export class Metatypes {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => CatalogMetatypeProperties, mappedBy: 'metatype' })
-	catalogMetatypePropertiesByMetatype = new Collection<CatalogMetatypeProperties>(this);
+	@OneToMany({ entity: () => CatalogMetatypeProperties, mappedBy: 'metatype', hidden: true })
+	catalogMetatypePropertiesByMetatype: Collection<CatalogMetatypeProperties> & Hidden = new Collection<CatalogMetatypeProperties>(this);
 	
 	// gen - end
 }

@@ -295,12 +295,49 @@ RETURN NEW;
 $function$
 LANGUAGE 'plpgsql';
 
+CREATE OR REPLACE FUNCTION public.catalog_product_offers_after_update_fnc()
+RETURNS trigger 
+AS $function$
+	BEGIN
+UPDATE catalog_products
+SET offers_count = offers_count - (NEW.article IS NULL)::int + (OLD.article IS NULL)::int
+WHERE id=NEW.product;
+RETURN NEW;
+	END;
+$function$
+LANGUAGE 'plpgsql';
+
+
 CREATE OR REPLACE TRIGGER catalog_product_offers_after_insert
 	AFTER INSERT ON catalog_product_offers
 	FOR EACH ROW
+  WHEN (NEW.article IS NOT NULL)
 	EXECUTE FUNCTION catalog_product_offers_after_insert_fnc();
+
+CREATE OR REPLACE TRIGGER catalog_product_offers_after_update_fnc
+	AFTER UPDATE ON catalog_product_offers
+	FOR EACH ROW
+	WHEN ((OLD.article IS NULL) != (NEW.article IS NULL))
+	EXECUTE FUNCTION catalog_product_offers_after_update_fnc();
 
 CREATE OR REPLACE TRIGGER catalog_product_offers_after_delete
 	AFTER DELETE ON catalog_product_offers
 	FOR EACH ROW
+  WHEN (OLD.article IS NOT NULL)
 	EXECUTE FUNCTION catalog_product_offers_after_delete_fnc();
+
+CREATE OR REPLACE FUNCTION public.catalog_products_after_insert_fnc()
+RETURNS trigger 
+AS $function$
+	BEGIN
+INSERT INTO catalog_product_offers (catalog, product, article)
+VALUES(NEW.catalog, NEW.id, NULL);
+RETURN NEW;
+	END;
+$function$
+LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE TRIGGER catalog_products_after_insert
+	AFTER INSERT ON catalog_products
+	FOR EACH ROW
+	EXECUTE FUNCTION catalog_products_after_insert_fnc();

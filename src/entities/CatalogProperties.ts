@@ -8,7 +8,7 @@ import { ProductPropertyValues } from './ProductPropertyValues';
 import { PropertyInTypes } from './PropertyInTypes';
 import { PropertyTypes } from './PropertyTypes';
 import { TypePropertyValues } from './TypePropertyValues';
-import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Opt } from '@mikro-orm/core';
+import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Hidden, type Opt } from '@mikro-orm/core';
 
 @Entity()
 export class CatalogProperties {
@@ -36,29 +36,29 @@ export class CatalogProperties {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => OptionsPropertyValues, mappedBy: 'property' })
-	optionsPropertyValuesByProperty = new Collection<OptionsPropertyValues>(this);
+	@OneToMany({ entity: () => OptionsPropertyValues, mappedBy: 'property', hidden: true })
+	optionsPropertyValuesByProperty: Collection<OptionsPropertyValues> & Hidden = new Collection<OptionsPropertyValues>(this);
 	
-	@OneToMany({ entity: () => PropertyInTypes, mappedBy: 'property' })
-	propertyInTypesByProperty = new Collection<PropertyInTypes>(this);
+	@OneToMany({ entity: () => PropertyInTypes, mappedBy: 'property', hidden: true })
+	propertyInTypesByProperty: Collection<PropertyInTypes> & Hidden = new Collection<PropertyInTypes>(this);
 	
-	@OneToMany({ entity: () => CatalogMetatypeProperties, mappedBy: 'property' })
-	catalogMetatypePropertiesByProperty = new Collection<CatalogMetatypeProperties>(this);
+	@OneToMany({ entity: () => CatalogMetatypeProperties, mappedBy: 'property', hidden: true })
+	catalogMetatypePropertiesByProperty: Collection<CatalogMetatypeProperties> & Hidden = new Collection<CatalogMetatypeProperties>(this);
 	
-	@OneToMany({ entity: () => BrandPropertyValues, mappedBy: 'property' })
-	brandPropertyValuesByProperty = new Collection<BrandPropertyValues>(this);
+	@OneToMany({ entity: () => BrandPropertyValues, mappedBy: 'property', hidden: true })
+	brandPropertyValuesByProperty: Collection<BrandPropertyValues> & Hidden = new Collection<BrandPropertyValues>(this);
 	
-	@OneToMany({ entity: () => TypePropertyValues, mappedBy: 'property' })
-	typePropertyValuesByProperty = new Collection<TypePropertyValues>(this);
+	@OneToMany({ entity: () => TypePropertyValues, mappedBy: 'property', hidden: true })
+	typePropertyValuesByProperty: Collection<TypePropertyValues> & Hidden = new Collection<TypePropertyValues>(this);
 	
-	@OneToMany({ entity: () => ProductPropertyValues, mappedBy: 'property' })
-	productPropertyValuesByProperty = new Collection<ProductPropertyValues>(this);
+	@OneToMany({ entity: () => ProductPropertyValues, mappedBy: 'property', hidden: true })
+	productPropertyValuesByProperty: Collection<ProductPropertyValues> & Hidden = new Collection<ProductPropertyValues>(this);
 	
-	@OneToMany({ entity: () => OfferPropertyValues, mappedBy: 'property' })
-	offerPropertyValuesByProperty = new Collection<OfferPropertyValues>(this);
+	@OneToMany({ entity: () => OfferPropertyValues, mappedBy: 'property', hidden: true })
+	offerPropertyValuesByProperty: Collection<OfferPropertyValues> & Hidden = new Collection<OfferPropertyValues>(this);
 	
-	@OneToMany({ entity: () => CollectionPropertyValues, mappedBy: 'property' })
-	collectionPropertyValuesByProperty = new Collection<CollectionPropertyValues>(this);
+	@OneToMany({ entity: () => CollectionPropertyValues, mappedBy: 'property', hidden: true })
+	collectionPropertyValuesByProperty: Collection<CollectionPropertyValues> & Hidden = new Collection<CollectionPropertyValues>(this);
 	
 	// gen - end
 }

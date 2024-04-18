@@ -2,7 +2,7 @@ import { BrandPropertyValues } from './BrandPropertyValues';
 import { CatalogBrandCollections } from './CatalogBrandCollections';
 import { CatalogProducts } from './CatalogProducts';
 import { Catalogs } from './Catalogs';
-import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property } from '@mikro-orm/core';
+import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Hidden } from '@mikro-orm/core';
 
 @Entity()
 export class CatalogBrands {
@@ -24,14 +24,14 @@ export class CatalogBrands {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'brand' })
-	catalogProductsByBrand = new Collection<CatalogProducts>(this);
+	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'brand', hidden: true })
+	catalogProductsByBrand: Collection<CatalogProducts> & Hidden = new Collection<CatalogProducts>(this);
 	
-	@OneToMany({ entity: () => BrandPropertyValues, mappedBy: 'instance' })
-	brandPropertyValuesByInstance = new Collection<BrandPropertyValues>(this);
+	@OneToMany({ entity: () => BrandPropertyValues, mappedBy: 'instance', hidden: true })
+	brandPropertyValuesByInstance: Collection<BrandPropertyValues> & Hidden = new Collection<BrandPropertyValues>(this);
 	
-	@OneToMany({ entity: () => CatalogBrandCollections, mappedBy: 'brand' })
-	catalogBrandCollectionsByBrand = new Collection<CatalogBrandCollections>(this);
+	@OneToMany({ entity: () => CatalogBrandCollections, mappedBy: 'brand', hidden: true })
+	catalogBrandCollectionsByBrand: Collection<CatalogBrandCollections> & Hidden = new Collection<CatalogBrandCollections>(this);
 	
 	// gen - end
 }

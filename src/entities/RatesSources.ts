@@ -29,8 +29,8 @@ export class RatesSources {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => Rates, mappedBy: 'source' })
-	ratesBySource = new Collection<Rates>(this);
+	@OneToMany({ entity: () => Rates, mappedBy: 'source', hidden: true })
+	ratesBySource: Collection<Rates> & Hidden = new Collection<Rates>(this);
 	
 	// gen - end
 }

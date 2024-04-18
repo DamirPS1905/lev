@@ -9,7 +9,7 @@ import { PpRelationValues } from './PpRelationValues';
 import { ProductPrices } from './ProductPrices';
 import { ProductPropertyValues } from './ProductPropertyValues';
 import { Units } from './Units';
-import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Opt } from '@mikro-orm/core';
+import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, type Hidden, type Opt } from '@mikro-orm/core';
 
 @Entity()
 export class CatalogProducts {
@@ -43,26 +43,26 @@ export class CatalogProducts {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => CatalogProductOffers, mappedBy: 'product' })
-	catalogProductOffersByProduct = new Collection<CatalogProductOffers>(this);
+	@OneToMany({ entity: () => CatalogProductOffers, mappedBy: 'product', hidden: true })
+	catalogProductOffersByProduct: Collection<CatalogProductOffers> & Hidden = new Collection<CatalogProductOffers>(this);
 	
-	@OneToMany({ entity: () => ProductPrices, mappedBy: 'product' })
-	productPricesByProduct = new Collection<ProductPrices>(this);
+	@OneToMany({ entity: () => ProductPrices, mappedBy: 'product', hidden: true })
+	productPricesByProduct: Collection<ProductPrices> & Hidden = new Collection<ProductPrices>(this);
 	
-	@OneToMany({ entity: () => ProductPropertyValues, mappedBy: 'product' })
-	productPropertyValuesByProduct = new Collection<ProductPropertyValues>(this);
+	@OneToMany({ entity: () => ProductPropertyValues, mappedBy: 'product', hidden: true })
+	productPropertyValuesByProduct: Collection<ProductPropertyValues> & Hidden = new Collection<ProductPropertyValues>(this);
 	
-	@OneToMany({ entity: () => PoRelationValues, mappedBy: 'source' })
-	poRelationValuesBySource = new Collection<PoRelationValues>(this);
+	@OneToMany({ entity: () => PoRelationValues, mappedBy: 'source', hidden: true })
+	poRelationValuesBySource: Collection<PoRelationValues> & Hidden = new Collection<PoRelationValues>(this);
 	
-	@OneToMany({ entity: () => OpRelationValues, mappedBy: 'target' })
-	opRelationValuesByTarget = new Collection<OpRelationValues>(this);
+	@OneToMany({ entity: () => OpRelationValues, mappedBy: 'target', hidden: true })
+	opRelationValuesByTarget: Collection<OpRelationValues> & Hidden = new Collection<OpRelationValues>(this);
 	
-	@OneToMany({ entity: () => PpRelationValues, mappedBy: 'target' })
-	ppRelationValuesByTarget = new Collection<PpRelationValues>(this);
+	@OneToMany({ entity: () => PpRelationValues, mappedBy: 'target', hidden: true })
+	ppRelationValuesByTarget: Collection<PpRelationValues> & Hidden = new Collection<PpRelationValues>(this);
 	
-	@OneToMany({ entity: () => PpRelationValues, mappedBy: 'source' })
-	ppRelationValuesBySource = new Collection<PpRelationValues>(this);
+	@OneToMany({ entity: () => PpRelationValues, mappedBy: 'source', hidden: true })
+	ppRelationValuesBySource: Collection<PpRelationValues> & Hidden = new Collection<PpRelationValues>(this);
 	
 	// gen - end
 }

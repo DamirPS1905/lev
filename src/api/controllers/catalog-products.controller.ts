@@ -33,7 +33,7 @@ export class CatalogProductsController extends GenCatalogProductsController {
 	@ApiOperation({summary: "Создание товара"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	async create(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Body() createDto: CreateCatalogProductDto) {
-		return await super.create(actor, catalog, createDto);
+		await super.create(actor, catalog, createDto);
 	}
 	
 	@Patch(':id')

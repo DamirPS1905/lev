@@ -28,20 +28,20 @@ export class Currencies {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => Rates, mappedBy: 'to' })
-	ratesByTo = new Collection<Rates>(this);
+	@OneToMany({ entity: () => Rates, mappedBy: 'to', hidden: true })
+	ratesByTo: Collection<Rates> & Hidden = new Collection<Rates>(this);
 	
-	@OneToMany({ entity: () => Rates, mappedBy: 'from' })
-	ratesByFrom = new Collection<Rates>(this);
+	@OneToMany({ entity: () => Rates, mappedBy: 'from', hidden: true })
+	ratesByFrom: Collection<Rates> & Hidden = new Collection<Rates>(this);
 	
-	@OneToMany({ entity: () => RatesSources, mappedBy: 'baseCurrency' })
-	ratesSourcesByBaseCurrency = new Collection<RatesSources>(this);
+	@OneToMany({ entity: () => RatesSources, mappedBy: 'baseCurrency', hidden: true })
+	ratesSourcesByBaseCurrency: Collection<RatesSources> & Hidden = new Collection<RatesSources>(this);
 	
-	@OneToMany({ entity: () => PriceTypes, mappedBy: 'displayCurrency' })
-	priceTypesByDisplayCurrency = new Collection<PriceTypes>(this);
+	@OneToMany({ entity: () => PriceTypes, mappedBy: 'displayCurrency', hidden: true })
+	priceTypesByDisplayCurrency: Collection<PriceTypes> & Hidden = new Collection<PriceTypes>(this);
 	
-	@OneToMany({ entity: () => PriceTypes, mappedBy: 'baseCurrency' })
-	priceTypesByBaseCurrency = new Collection<PriceTypes>(this);
+	@OneToMany({ entity: () => PriceTypes, mappedBy: 'baseCurrency', hidden: true })
+	priceTypesByBaseCurrency: Collection<PriceTypes> & Hidden = new Collection<PriceTypes>(this);
 	
 	// gen - end
 }

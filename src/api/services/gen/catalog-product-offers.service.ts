@@ -46,6 +46,13 @@ export class GenCatalogProductOffersService {
 	async transactional(cb){ return await this.em.fork().transactional(cb); }
 	
 	
+	findById(id: bigint, emt: EntityManager = null) {
+		const em = this.getEm(emt);
+		return em.findOne(CatalogProductOffers, {
+			id: id
+		});
+	}
+	
 	findByCatalogAndArticle(catalog: number, article: string, emt: EntityManager = null) {
 		const em = this.getEm(emt);
 		return em.findOne(CatalogProductOffers, {
@@ -53,10 +60,10 @@ export class GenCatalogProductOffersService {
 		});
 	}
 	
-	findById(id: bigint, emt: EntityManager = null) {
+	findByProductAndArticle(product: bigint, article: string, emt: EntityManager = null) {
 		const em = this.getEm(emt);
 		return em.findOne(CatalogProductOffers, {
-			id: id
+			product: product, article: article
 		});
 	}
 	

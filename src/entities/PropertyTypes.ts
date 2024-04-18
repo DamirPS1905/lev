@@ -1,7 +1,7 @@
 import { CatalogProperties } from './CatalogProperties';
 import { Catalogs } from './Catalogs';
 import { PropertyValues } from './PropertyValues';
-import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property, Unique, type Hidden } from '@mikro-orm/core';
 
 @Entity()
 @Unique({ name: 'property_types_common_title_uind', expression: 'CREATE UNIQUE INDEX property_types_common_title_uind ON public.property_types USING btree (title) WHERE (catalog IS NULL)' })
@@ -22,11 +22,11 @@ export class PropertyTypes {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => CatalogProperties, mappedBy: 'type' })
-	catalogPropertiesByType = new Collection<CatalogProperties>(this);
+	@OneToMany({ entity: () => CatalogProperties, mappedBy: 'type', hidden: true })
+	catalogPropertiesByType: Collection<CatalogProperties> & Hidden = new Collection<CatalogProperties>(this);
 	
-	@OneToMany({ entity: () => PropertyValues, mappedBy: 'type' })
-	propertyValuesByType = new Collection<PropertyValues>(this);
+	@OneToMany({ entity: () => PropertyValues, mappedBy: 'type', hidden: true })
+	propertyValuesByType: Collection<PropertyValues> & Hidden = new Collection<PropertyValues>(this);
 	
 	// gen - end
 }
