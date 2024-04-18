@@ -128,6 +128,9 @@ export class AmountsController{
 				if(sourceUnit===null || (sourceUnit.company!==null && sourceUnit.company.id!==actor.company.id)){
 					throw new HttpException('Unit not found', HttpStatus.NOT_FOUND);
 				}
+				if(sourceUnit.group.id!==unit.group.id){
+					throw new HttpException('Unit belongs to wrong units group', HttpStatus.CONFLICT);
+				}
 				updateDto.amount = this.propertyTypesService.convertValue(sourceUnit, offerIns.product.accountingUnit, parseFloat(dto.amount)).toString(); 
 			}
 		}
