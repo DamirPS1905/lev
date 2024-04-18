@@ -243,6 +243,7 @@
         "catalog_products": {
             "def": "catDef",
             "apiPathName": "products",
+            "extraServices": "catalog_product_offers",
             "fields": {
                 "id": {
                     "def": "id",

@@ -12,6 +12,7 @@ import { CreateCatalogProductDto } from './../../dtos/create-catalog-product.dto
 import { UpdateCatalogProductDto } from './../../dtos/update-catalog-product.dto';
 import { CatalogBrandCollectionsService } from './../../services/catalog-brand-collections.service';
 import { CatalogBrandsService } from './../../services/catalog-brands.service';
+import { CatalogProductOffersService } from './../../services/catalog-product-offers.service';
 import { CatalogProductsService } from './../../services/catalog-products.service';
 import { CatalogTypesService } from './../../services/catalog-types.service';
 import { CatalogsService } from './../../services/catalogs.service';
@@ -29,6 +30,7 @@ export class GenCatalogProductsController {
 	constructor(
 		protected readonly catalogBrandCollectionsService: CatalogBrandCollectionsService,
 		protected readonly catalogBrandsService: CatalogBrandsService,
+		protected readonly catalogProductOffersService: CatalogProductOffersService,
 		protected readonly catalogProductsService: CatalogProductsService,
 		protected readonly catalogTypesService: CatalogTypesService,
 		protected readonly catalogsService: CatalogsService,
