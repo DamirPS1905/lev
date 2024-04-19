@@ -5,7 +5,7 @@ import { EntityManager, wrap } from '@mikro-orm/postgresql';
 
 @Injectable()
 export class CatalogProductOffersService extends GenCatalogProductOffersService {
-	
+		
 	findNullOfferByProduct(product: bigint, emt: EntityManager = null) {
 		return this.getEm(emt).findOne(CatalogProductOffers, {
 			product: product,

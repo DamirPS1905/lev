@@ -13,7 +13,6 @@ export abstract class MetatypeValuesController<S extends IMetatypeVauesService<n
 		
 	constructor(
 		protected readonly metatype:number,
-		entityName:string,
 		protected readonly catalogMetatypePropertiesService: CatalogMetatypePropertiesService,
 		catalogsService: CatalogsService,
 		optionsPropertyValuesService: OptionsPropertyValuesService,
@@ -21,7 +20,6 @@ export abstract class MetatypeValuesController<S extends IMetatypeVauesService<n
 		valuesService: S,
 	) {
 		super(
-			entityName,
 			catalogsService,
 			optionsPropertyValuesService,
 			propertyTypesService,

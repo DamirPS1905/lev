@@ -28,7 +28,6 @@ export class TypePropertyValuesController extends MetatypeValuesController<TypeP
 	){
 		super(
 			1,
-			"TypePropertyValues",
 			catalogMetatypePropertiesService,
 			catalogsService,
 			optionsPropertyValuesService,

@@ -7,6 +7,15 @@ import { IMetatypeVauesService } from './interface/i-metatype-values.service'
 @Injectable()
 export class CollectionPropertyValuesService extends GenCollectionPropertyValuesService implements IMetatypeVauesService<number> {
 	
+	bindValueToInstance(value: bigint, instance: number, property: number, order: number, emt: EntityManager = null){
+		return this.getEm(emt).upsert(CollectionPropertyValues, {
+			instance: instance,
+			property: property,
+			order: order,
+			value: value,
+		});
+	}
+	
 	findAllByInstanceAndProperty(instance: number, property: number, emt: EntityManager = null) {
 		return this.getEm(emt).find(CollectionPropertyValues, {
 			property: property,

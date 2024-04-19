@@ -29,7 +29,6 @@ export class OfferPropertyValuesController extends AbstractValuesController<bigi
 		protected readonly catalogProductOffersService: CatalogProductOffersService
 	){
 		super(
-			"OfferPropertyValues",
 			catalogsService,
 			optionsPropertyValuesService,
 			propertyTypesService,

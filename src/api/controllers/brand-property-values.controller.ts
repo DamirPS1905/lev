@@ -26,7 +26,6 @@ export class BrandPropertyValuesController extends MetatypeValuesController<Bran
 	){
 		super(
 			2,
-			"BrandPropertyValues",
 			catalogMetatypePropertiesService,
 			catalogsService,
 			optionsPropertyValuesService,

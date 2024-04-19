@@ -29,7 +29,6 @@ export class ProductPropertyValuesController extends AbstractValuesController<bi
 		protected readonly catalogProductsService: CatalogProductsService
 	){
 		super(
-			"ProductPropertyValues",
 			catalogsService,
 			optionsPropertyValuesService,
 			propertyTypesService,

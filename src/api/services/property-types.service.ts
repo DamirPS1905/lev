@@ -6,12 +6,21 @@ import { Units } from './../../entities/Units'
 import { UnitGroups } from './../../entities/UnitGroups'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { PropertyTuningDto } from './../dtos/property-tuning.dto'
+import { FileLoadTasksService } from './file-load-tasks.service'
+import { CreateFileLoadTaskDto } from './../dtos/create-file-load-task.dto'
 
 @Injectable()
 export class PropertyTypesService extends GenPropertyTypesService {
 	
 	private schemesCache = new Map<number, Object>();
 	private processorsCache = new Map<number, Function>();
+	
+	constructor(
+		protected readonly fileLoadTasksService: FileLoadTasksService,
+		protected readonly em: EntityManager,
+	){
+		super(em);
+	}
 	
   //@Cron('* * * * * *')
 	async processPropertyTypes(){
@@ -76,7 +85,6 @@ export class PropertyTypesService extends GenPropertyTypesService {
 				.join(',')+'}';
 		}
 		body += ';';
-		console.log(body);
 		const fn = new Function('o', body);
 		this.processorsCache.set(type, fn);
 		return fn;
@@ -142,7 +150,9 @@ export class PropertyTypesService extends GenPropertyTypesService {
 					result[key+"Unit"] = "integer (id of unit)";
 					break;
 				case 7:
-					result[key] = "string (publically available url)";
+				case 9:
+					result[key] = "string (publically available url with prefix `url:` or base64 encoded raw data with prefix `b64:`)";
+					result[key+'Ext'] = "string (extension of file; necessary for base64 values)"
 					break;
 				case 8:
 					result[key] = "boolean";
@@ -240,6 +250,7 @@ export class PropertyTypesService extends GenPropertyTypesService {
 			case 3:
 			case 4:
 			case 7:
+			case 9:
 				if(typeof val!=="string"){
 					throw new Error('Value field ${key} assumed to be string');
 				}
@@ -247,7 +258,7 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		}
 	}
 	
-	async validateSingleValue(company: number, scheme: any, value: any){
+	async validateSingleValue(company: number, scheme: any, value: any, catalog: number, emt: EntityManager = null){
 		if(!(value instanceof Object)) throw new Error('Value assumed to be an object');
 		for(let key of Object.keys(scheme)){
 			const info = scheme[key];
@@ -262,7 +273,7 @@ export class PropertyTypesService extends GenPropertyTypesService {
 			switch(info.kind){
 				case 5:
 				case 6:
-					const em = this.em.fork(),
+					const em = this.getEm(emt),
 								unitKey = `${key}Unit`;
 					if(!value.hasOwnProperty(unitKey)){
 						if(info.hasOwnProperty('defaultUnit')){
@@ -280,6 +291,40 @@ export class PropertyTypesService extends GenPropertyTypesService {
 					const sourceUnit = await this.getUnit(value[unitKey], company, em),
 								targetUnit = await this.getUnit(info.storageUnit, company, em);
 					value[key+'Index'] = this.convertValue(sourceUnit, targetUnit, value[key]);
+					break;
+				case 7:
+				case 9:
+					const extKey = `${key}Ext`;
+					if(/url:.+/i.test(value[key])){
+						value[key] = await this.fileLoadTasksService
+							.loadUrl(company, 
+								catalog,
+								value[key].substring(4).trim(), 
+								value[extKey],
+								info.kind===9,
+								emt);
+					}else if(/b64:.+/i.test(value[key])){
+						if(!value.hasOwnProperty(extKey)){
+							throw new Error(`Required field ${extKey} not provided`);
+						}
+						if(info.kind===9){
+							value[key] = await this.fileLoadTasksService
+								.store64Image(
+									company,
+									catalog,
+									value[key].substring(4).trim(), 
+									value[extKey]);
+						}else{
+							value[key] = await this.fileLoadTasksService
+								.store64(
+									company,
+									catalog,
+									value[key].substring(4).trim(), 
+									value[extKey]);
+						}
+					}else{
+						throw new Error(`field ${key} has wrong format`);
+					}
 					break;
 			}
 		}

@@ -7,6 +7,15 @@ import { IMetatypeVauesService } from './interface/i-metatype-values.service'
 @Injectable()
 export class OfferPropertyValuesService extends GenOfferPropertyValuesService implements IMetatypeVauesService<bigint> {
 	
+	bindValueToInstance(value: bigint, instance: bigint, property: number, order: number, emt: EntityManager = null){
+		return this.getEm(emt).upsert(OfferPropertyValues, {
+			offer: instance,
+			property: property,
+			order: order,
+			value: value,
+		});
+	}
+	
 	findAllByInstanceAndProperty(offer: bigint, property: number, emt: EntityManager = null) {
 		return this.getEm(emt).find(OfferPropertyValues, {
 			property: property,

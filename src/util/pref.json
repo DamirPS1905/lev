@@ -35,6 +35,12 @@
             "class": "AmountsController"
         }
     ],
+    "imports": [
+        {
+            "from": "@nestjs\/axios",
+            "module": "HttpModule"
+        }
+    ],
     "fieldsDefaults": {
         "def": {
             "dto": true,
@@ -1564,6 +1570,49 @@
                 "symmetric": {
                     "def": "def",
                     "apiDescription": "Является ли взаимоотношение симметричным"
+                }
+            }
+        },
+        "file_load_tasks": {
+            "def": "def",
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": false,
+            "fields": {
+                "id": {
+                    "def": "id",
+                    "unique": true
+                },
+                "url": {
+                    "def": "def"
+                },
+                "processed": {
+                    "def": "def"
+                },
+                "loaded": {
+                    "def": "def"
+                },
+                "error": {
+                    "def": "def"
+                },
+                "as_image": {
+                    "def": "def"
+                },
+                "company": {
+                    "def": "company",
+                    "allFilter": true
+                },
+                "key": {
+                    "def": "def"
+                }
+            }
+        },
+        "newtable": {
+            "def": "def",
+            "fields": {
+                "column1": {
+                    "def": "def"
                 }
             }
         }

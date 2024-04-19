@@ -16,7 +16,6 @@ import { PropertyTypesService } from './../../services/property-types.service'
 export abstract class AbstractValuesController<P, S extends IMetatypeVauesService<P>> {
 		
 	constructor(
-		protected readonly entityName:string,
 		protected readonly catalogsService: CatalogsService,
 		protected readonly optionsPropertyValuesService: OptionsPropertyValuesService,
 		protected readonly propertyTypesService: PropertyTypesService,
@@ -123,23 +122,18 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 		try{
 			const entity = await this.valuesService.findByInstanceAndPropertyAndOrder(instance, propertyIns.id, order, em);
 			let valKey = entity===null? null: entity.value;
-			const val = await this.propertyTypesService.validateSingleValue(company, scheme, value);
 			if(valKey===null){
 				const conn = em.getConnection();
 				valKey = (await conn.execute(`SELECT nextval('property_value_id')::int8 as res`))[0].res;
 			}
+			const val = await this.propertyTypesService.validateSingleValue(company, scheme, value, propertyIns.catalog.id, em);
 			await em.upsert(PropertyValues, {
 				valueKey: valKey,
 				type: propertyIns.type.id,
 				value: val
 			});
 			if(entity===null){
-				await em.upsert(this.entityName, {
-					instance: instance,
-					property: propertyIns.id,
-					order: order,
-					value: valKey,
-				});
+				await this.valuesService.bindValueToInstance(valKey, instance, propertyIns.id, order, em);
 			}
 		}catch(e){
 			console.log(e);
@@ -153,12 +147,7 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 			if(option===null || option.property.id!==propertyIns.id){
 				throw new Error(`Option ${value} not found`);
 			}
-			await em.upsert(this.entityName, {
-				instance: instance,
-				property: propertyIns.id,
-				order: order,
-				value: option.value,
-			});
+			await this.valuesService.bindValueToInstance(value, instance, propertyIns.id, order, em);
 		}catch(e){
 			console.log(e);
 			throw new HttpException(e.message, HttpStatus.CONFLICT);

@@ -746,6 +746,45 @@ ALTER SEQUENCE public.currencies_id_seq OWNED BY public.currencies.id;
 
 
 --
+-- Name: file_load_tasks; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.file_load_tasks (
+    id bigint NOT NULL,
+    url character varying NOT NULL,
+    processed boolean DEFAULT false NOT NULL,
+    loaded boolean DEFAULT false NOT NULL,
+    key character varying NOT NULL,
+    error character varying,
+    as_image boolean NOT NULL,
+    company integer NOT NULL
+);
+
+
+ALTER TABLE public.file_load_tasks OWNER TO dev;
+
+--
+-- Name: file_load_tasks_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.file_load_tasks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.file_load_tasks_id_seq OWNER TO dev;
+
+--
+-- Name: file_load_tasks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
+--
+
+ALTER SEQUENCE public.file_load_tasks_id_seq OWNED BY public.file_load_tasks.id;
+
+
+--
 -- Name: offer_amounts; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -1429,6 +1468,13 @@ ALTER TABLE ONLY public.currencies ALTER COLUMN id SET DEFAULT nextval('public.c
 
 
 --
+-- Name: file_load_tasks id; Type: DEFAULT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.file_load_tasks ALTER COLUMN id SET DEFAULT nextval('public.file_load_tasks_id_seq'::regclass);
+
+
+--
 -- Name: metatypes id; Type: DEFAULT; Schema: public; Owner: dev
 --
 
@@ -1640,6 +1686,7 @@ COPY public.catalog_properties (id, catalog, title, type, multiple, options, sch
 7	1	test bool	2	f	f	{"value": {"kind": 8}}
 4	1	объем	6	f	f	{"value": {"kind": 5, "unitsGroup": 2, "storageUnit": 4}}
 3	1	вес	7	f	f	{"value": {"kind": 6, "unitsGroup": 1, "storageUnit": 1}}
+8	1	image	8	f	f	{"file": {"kind": 9}, "title": {"kind": 3}}
 \.
 
 
@@ -1759,6 +1806,15 @@ COPY public.currencies (id, key, title, symbol, "precision", icon) FROM stdin;
 
 
 --
+-- Data for Name: file_load_tasks; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.file_load_tasks (id, url, processed, loaded, key, error, as_image, company) FROM stdin;
+1	https://static2.bigstockphoto.com/5/2/6/large1500/62597684.jpg	t	t	0-1-1-0-f17f6baff7855f820ddff.jpeg	\N	t	1
+\.
+
+
+--
 -- Data for Name: metatypes; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
@@ -1860,6 +1916,8 @@ COPY public.product_prices (product, price_type, value, currency, last_change, u
 --
 
 COPY public.product_property_values (product, property, "order", value) FROM stdin;
+4	8	0	34
+5	8	0	35
 \.
 
 
@@ -1891,6 +1949,7 @@ COPY public.property_in_types (type, property, scheme) FROM stdin;
 8	6	{"value": {"kind": 3}}
 8	5	{"value": {"kind": 3}}
 9	4	{"value": {"kind": 5, "unitsGroup": 2, "storageUnit": 4}}
+8	8	{"file": {"kind": 9}, "title": {"kind": 3}}
 \.
 
 
@@ -1907,6 +1966,7 @@ COPY public.property_primitives (id, title) FROM stdin;
 6	decimal with unit
 7	file
 8	Boolean
+9	Image
 \.
 
 
@@ -1919,9 +1979,9 @@ COPY public.property_types (id, title, scheme, catalog) FROM stdin;
 7	Decimal with unit	{"value": {"kind":6, "index":true}}	\N
 6	Int with unit	{"value": {"kind":5, "index":true}}	\N
 5	Long text	{"value": {"kind":4, "index":false}}	\N
-8	Image	{"file":{"kind": 7, "index": false}, "title": {"kind":3, "index": false}}	\N
 9	File	{"file":{"kind": 7, "index": false}, "title": {"kind":3, "index": false}}	\N
 2	Boolean	{"value": {"kind":8, "index":true}}	\N
+8	Image	{"file":{"kind": 9, "index": false}, "title": {"kind":3, "index": false}}	\N
 \.
 
 
@@ -1939,6 +1999,8 @@ COPY public.property_values (value_key, type, value) FROM stdin;
 25	1	{"value": "hop"}
 26	1	{"value": "ger"}
 27	2	{"value": true}
+34	8	{"file": "0-1-1-0-ff17f6baff7855f820ddf.png", "title": "yopta", "fileExt": "png"}
+35	8	{"file": "0-1-1-0-f17f6baff7855f820ddff.jpeg", "title": "yopta"}
 \.
 
 
@@ -3243,7 +3305,7 @@ SELECT pg_catalog.setval('public.catalog_products_id_seq', 9, true);
 -- Name: catalog_properties_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.catalog_properties_id_seq', 7, true);
+SELECT pg_catalog.setval('public.catalog_properties_id_seq', 8, true);
 
 
 --
@@ -3265,6 +3327,13 @@ SELECT pg_catalog.setval('public.companies_id_seq', 1, true);
 --
 
 SELECT pg_catalog.setval('public.currencies_id_seq', 69, true);
+
+
+--
+-- Name: file_load_tasks_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.file_load_tasks_id_seq', 1, true);
 
 
 --
@@ -3306,7 +3375,7 @@ SELECT pg_catalog.setval('public.property_types_id_seq', 9, true);
 -- Name: property_value_id; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.property_value_id', 27, true);
+SELECT pg_catalog.setval('public.property_value_id', 35, true);
 
 
 --
@@ -3582,6 +3651,14 @@ ALTER TABLE ONLY public.currencies
 
 ALTER TABLE ONLY public.currencies
     ADD CONSTRAINT currencies_title_uind UNIQUE (title);
+
+
+--
+-- Name: file_load_tasks file_load_tasks_pk; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.file_load_tasks
+    ADD CONSTRAINT file_load_tasks_pk PRIMARY KEY (id);
 
 
 --
@@ -4276,6 +4353,14 @@ ALTER TABLE ONLY public.collection_property_values
 
 ALTER TABLE ONLY public.collection_property_values
     ADD CONSTRAINT collection_property_values_catalog_properties_fk FOREIGN KEY (property) REFERENCES public.catalog_properties(id) ON DELETE CASCADE;
+
+
+--
+-- Name: file_load_tasks file_load_tasks_companies_fk; Type: FK CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.file_load_tasks
+    ADD CONSTRAINT file_load_tasks_companies_fk FOREIGN KEY (company) REFERENCES public.companies(id);
 
 
 --

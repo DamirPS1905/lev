@@ -13,7 +13,7 @@ const config: Options = {
   extensions: [EntityGenerator],
   entities: ['./dist/entities/*.js'], // path to your JS entities (dist), relative to `baseDir`
   entitiesTs: ['./src/entities/*.ts'], // path to your TS entities (source), relative to `baseDir`
-	debug: true
+	//debug: true
 };
 
 export default config;

@@ -1,6 +1,7 @@
 import { Actors } from './Actors';
 import { ApiKeys } from './ApiKeys';
 import { Catalogs } from './Catalogs';
+import { FileLoadTasks } from './FileLoadTasks';
 import { PriceTypes } from './PriceTypes';
 import { Stores } from './Stores';
 import { UnitGroups } from './UnitGroups';
@@ -43,6 +44,9 @@ export class Companies {
 	
 	@OneToMany({ entity: () => PriceTypes, mappedBy: 'company', hidden: true })
 	priceTypesByCompany: Collection<PriceTypes> & Hidden = new Collection<PriceTypes>(this);
+	
+	@OneToMany({ entity: () => FileLoadTasks, mappedBy: 'company', hidden: true })
+	fileLoadTasksByCompany: Collection<FileLoadTasks> & Hidden = new Collection<FileLoadTasks>(this);
 	
 	// gen - end
 }
