@@ -1603,7 +1603,7 @@ COPY public.brand_property_values (instance, property, "order", value) FROM stdi
 --
 
 COPY public.catalog_brand_collections (id, brand, title, image) FROM stdin;
-1	6	ops	\N
+1	6	ops	0-1-1-0-f17f6baff7855f820ddff.jpeg
 \.
 
 
@@ -1612,7 +1612,6 @@ COPY public.catalog_brand_collections (id, brand, title, image) FROM stdin;
 --
 
 COPY public.catalog_brands (id, catalog, title, description, image) FROM stdin;
-6	1	ikea348	\N	\N
 8	1	ikea348   	\N	\N
 9	1	ikea348     	\N	\N
 10	1	ikea348      	\N	\N
@@ -1629,6 +1628,7 @@ COPY public.catalog_brands (id, catalog, title, description, image) FROM stdin;
 21	1	ikehga	\N	\N
 22	1	ikeffhga	\N	\N
 3	1	ikea	iiiiii	\N
+6	1	ikea348	\N	0-1-1-0-8ca73e7863453319fe58d.png
 \.
 
 
@@ -1653,7 +1653,6 @@ COPY public.catalog_metatype_properties (metatype, catalog, property, scheme) FR
 COPY public.catalog_product_offers (id, product, catalog, article, created, image) FROM stdin;
 2	3	1	\N	2024-04-18 00:20:04.525351+03	\N
 1	1	1	FFh	2024-04-11 04:54:35.363165+03	\N
-3	4	1	first...	2024-04-18 00:20:56.432115+03	\N
 5	4	1	second...	2024-04-18 00:46:56.357825+03	\N
 6	4	1	third...	2024-04-18 00:58:32.429522+03	\N
 7	4	1	third..	2024-04-18 01:05:47.822241+03	\N
@@ -1662,6 +1661,7 @@ COPY public.catalog_product_offers (id, product, catalog, article, created, imag
 10	4	1	yyy	2024-04-18 01:20:05.26237+03	\N
 12	5	1	\N	2024-04-18 02:33:06.201808+03	\N
 16	9	1	hhhh	2024-04-19 01:07:19.958374+03	\N
+3	4	1	first...	2024-04-18 00:20:56.432115+03	0-1-1-0-963ba439c67c0fc1978c1.jpg
 \.
 
 
@@ -1673,8 +1673,8 @@ COPY public.catalog_products (id, catalog, type, brand, title, created, collecti
 1	1	9	6	Fucken first	2024-04-10 02:50:17.864553+03	\N	1	1	\N
 3	1	9	6	Single	2024-04-18 00:20:04.525351+03	\N	0	1	\N
 4	1	9	6	two offers	2024-04-18 00:20:56.432115+03	\N	7	1	\N
-5	1	9	6	loos	2024-04-18 01:49:21.271494+03	1	1	1	\N
 9	1	9	6	yopta	2024-04-19 01:07:19.958374+03	1	1	1	\N
+5	1	9	6	loos	2024-04-18 01:49:21.271494+03	1	1	1	0-1-1-0-d091a564f29611fe42300.jpeg
 \.
 
 
@@ -1814,6 +1814,9 @@ COPY public.currencies (id, key, title, symbol, "precision", icon) FROM stdin;
 
 COPY public.file_load_tasks (id, url, processed, loaded, key, error, as_image, company) FROM stdin;
 1	https://static2.bigstockphoto.com/5/2/6/large1500/62597684.jpg	t	t	0-1-1-0-f17f6baff7855f820ddff.jpeg	\N	t	1
+2	//static2.bigstockphoto.com/5/2/6/large1500/62597684.jpg	t	f	0-1-1-0-b6c8b211bcb583a7fe818.https	-3007: ENOTFOUND	t	1
+3	https://static2.bigstockphoto.com/5/2/6/large1500/62597684.jpg	t	t	0-1-1-0-d091a564f29611fe42300.jpeg	-3007: ENOTFOUND	t	1
+4	https://static2.bigstockphoto.com/5/2/6/large1500/62597684.jpg	t	f	0-1-1-0-963ba439c67c0fc1978c1.jpg	-3007: ENOTFOUND	t	1
 \.
 
 
@@ -3336,7 +3339,7 @@ SELECT pg_catalog.setval('public.currencies_id_seq', 69, true);
 -- Name: file_load_tasks_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.file_load_tasks_id_seq', 1, true);
+SELECT pg_catalog.setval('public.file_load_tasks_id_seq', 4, true);
 
 
 --

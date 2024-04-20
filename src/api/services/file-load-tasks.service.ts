@@ -76,7 +76,7 @@ export class FileLoadTasksService extends GenFileLoadTasksService {
 					if(list.length===3){
 						return await this.loadUrl(company, catalog, list[2].trim(), list[1].trim(), asImage, emt);
 					}else if(list.length===2){
-						return await this.loadUrl(company, catalog, list[1].trim(), undefined, asImage, emt);
+						throw new Error('Extension is missed (correct format: `url:[extension, can be missed]:[base-64 encoded content]`)')
 					}
 				 	break;
 				case 'b64':
@@ -124,7 +124,7 @@ export class FileLoadTasksService extends GenFileLoadTasksService {
 		
 	async store64(company: number, catalog: number, data: string, ext: string, asImage: boolean){
 		const key = this.newKey(company, catalog, ext);
-		await this.writeBuffer(Buffer.from(data, "base64"),`./images/${key}`, asImage);
+		await this.writeBuffer(Buffer.from(data, "base64"), key, asImage);
 		return key;
 	}
 		

@@ -243,7 +243,7 @@
                 },
                 "image": {
                     "def": "def",
-                    "apiDescription": "Изображение бренда; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url:[publically available url]`)"
+                    "apiDescription": "Изображение бренда; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url::[publically available url]`)"
                 }
             }
         },
@@ -310,7 +310,7 @@
                 },
                 "image": {
                     "def": "def",
-                    "apiDescription": "Изображение товара; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url:[publically available url]`)"
+                    "apiDescription": "Изображение товара; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url::[publically available url]`)"
                 }
             }
         },
@@ -348,7 +348,7 @@
                 },
                 "image": {
                     "def": "def",
-                    "apiDescription": "Изображение товарного предложения; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url:[publically available url]`)"
+                    "apiDescription": "Изображение товарного предложения; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url::[publically available url]`)"
                 }
             },
             "extraRouteParams": [
@@ -1429,7 +1429,7 @@
                 },
                 "image": {
                     "def": "def",
-                    "apiDescription": "Изображение коллекции бренда; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url:[publically available url]`)"
+                    "apiDescription": "Изображение коллекции бренда; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url::[publically available url]`)"
                 }
             },
             "extraRouteParams": [

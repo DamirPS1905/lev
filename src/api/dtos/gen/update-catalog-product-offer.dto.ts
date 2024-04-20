@@ -25,7 +25,7 @@ export class GenUpdateCatalogProductOfferDto {
 	created:Date;
 	
 	@IsOptional()
-	@ApiProperty({ required: false, description: 'Изображение товарного предложения; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url:[publically available url]`)' })
+	@ApiProperty({ required: false, description: 'Изображение товарного предложения; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url::[publically available url]`)' })
 	@IsString()
 	@Transform(({ value }: TransformFnParams) => value?.trim())
 	image:string;

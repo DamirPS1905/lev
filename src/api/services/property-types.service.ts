@@ -151,7 +151,7 @@ export class PropertyTypesService extends GenPropertyTypesService {
 					break;
 				case 7:
 				case 9:
-					result[key] = "string (from existed image: `[key]` or from base64 content: `b64:[extension]:[base-64 encoded content]` or from url: `url:[extension]:[publically available url]` or `url:[publically available url]`)";
+					result[key] = "string (from existed image: `[key]` or from base64 content: `b64:[extension]:[base-64 encoded content]` or from url: `url:[extension]:[publically available url]` or `url::[publically available url]`)";
 					break;
 				case 8:
 					result[key] = "boolean";
