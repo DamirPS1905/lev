@@ -8,7 +8,7 @@
  */
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class GenCreateCatalogProductOfferDto {
 	
@@ -25,5 +25,11 @@ export class GenCreateCatalogProductOfferDto {
 	article:string;
 	
 	created:Date;
+	
+	@IsOptional()
+	@ApiProperty({ required: false, description: 'Изображение товарного предложения; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url:[publically available url]`)' })
+	@IsString()
+	@Transform(({ value }: TransformFnParams) => value?.trim())
+	image:string;
 	
 }

@@ -64,6 +64,42 @@ export class FileLoadTasksService extends GenFileLoadTasksService {
 		}
   }
 	
+	async processInput(company: number, catalog: number, value: string, asImage: boolean, emt: EntityManager = null){
+		let list = value.split(':');
+		if(list.length>3){
+			const [a, b, ...c] = list;
+			list = [a, b, c.join(':')];
+		}
+		if(list.length>1){
+			switch(list[0]){
+				case 'url':
+					if(list.length===3){
+						return await this.loadUrl(company, catalog, list[2].trim(), list[1].trim(), asImage, emt);
+					}else if(list.length===2){
+						return await this.loadUrl(company, catalog, list[1].trim(), undefined, asImage, emt);
+					}
+				 	break;
+				case 'b64':
+					if(list.length===3){
+						return await this.store64(company, catalog, list[2].trim(), list[1].trim(), asImage);
+					}else{
+						throw new Error('Extension is missed (correct format: `b64:[extension]:[base-64 encoded content]`)')
+					}
+				 	break;
+			}
+		}else{
+			const parts = value.split('-');
+			if(parts.length===5){
+				const [_, icompany, icatalog] = parts;
+				if(parseInt(icompany)!==company || parseInt(icatalog)!==catalog){
+					throw new Error('Wrong key')
+				}
+				return value;
+			}
+		}
+		throw new Error('Unknown input format')
+	}
+	
 	private getNotLoaded(limit: number, emt: EntityManager = null){
 		return this.getEm(emt).find(FileLoadTasks, {
 			processed: false
@@ -86,18 +122,12 @@ export class FileLoadTasksService extends GenFileLoadTasksService {
 		return key;
 	}
 		
-	async store64(company: number, catalog: number, data: string, ext: string){
+	async store64(company: number, catalog: number, data: string, ext: string, asImage: boolean){
 		const key = this.newKey(company, catalog, ext);
-		await this.writeBuffer(Buffer.from(data, "base64"),`./images/${key}`, false);
+		await this.writeBuffer(Buffer.from(data, "base64"),`./images/${key}`, asImage);
 		return key;
 	}
-	
-	async store64Image(company: number, catalog: number, data: string, ext: string){
-		const key = this.newKey(company, catalog, ext);
-		await this.writeBuffer(Buffer.from(data, "base64"), key, true);
-		return key;
-	}
-	
+		
 	private write(im, path){
 		return new Promise((resolve, reject) => {
 	    im.write(path, function(error) {

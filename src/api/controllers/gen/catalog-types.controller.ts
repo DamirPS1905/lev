@@ -13,6 +13,7 @@ import { UpdateCatalogTypeDto } from './../../dtos/update-catalog-type.dto';
 import { CatalogTypesOverloadService } from './../../services/catalog-types-overload.service';
 import { CatalogTypesService } from './../../services/catalog-types.service';
 import { CatalogsService } from './../../services/catalogs.service';
+import { FileLoadTasksService } from './../../services/file-load-tasks.service';
 import { PropertyInTypesService } from './../../services/property-in-types.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
@@ -28,6 +29,7 @@ export class GenCatalogTypesController {
 		protected readonly catalogTypesOverloadService: CatalogTypesOverloadService,
 		protected readonly catalogTypesService: CatalogTypesService,
 		protected readonly catalogsService: CatalogsService,
+		protected readonly fileLoadTasksService: FileLoadTasksService,
 		protected readonly propertyInTypesService: PropertyInTypesService,
 	) { }
 	

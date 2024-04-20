@@ -41,6 +41,9 @@ export class CatalogProducts {
   @ManyToOne({ entity: () => Units, fieldName: 'accounting_unit' })
   accountingUnit!: Units;
 
+  @Property({ nullable: true })
+  image?: string;
+
 	// gen - begin
 	
 	@OneToMany({ entity: () => CatalogProductOffers, mappedBy: 'product', hidden: true })

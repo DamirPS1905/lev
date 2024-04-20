@@ -33,12 +33,24 @@ export class CatalogBrandCollectionsController extends GenCatalogBrandCollection
 		return await super.create(actor, catalog, brand, createDto);
 	}
 	
+	async validateCreate(actor: Actors, catalog: number, brand: number, createDto: CreateCatalogBrandCollectionDto, em: EntityManager){
+		if(createDto.image){
+			createDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, createDto.image, true, em);
+		}
+	}
+	
 	@Patch(':id')
 	@ApiOperation({summary: "Обновление информации о коллекци бренда"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'id', description: 'ID коллекции бренда'})
 	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('brand', ParseIntPipe) brand: number, @Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateCatalogBrandCollectionDto) {
 		return await super.update(actor, catalog, brand, id, updateDto);
+	}
+	
+	async validateUpdate(entity, actor: Actors, catalog: number, brand: number, id: number, updateDto: UpdateCatalogBrandCollectionDto, em: EntityManager){
+		if(updateDto.image){
+			updateDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, updateDto.image, true, em);
+		}
 	}
 	
 	@Delete(':id')

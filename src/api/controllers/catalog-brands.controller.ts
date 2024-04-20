@@ -35,6 +35,12 @@ export class CatalogBrandsController extends GenCatalogBrandsController {
 		return await super.create(apiKey, catalog, createDto);
 	}
 	
+	async validateCreate(actor: Actors, catalog: number, createDto: CreateCatalogBrandDto, em: EntityManager){
+		if(createDto.image){
+			createDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, createDto.image, true, em);
+		}
+	}
+	
 	@Patch(':id')
 	@ApiOperation({summary: "Обновление информации об определенном бренде"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
@@ -43,6 +49,12 @@ export class CatalogBrandsController extends GenCatalogBrandsController {
 		return await super.update(apiKey, catalog, id, updateDto);
 	}
 	
+	async validateUpdate(entity, actor: Actors, catalog: number, id: number, updateDto: UpdateCatalogBrandDto, em: EntityManager){
+		if(updateDto.image){
+			updateDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, updateDto.image, true, em);
+		}
+	}
+
 	@Delete(':id')
 	@ApiOperation({summary: "Удаление бренда"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})

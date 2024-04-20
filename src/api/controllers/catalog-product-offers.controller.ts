@@ -10,6 +10,8 @@ import { Body, Controller, DefaultValuePipe, Delete, Get, HttpException, HttpSta
 import { AuthGuard } from '@nestjs/passport'
 import { ParseBigIntPipe } from './../../pipes/parse-bigint.pipe'
 import { ApiHeader, ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger'
+import { refill } from './../../util/utils';
+import { FileLoadTasksService } from './../services/file-load-tasks.service';
 
 @ApiHeader({ name: 'X-API-KEY', required: true, description: 'Ваш идентефикатор апи' })
 @UseGuards(AuthGuard('api-key'))
@@ -21,6 +23,7 @@ export class CatalogProductOffersController{
 		protected readonly catalogProductOffersService: CatalogProductOffersService,
 		protected readonly catalogProductsService: CatalogProductsService,
 		protected readonly catalogsService: CatalogsService,
+		protected readonly fileLoadTasksService: FileLoadTasksService,
 	) { }
 	
 	@Get('all')
@@ -62,13 +65,16 @@ export class CatalogProductOffersController{
 			if(existed0!==null){
 				throw new HttpException('Offer with the same artice already exists in catalog', HttpStatus.CONFLICT);
 			}
+			if(createDto.image){
+				createDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, createDto.image, true, em);
+			}
 			if(productIns.offersCount===0){
 				const nullOffer = await this.catalogProductOffersService.findNullOfferByProduct(product, em);
-				return await this.catalogProductOffersService.update(nullOffer, {
+				return await this.catalogProductOffersService.update(nullOffer, refill(UpdateCatalogProductOfferDto, {
 					article: createDto.article,
-					product: product,
-					created: new Date()
-				}, em);
+					created: new Date(),
+					image: createDto.image
+				}), em);
 			}
 			return await this.catalogProductOffersService.create(createDto, em);
 		});
@@ -97,6 +103,9 @@ export class CatalogProductOffersController{
 					throw new HttpException('Offer with the same artice already exists in catalog', HttpStatus.CONFLICT);
 				}
 			}
+			if(updateDto.image){
+				updateDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, updateDto.image, true, em);
+			}
 			return await this.catalogProductOffersService.update(entity, updateDto, em);
 		});
 	}
@@ -116,12 +125,11 @@ export class CatalogProductOffersController{
 			await wrap(entity.product).init();
 			if(entity.product.offersCount===1){
 				await this.catalogProductOffersService.remove(entity, em);
-				await this.catalogProductOffersService.create({
+				await this.catalogProductOffersService.create(refill(CreateCatalogProductOfferDto, {
 					article: null,
 					product: product,
-					catalog: catalog,
-					created: undefined
-				}, em);
+					catalog: catalog
+				}), em);
 			}else{
 				await this.catalogProductOffersService.remove(entity, em);
 			}

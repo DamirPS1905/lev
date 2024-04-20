@@ -188,7 +188,7 @@
         "catalog_types": {
             "def": "catDef",
             "apiPathName": "type",
-            "extraServices": "catalog_types_overload, property_in_types",
+            "extraServices": "file_load_tasks, catalog_types_overload, property_in_types",
             "fields": {
                 "id": {
                     "def": "id",
@@ -224,6 +224,7 @@
         "catalog_brands": {
             "def": "catDef",
             "apiPathName": "brand",
+            "extraServices": "file_load_tasks",
             "fields": {
                 "id": {
                     "def": "id",
@@ -240,16 +241,16 @@
                     "def": "def",
                     "apiDescription": "Описание бренда"
                 },
-                "logo": {
+                "image": {
                     "def": "def",
-                    "apiDescription": "Изображение бренда"
+                    "apiDescription": "Изображение бренда; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url:[publically available url]`)"
                 }
             }
         },
         "catalog_products": {
             "def": "catDef",
             "apiPathName": "products",
-            "extraServices": "catalog_product_offers",
+            "extraServices": "file_load_tasks, catalog_product_offers",
             "fields": {
                 "id": {
                     "def": "id",
@@ -306,6 +307,10 @@
                         "eCode": "NOT_FOUND",
                         "eMessage": "Unit not found"
                     }
+                },
+                "image": {
+                    "def": "def",
+                    "apiDescription": "Изображение товара; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url:[publically available url]`)"
                 }
             }
         },
@@ -315,6 +320,7 @@
             "apiPathName": "offer",
             "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog\/product\/:product",
+            "extraServices": "file_load_tasks",
             "fields": {
                 "id": {
                     "def": "id",
@@ -339,6 +345,10 @@
                 "created": {
                     "def": "def",
                     "dtoDisallow": true
+                },
+                "image": {
+                    "def": "def",
+                    "apiDescription": "Изображение товарного предложения; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url:[publically available url]`)"
                 }
             },
             "extraRouteParams": [
@@ -1399,6 +1409,7 @@
             "apiPathName": "collection",
             "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog\/brand\/:brand",
+            "extraServices": "file_load_tasks",
             "fields": {
                 "id": {
                     "def": "id",
@@ -1415,6 +1426,10 @@
                 "title": {
                     "def": "title",
                     "apiDescription": "Наименование коллекции бренда; должно быть уникально для бренда"
+                },
+                "image": {
+                    "def": "def",
+                    "apiDescription": "Изображение коллекции бренда; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url:[publically available url]`)"
                 }
             },
             "extraRouteParams": [
@@ -1604,14 +1619,6 @@
                     "allFilter": true
                 },
                 "key": {
-                    "def": "def"
-                }
-            }
-        },
-        "newtable": {
-            "def": "def",
-            "fields": {
-                "column1": {
                     "def": "def"
                 }
             }

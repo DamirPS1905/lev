@@ -8,7 +8,7 @@
  */
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class GenCreateCatalogBrandCollectionDto {
 	
@@ -21,5 +21,11 @@ export class GenCreateCatalogBrandCollectionDto {
 	@MinLength(1)
 	@MaxLength(255)
 	title:string;
+	
+	@IsOptional()
+	@ApiProperty({ required: false, description: 'Изображение коллекции бренда; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url:[publically available url]`)' })
+	@IsString()
+	@Transform(({ value }: TransformFnParams) => value?.trim())
+	image:string;
 	
 }

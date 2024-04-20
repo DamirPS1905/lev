@@ -42,4 +42,10 @@ export class GenCreateCatalogProductDto {
 	@IsInt()
 	accountingUnit:number;
 	
+	@IsOptional()
+	@ApiProperty({ required: false, description: 'Изображение товара; передается в формате трансфера изображений (`[key]` или `b64:[extension]:[base-64 encoded content]` или `url:[extension]:[publically available url]` или `url:[publically available url]`)' })
+	@IsString()
+	@Transform(({ value }: TransformFnParams) => value?.trim())
+	image:string;
+	
 }

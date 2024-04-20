@@ -66,6 +66,9 @@ export class CatalogProductsController extends GenCatalogProductsController {
 			if(accountingUnitIns===null || !(accountingUnitIns.company===null || accountingUnitIns.company.id===actor.company.id)){
 				throw new HttpException('Unit not found', HttpStatus.NOT_FOUND);
 			}
+			if(createDto.image){
+				createDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, createDto.image, true, em);
+			}
 			const createProductDto = refill(CreateCatalogProductDto, createDto, ['article']);
 			const product = await this.catalogProductsService.create(createProductDto, em);
 			if(createDto.hasOwnProperty('article')){
@@ -122,6 +125,9 @@ export class CatalogProductsController extends GenCatalogProductsController {
 				if(existed!==null && (entity.id!==existed.id)){
 					throw new HttpException('Duplicate (catalog, title)', HttpStatus.CONFLICT);
 				}
+			}
+			if(updateDto.image){
+				updateDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, updateDto.image, true, em);
 			}
 			const updateProductDto = refill(UpdateCatalogProductDto, updateDto, ['article']);
 			const product = await this.catalogProductsService.update(entity, updateProductDto, em);

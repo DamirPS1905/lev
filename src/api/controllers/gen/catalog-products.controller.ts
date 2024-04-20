@@ -16,6 +16,7 @@ import { CatalogProductOffersService } from './../../services/catalog-product-of
 import { CatalogProductsService } from './../../services/catalog-products.service';
 import { CatalogTypesService } from './../../services/catalog-types.service';
 import { CatalogsService } from './../../services/catalogs.service';
+import { FileLoadTasksService } from './../../services/file-load-tasks.service';
 import { UnitsService } from './../../services/units.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
@@ -34,6 +35,7 @@ export class GenCatalogProductsController {
 		protected readonly catalogProductsService: CatalogProductsService,
 		protected readonly catalogTypesService: CatalogTypesService,
 		protected readonly catalogsService: CatalogsService,
+		protected readonly fileLoadTasksService: FileLoadTasksService,
 		protected readonly unitsService: UnitsService,
 	) { }
 	

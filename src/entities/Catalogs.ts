@@ -26,17 +26,17 @@ export class Catalogs {
 	@OneToMany({ entity: () => CatalogTypes, mappedBy: 'catalog', hidden: true })
 	catalogTypesByCatalog: Collection<CatalogTypes> & Hidden = new Collection<CatalogTypes>(this);
 	
-	@OneToMany({ entity: () => CatalogProductOffers, mappedBy: 'catalog', hidden: true })
-	catalogProductOffersByCatalog: Collection<CatalogProductOffers> & Hidden = new Collection<CatalogProductOffers>(this);
+	@OneToMany({ entity: () => CatalogBrands, mappedBy: 'catalog', hidden: true })
+	catalogBrandsByCatalog: Collection<CatalogBrands> & Hidden = new Collection<CatalogBrands>(this);
 	
 	@OneToMany({ entity: () => PropertyTypes, mappedBy: 'catalog', hidden: true })
 	propertyTypesByCatalog: Collection<PropertyTypes> & Hidden = new Collection<PropertyTypes>(this);
 	
-	@OneToMany({ entity: () => CatalogBrands, mappedBy: 'catalog', hidden: true })
-	catalogBrandsByCatalog: Collection<CatalogBrands> & Hidden = new Collection<CatalogBrands>(this);
-	
 	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'catalog', hidden: true })
 	catalogProductsByCatalog: Collection<CatalogProducts> & Hidden = new Collection<CatalogProducts>(this);
+	
+	@OneToMany({ entity: () => CatalogProductOffers, mappedBy: 'catalog', hidden: true })
+	catalogProductOffersByCatalog: Collection<CatalogProductOffers> & Hidden = new Collection<CatalogProductOffers>(this);
 	
 	@OneToMany({ entity: () => CatalogProperties, mappedBy: 'catalog', hidden: true })
 	catalogPropertiesByCatalog: Collection<CatalogProperties> & Hidden = new Collection<CatalogProperties>(this);

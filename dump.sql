@@ -383,7 +383,8 @@ ALTER SEQUENCE public.brands_id_seq OWNED BY public.catalog_types.id;
 CREATE TABLE public.catalog_brand_collections (
     id integer NOT NULL,
     brand integer NOT NULL,
-    title character varying NOT NULL
+    title character varying NOT NULL,
+    image character varying
 );
 
 
@@ -420,7 +421,7 @@ CREATE TABLE public.catalog_brands (
     catalog integer NOT NULL,
     title character varying NOT NULL,
     description text,
-    logo json
+    image character varying
 );
 
 
@@ -505,7 +506,8 @@ CREATE TABLE public.catalog_product_offers (
     product bigint NOT NULL,
     catalog integer NOT NULL,
     article character varying,
-    created timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    created timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    image character varying
 );
 
 
@@ -545,7 +547,8 @@ CREATE TABLE public.catalog_products (
     created timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     collection integer,
     offers_count smallint DEFAULT 0 NOT NULL,
-    accounting_unit integer NOT NULL
+    accounting_unit integer NOT NULL,
+    image character varying
 );
 
 
@@ -1599,8 +1602,8 @@ COPY public.brand_property_values (instance, property, "order", value) FROM stdi
 -- Data for Name: catalog_brand_collections; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.catalog_brand_collections (id, brand, title) FROM stdin;
-1	6	ops
+COPY public.catalog_brand_collections (id, brand, title, image) FROM stdin;
+1	6	ops	\N
 \.
 
 
@@ -1608,7 +1611,7 @@ COPY public.catalog_brand_collections (id, brand, title) FROM stdin;
 -- Data for Name: catalog_brands; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.catalog_brands (id, catalog, title, description, logo) FROM stdin;
+COPY public.catalog_brands (id, catalog, title, description, image) FROM stdin;
 6	1	ikea348	\N	\N
 8	1	ikea348   	\N	\N
 9	1	ikea348     	\N	\N
@@ -1625,7 +1628,7 @@ COPY public.catalog_brands (id, catalog, title, description, logo) FROM stdin;
 20	1	ikega	\N	\N
 21	1	ikehga	\N	\N
 22	1	ikeffhga	\N	\N
-3	1	ikea	iiiiii	{"key":"0-0-0-22b847b1601169d5f9d6f.png","url":"https://logosdownload.com/logo/IKEA-logo-big-logotype.png","status":1}
+3	1	ikea	iiiiii	\N
 \.
 
 
@@ -1647,18 +1650,18 @@ COPY public.catalog_metatype_properties (metatype, catalog, property, scheme) FR
 -- Data for Name: catalog_product_offers; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.catalog_product_offers (id, product, catalog, article, created) FROM stdin;
-2	3	1	\N	2024-04-18 00:20:04.525351+03
-1	1	1	FFh	2024-04-11 04:54:35.363165+03
-3	4	1	first...	2024-04-18 00:20:56.432115+03
-5	4	1	second...	2024-04-18 00:46:56.357825+03
-6	4	1	third...	2024-04-18 00:58:32.429522+03
-7	4	1	third..	2024-04-18 01:05:47.822241+03
-8	4	1	third.	2024-04-18 01:12:11.552872+03
-9	4	1	third	2024-04-18 01:14:51.889892+03
-10	4	1	yyy	2024-04-18 01:20:05.26237+03
-12	5	1	\N	2024-04-18 02:33:06.201808+03
-16	9	1	hhhh	2024-04-19 01:07:19.958374+03
+COPY public.catalog_product_offers (id, product, catalog, article, created, image) FROM stdin;
+2	3	1	\N	2024-04-18 00:20:04.525351+03	\N
+1	1	1	FFh	2024-04-11 04:54:35.363165+03	\N
+3	4	1	first...	2024-04-18 00:20:56.432115+03	\N
+5	4	1	second...	2024-04-18 00:46:56.357825+03	\N
+6	4	1	third...	2024-04-18 00:58:32.429522+03	\N
+7	4	1	third..	2024-04-18 01:05:47.822241+03	\N
+8	4	1	third.	2024-04-18 01:12:11.552872+03	\N
+9	4	1	third	2024-04-18 01:14:51.889892+03	\N
+10	4	1	yyy	2024-04-18 01:20:05.26237+03	\N
+12	5	1	\N	2024-04-18 02:33:06.201808+03	\N
+16	9	1	hhhh	2024-04-19 01:07:19.958374+03	\N
 \.
 
 
@@ -1666,12 +1669,12 @@ COPY public.catalog_product_offers (id, product, catalog, article, created) FROM
 -- Data for Name: catalog_products; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.catalog_products (id, catalog, type, brand, title, created, collection, offers_count, accounting_unit) FROM stdin;
-1	1	9	6	Fucken first	2024-04-10 02:50:17.864553+03	\N	1	1
-3	1	9	6	Single	2024-04-18 00:20:04.525351+03	\N	0	1
-4	1	9	6	two offers	2024-04-18 00:20:56.432115+03	\N	7	1
-5	1	9	6	loos	2024-04-18 01:49:21.271494+03	1	1	1
-9	1	9	6	yopta	2024-04-19 01:07:19.958374+03	1	1	1
+COPY public.catalog_products (id, catalog, type, brand, title, created, collection, offers_count, accounting_unit, image) FROM stdin;
+1	1	9	6	Fucken first	2024-04-10 02:50:17.864553+03	\N	1	1	\N
+3	1	9	6	Single	2024-04-18 00:20:04.525351+03	\N	0	1	\N
+4	1	9	6	two offers	2024-04-18 00:20:56.432115+03	\N	7	1	\N
+5	1	9	6	loos	2024-04-18 01:49:21.271494+03	1	1	1	\N
+9	1	9	6	yopta	2024-04-19 01:07:19.958374+03	1	1	1	\N
 \.
 
 
@@ -3955,6 +3958,13 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pk PRIMARY KEY (id);
+
+
+--
+-- Name: file_load_tasks_processed_ind; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE INDEX file_load_tasks_processed_ind ON public.file_load_tasks USING btree (processed DESC);
 
 
 --

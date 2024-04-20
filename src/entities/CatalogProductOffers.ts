@@ -27,6 +27,9 @@ export class CatalogProductOffers {
   @Property({ type: 'Date', length: 6, defaultRaw: `CURRENT_TIMESTAMP` })
   created!: Date & Opt;
 
+  @Property({ nullable: true })
+  image?: string;
+
   @ManyToMany({ entity: () => Stores, pivotTable: 'offer_amounts', pivotEntity: () => OfferAmounts, joinColumn: 'offer', inverseJoinColumn: 'store', hidden: true })
   offerAmounts: Collection<Stores> & Hidden = new Collection<Stores>(this);
 

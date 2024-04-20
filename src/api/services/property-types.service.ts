@@ -151,8 +151,7 @@ export class PropertyTypesService extends GenPropertyTypesService {
 					break;
 				case 7:
 				case 9:
-					result[key] = "string (publically available url with prefix `url:` or base64 encoded raw data with prefix `b64:`)";
-					result[key+'Ext'] = "string (extension of file; necessary for base64 values)"
+					result[key] = "string (from existed image: `[key]` or from base64 content: `b64:[extension]:[base-64 encoded content]` or from url: `url:[extension]:[publically available url]` or `url:[publically available url]`)";
 					break;
 				case 8:
 					result[key] = "boolean";
@@ -294,37 +293,8 @@ export class PropertyTypesService extends GenPropertyTypesService {
 					break;
 				case 7:
 				case 9:
-					const extKey = `${key}Ext`;
-					if(/url:.+/i.test(value[key])){
-						value[key] = await this.fileLoadTasksService
-							.loadUrl(company, 
-								catalog,
-								value[key].substring(4).trim(), 
-								value[extKey],
-								info.kind===9,
-								emt);
-					}else if(/b64:.+/i.test(value[key])){
-						if(!value.hasOwnProperty(extKey)){
-							throw new Error(`Required field ${extKey} not provided`);
-						}
-						if(info.kind===9){
-							value[key] = await this.fileLoadTasksService
-								.store64Image(
-									company,
-									catalog,
-									value[key].substring(4).trim(), 
-									value[extKey]);
-						}else{
-							value[key] = await this.fileLoadTasksService
-								.store64(
-									company,
-									catalog,
-									value[key].substring(4).trim(), 
-									value[extKey]);
-						}
-					}else{
-						throw new Error(`field ${key} has wrong format`);
-					}
+					value[key] = this.fileLoadTasksService
+						.processInput(company, catalog, value[key], info.kind===9, emt);
 					break;
 			}
 		}

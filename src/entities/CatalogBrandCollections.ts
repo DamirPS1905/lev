@@ -15,6 +15,9 @@ export class CatalogBrandCollections {
   @Property()
   title!: string;
 
+  @Property({ nullable: true })
+  image?: string;
+
 	// gen - begin
 	
 	@OneToMany({ entity: () => CatalogProducts, mappedBy: 'collection', hidden: true })

@@ -13,6 +13,7 @@ import { UpdateCatalogBrandCollectionDto } from './../../dtos/update-catalog-bra
 import { CatalogBrandCollectionsService } from './../../services/catalog-brand-collections.service';
 import { CatalogBrandsService } from './../../services/catalog-brands.service';
 import { CatalogsService } from './../../services/catalogs.service';
+import { FileLoadTasksService } from './../../services/file-load-tasks.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -27,6 +28,7 @@ export class GenCatalogBrandCollectionsController {
 		protected readonly catalogBrandCollectionsService: CatalogBrandCollectionsService,
 		protected readonly catalogBrandsService: CatalogBrandsService,
 		protected readonly catalogsService: CatalogsService,
+		protected readonly fileLoadTasksService: FileLoadTasksService,
 	) { }
 	
 	async findAll(actor: Actors, catalog: number, brand: number) {
