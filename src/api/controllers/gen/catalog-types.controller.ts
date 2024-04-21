@@ -15,6 +15,7 @@ import { CatalogTypesService } from './../../services/catalog-types.service';
 import { CatalogsService } from './../../services/catalogs.service';
 import { FileLoadTasksService } from './../../services/file-load-tasks.service';
 import { PropertyInTypesService } from './../../services/property-in-types.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -65,7 +66,7 @@ export class GenCatalogTypesController {
 		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.catalogTypesService.transactional(async (em) => {
+		return await this.catalogTypesService.transactional(async (em, fm) => {
 			const existed1 = await this.catalogTypesService.findByTitleAndParent(createDto.title, createDto.parent, em);
 			if(existed1!==null){
 				throw new HttpException('Duplicate (title, parent)', HttpStatus.CONFLICT);
@@ -80,19 +81,22 @@ export class GenCatalogTypesController {
 					}
 				}
 			}
-			await this.validateCreate(actor, catalog, createDto, em);
-			return await this.catalogTypesService.create(createDto, em);
+			await this.validateCreate(actor, catalog, createDto, em, fm);
+			const result = await this.catalogTypesService.create(createDto, em);
+			await this.afterCreate(result, actor, catalog, createDto, em, fm);
+			return result;
 		});
 	}
 	
-	async validateCreate(actor: Actors, catalog: number, createDto: CreateCatalogTypeDto, em: EntityManager) { }
+	async validateCreate(actor: Actors, catalog: number, createDto: CreateCatalogTypeDto, em: EntityManager, fm: FsPatch) { }
+	async afterCreate(entity, actor: Actors, catalog: number, createDto: CreateCatalogTypeDto, em: EntityManager, fm: FsPatch) { }
 	
 	async update(actor: Actors, catalog: number, id: number, updateDto: UpdateCatalogTypeDto) {
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.catalogTypesService.transactional(async (em) => {
+		return await this.catalogTypesService.transactional(async (em, fm) => {
 			const entity = await this.catalogTypesService.findById(id, em);
 			if(updateDto.parent!==null){
 				if(updateDto.parent!==undefined){
@@ -113,28 +117,31 @@ export class GenCatalogTypesController {
 					throw new HttpException('Duplicate (title, parent)', HttpStatus.CONFLICT);
 				}
 			}
-			await this.validateUpdate(entity, actor, catalog, id, updateDto, em);
+			await this.validateUpdate(entity, actor, catalog, id, updateDto, em, fm);
 			return await this.catalogTypesService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, actor: Actors, catalog: number, id: number, updateDto: UpdateCatalogTypeDto, em: EntityManager) { }
+	async validateUpdate(entity, actor: Actors, catalog: number, id: number, updateDto: UpdateCatalogTypeDto, em: EntityManager, fm: FsPatch) { }
+	async afterUpdate(entity, actor: Actors, catalog: number, id: number, updateDto: UpdateCatalogTypeDto, em: EntityManager, fm: FsPatch) { }
 	
 	async delete(actor: Actors, catalog: number, id: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.catalogTypesService.transactional(async (em) => {
+		return await this.catalogTypesService.transactional(async (em, fm) => {
 			const entity = await this.catalogTypesService.findById(id, em);
 			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, actor, catalog, id, em);
-			return await this.catalogTypesService.remove(entity, em);
+			await this.validateDelete(entity, actor, catalog, id, em, fm);
+			await this.catalogTypesService.remove(entity, em);
+			await this.afterDelete(entity, actor, catalog, id, em, fm);
 		});
 	}
 	
-	async validateDelete(entity, actor: Actors, catalog: number, id: number, em: EntityManager) { }
+	async validateDelete(entity, actor: Actors, catalog: number, id: number, em: EntityManager, fm: FsPatch) { }
+	async afterDelete(entity, actor: Actors, catalog: number, id: number, em: EntityManager, fm: FsPatch) { }
 	
 }

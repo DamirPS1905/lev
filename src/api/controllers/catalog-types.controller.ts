@@ -8,6 +8,7 @@ import { EntityManager } from '@mikro-orm/postgresql'
 import { Body, Delete, Get, Param, ParseIntPipe, Patch, Post, HttpException, HttpStatus } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiOperation, ApiParam } from '@nestjs/swagger'
+import { FsPatch } from './../services/special/files.service';
 
 export class CatalogTypesController extends GenCatalogTypesController {
 	
@@ -36,7 +37,7 @@ export class CatalogTypesController extends GenCatalogTypesController {
 		return await super.create(actor, catalog, createDto);
 	}
 	
-	async validateCreate(actor: Actors, catalog: number, createDto: CreateCatalogTypeDto, em: EntityManager) {
+	async validateCreate(actor: Actors, catalog: number, createDto: CreateCatalogTypeDto, em: EntityManager, fm: FsPatch) {
 	  const parentType = await this.catalogTypesService.findById(createDto.parent);
 	  if(parentType===null || parentType.catalog.id!==catalog){
 			throw new HttpException("Parent type not found", HttpStatus.NOT_FOUND);
@@ -53,7 +54,7 @@ export class CatalogTypesController extends GenCatalogTypesController {
 		return await super.update(actor, catalog, id, updateDto);
 	}
 	
-	async validateUpdate(entity, actor: Actors, catalog: number, id: number, updateDto: UpdateCatalogTypeDto, em: EntityManager) {
+	async validateUpdate(entity, actor: Actors, catalog: number, id: number, updateDto: UpdateCatalogTypeDto, em: EntityManager, fm: FsPatch){
 		let parent = updateDto.parent;
 	  if(parent!==undefined && entity.parent.id!==parent){
 		  const parentType = await this.catalogTypesService.findById(parent);

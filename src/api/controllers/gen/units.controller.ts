@@ -10,6 +10,7 @@ import { AuthInfo } from './../../../decorators/auth.decorator';
 import { Actors } from './../../../entities/Actors';
 import { CreateUnitDto } from './../../dtos/create-unit.dto';
 import { UpdateUnitDto } from './../../dtos/update-unit.dto';
+import { FsPatch } from './../../services/special/files.service';
 import { UnitGroupsService } from './../../services/unit-groups.service';
 import { UnitsService } from './../../services/units.service';
 import { EntityManager } from '@mikro-orm/postgresql';
@@ -57,46 +58,52 @@ export class GenUnitsController {
 		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===actor.company.id)){
 			throw new HttpException('Units group not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.unitsService.transactional(async (em) => {
-			await this.validateCreate(actor, group, createDto, em);
-			return await this.unitsService.create(createDto, em);
+		return await this.unitsService.transactional(async (em, fm) => {
+			await this.validateCreate(actor, group, createDto, em, fm);
+			const result = await this.unitsService.create(createDto, em);
+			await this.afterCreate(result, actor, group, createDto, em, fm);
+			return result;
 		});
 	}
 	
-	async validateCreate(actor: Actors, group: number, createDto: CreateUnitDto, em: EntityManager) { }
+	async validateCreate(actor: Actors, group: number, createDto: CreateUnitDto, em: EntityManager, fm: FsPatch) { }
+	async afterCreate(entity, actor: Actors, group: number, createDto: CreateUnitDto, em: EntityManager, fm: FsPatch) { }
 	
 	async update(actor: Actors, group: number, id: number, updateDto: UpdateUnitDto) {
 		const groupIns = await this.unitGroupsService.findById(group);
 		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===actor.company.id)){
 			throw new HttpException('Units group not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.unitsService.transactional(async (em) => {
+		return await this.unitsService.transactional(async (em, fm) => {
 			const entity = await this.unitsService.findById(id, em);
 			if(entity===null || !(entity.company!==null && entity.company.id===actor.company.id) || !(entity.group.id===group)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateUpdate(entity, actor, group, id, updateDto, em);
+			await this.validateUpdate(entity, actor, group, id, updateDto, em, fm);
 			return await this.unitsService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, actor: Actors, group: number, id: number, updateDto: UpdateUnitDto, em: EntityManager) { }
+	async validateUpdate(entity, actor: Actors, group: number, id: number, updateDto: UpdateUnitDto, em: EntityManager, fm: FsPatch) { }
+	async afterUpdate(entity, actor: Actors, group: number, id: number, updateDto: UpdateUnitDto, em: EntityManager, fm: FsPatch) { }
 	
 	async delete(actor: Actors, group: number, id: number) {
 		const groupIns = await this.unitGroupsService.findById(group);
 		if(groupIns===null || !(groupIns.company===null || groupIns.company.id===actor.company.id)){
 			throw new HttpException('Units group not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.unitsService.transactional(async (em) => {
+		return await this.unitsService.transactional(async (em, fm) => {
 			const entity = await this.unitsService.findById(id, em);
 			if(entity===null || !(entity.company!==null && entity.company.id===actor.company.id) || !(entity.group.id===group)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, actor, group, id, em);
-			return await this.unitsService.remove(entity, em);
+			await this.validateDelete(entity, actor, group, id, em, fm);
+			await this.unitsService.remove(entity, em);
+			await this.afterDelete(entity, actor, group, id, em, fm);
 		});
 	}
 	
-	async validateDelete(entity, actor: Actors, group: number, id: number, em: EntityManager) { }
+	async validateDelete(entity, actor: Actors, group: number, id: number, em: EntityManager, fm: FsPatch) { }
+	async afterDelete(entity, actor: Actors, group: number, id: number, em: EntityManager, fm: FsPatch) { }
 	
 }

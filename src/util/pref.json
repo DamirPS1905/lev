@@ -2,20 +2,22 @@
     "singleModule": true,
     "singleModulePath": "api\/exchange-api.module",
     "singleModuleClass": "ExchangeApi",
-    "dbServicesGenPath": "api\/services\/gen\/[a-a:multiName].service",
-    "dtosGenPath": "api\/dtos\/gen\/[a-a:type]-[a-a:singleName].dto",
-    "controllersGenPath": "api\/controllers\/gen\/[a-a:multiName].controller",
     "modulesGenPath": "api\/modules\/gen\/[a-a:multiName].module",
-    "dbServicesPath": "api\/services\/[a-a:multiName].service",
-    "dtosPath": "api\/dtos\/[a-a:type]-[a-a:singleName].dto",
-    "controllersPath": "api\/controllers\/[a-a:multiName].controller",
     "modulesPath": "api\/modules\/[a-a:multiName].module",
-    "entitiesPath": "entities\/[AA:multiName]",
-    "dbServicesClass": "[AA:multiName]Service",
-    "dtosClass": "[AA:type][AA:singleName]Dto",
-    "controllersClass": "[AA:multiName]Controller",
     "modulesClass": "[AA:multiName]Module",
+    "dbServicesGenPath": "api\/services\/gen\/[a-a:multiName].service",
+    "dbServicesPath": "api\/services\/[a-a:multiName].service",
+    "dbServicesClass": "[AA:multiName]Service",
+    "dtosGenPath": "api\/dtos\/gen\/[a-a:type]-[a-a:singleName].dto",
+    "dtosPath": "api\/dtos\/[a-a:type]-[a-a:singleName].dto",
+    "dtosClass": "[AA:type][AA:singleName]Dto",
+    "controllersGenPath": "api\/controllers\/gen\/[a-a:multiName].controller",
+    "controllersPath": "api\/controllers\/[a-a:multiName].controller",
+    "controllersClass": "[AA:multiName]Controller",
+    "entitiesPath": "entities\/[AA:multiName]",
     "entitiesClass": "[AA:multiName]",
+    "enumsPath": "api\/enums\/[a-a:multiName].enum",
+    "enumsClass": "[AA:multiName]Enum",
     "authDecoratorClassPath": "decorators\/auth.decorator",
     "authDecoratorClass": "AuthInfo",
     "authDecoratorVar": "actor",
@@ -723,6 +725,9 @@
                 "title": {
                     "def": "title",
                     "unique": true
+                },
+                "balance": {
+                    "def": "def"
                 }
             }
         },

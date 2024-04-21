@@ -15,6 +15,7 @@ import { CatalogsService } from './../../services/catalogs.service';
 import { OptionsPropertyValuesService } from './../../services/options-property-values.service';
 import { PropertyTypesService } from './../../services/property-types.service';
 import { PropertyValuesService } from './../../services/property-values.service';
+import { FsPatch } from './../../services/special/files.service';
 import { TypePropertyValuesService } from './../../services/type-property-values.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, UseGuards } from '@nestjs/common';

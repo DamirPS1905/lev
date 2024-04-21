@@ -76,8 +76,8 @@ export class OptionsPropertyValuesController {
 	})
 	async create(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Body() createDto: Object | Array<Object>) {
 		const propertyIns = await this.validatePath(actor, catalog, property);
-		return this.optionsPropertyValuesService.transactional(async (em) => {
-			const val = await this.propertyTypesService.validateSingleValue(actor.company.id, propertyIns.scheme, createDto, catalog, em),
+		return this.optionsPropertyValuesService.transactional(async (em, fm) => {
+			const val = await this.propertyTypesService.validateSingleValue(actor.company.id, propertyIns.scheme, createDto, catalog, em, fm),
 						json = JSON.stringify(val, Object.keys(val).sort()),
 						hash = createHash('sha256').update(json).digest('base64');
 			const existed = await this.optionsPropertyValuesService.findByPropertyAndHash(property, hash, em);
@@ -121,8 +121,8 @@ export class OptionsPropertyValuesController {
 	})
 	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('property') property: number, @Param('value', ParseBigIntPipe) value: bigint, @Body() updateDto: Object | Array<Object>) {
 		const propertyIns = await this.validatePath(actor, catalog, property);
-		return this.optionsPropertyValuesService.transactional(async (em) => {
-			const val = await this.propertyTypesService.validateSingleValue(actor.company.id, propertyIns.scheme, updateDto, catalog, em),
+		return this.optionsPropertyValuesService.transactional(async (em, fm) => {
+			const val = await this.propertyTypesService.validateSingleValue(actor.company.id, propertyIns.scheme, updateDto, catalog, em, fm),
 						json = JSON.stringify(val, Object.keys(val).sort()),
 						hash = createHash('sha256').update(json).digest('base64');
 			const entity = await this.optionsPropertyValuesService.findByValue(value, em);

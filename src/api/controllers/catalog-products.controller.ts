@@ -41,7 +41,7 @@ export class CatalogProductsController extends GenCatalogProductsController {
 		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.catalogProductsService.transactional(async (em) => {
+		return await this.catalogProductsService.transactional(async (em, fm) => {
 			const existed0 = await this.catalogProductsService.findByCatalogAndTitle(catalog, createDto.title, em);
 			if(existed0!==null){
 				throw new HttpException('Duplicate (catalog, title)', HttpStatus.CONFLICT);
@@ -67,7 +67,7 @@ export class CatalogProductsController extends GenCatalogProductsController {
 				throw new HttpException('Unit not found', HttpStatus.NOT_FOUND);
 			}
 			if(createDto.image){
-				createDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, createDto.image, true, em);
+				createDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, createDto.image, true, em, fm);
 			}
 			const createProductDto = refill(CreateCatalogProductDto, createDto, ['article']);
 			const product = await this.catalogProductsService.create(createProductDto, em);
@@ -89,7 +89,7 @@ export class CatalogProductsController extends GenCatalogProductsController {
 		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.catalogProductsService.transactional(async (em) => {
+		return await this.catalogProductsService.transactional(async (em, fm) => {
 			const entity = await this.catalogProductsService.findById(id, em);
 			if(updateDto.brand!==undefined){
 				const brandIns = await this.catalogBrandsService.findById(updateDto.brand);
@@ -127,7 +127,7 @@ export class CatalogProductsController extends GenCatalogProductsController {
 				}
 			}
 			if(updateDto.image){
-				updateDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, updateDto.image, true, em);
+				updateDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, updateDto.image, true, em, fm);
 			}
 			const updateProductDto = refill(UpdateCatalogProductDto, updateDto, ['article']);
 			const product = await this.catalogProductsService.update(entity, updateProductDto, em);

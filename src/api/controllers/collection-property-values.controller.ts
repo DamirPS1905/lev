@@ -13,6 +13,7 @@ import { CatalogsService } from './../services/catalogs.service'
 import { OptionsPropertyValuesService } from './../services/options-property-values.service'
 import { PropertyTypesService } from './../services/property-types.service'
 import { CatalogBrandCollectionsService } from './../services/catalog-brand-collections.service'
+import { MetatypesEnum } from './../enums/metatypes.enum'
 
 @ApiTags('Brand collection property values')
 @Controller('catalog/:catalog/collection/:collection')
@@ -27,7 +28,7 @@ export class CollectionPropertyValuesController extends MetatypeValuesController
 		protected readonly catalogBrandCollectionsService: CatalogBrandCollectionsService
 	){
 		super(
-			3,
+			MetatypesEnum.BrandCollection,
 			catalogMetatypePropertiesService,
 			catalogsService,
 			optionsPropertyValuesService,

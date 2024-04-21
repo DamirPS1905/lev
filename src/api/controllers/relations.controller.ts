@@ -14,6 +14,7 @@ import { OoRelationValuesService } from './../services/oo-relation-values.servic
 import { ParseBigIntPipe } from './../../pipes/parse-bigint.pipe'
 import { CatalogProductOffersService } from './../services/catalog-product-offers.service';
 import { CatalogProductsService } from './../services/catalog-products.service';
+import { ProductsRelationKindsEnum } from './../enums/products-relation-kinds.enum'
 
 @ApiHeader({ name: 'X-API-KEY', required: true, description: 'Ваш идентефикатор апи' })
 @UseGuards(AuthGuard('api-key'))
@@ -47,13 +48,13 @@ export class RelationsController{
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
 		switch(relationIns.kind.id){
-			case 1:
+			case ProductsRelationKindsEnum.ProductToProduct:
 				return await this.ppRelationValuesService.getAllTargets(relation, source);
-			case 2:
+			case ProductsRelationKindsEnum.ProductToOffer:
 				return await this.poRelationValuesService.getAllTargets(relation, source);
-			case 3:
+			case ProductsRelationKindsEnum.OfferToProduct:
 				return await this.opRelationValuesService.getAllTargets(relation, source);
-			case 4:
+			case ProductsRelationKindsEnum.OfferToOffer:
 				return await this.ooRelationValuesService.getAllTargets(relation, source);
 		}
 	}
@@ -73,13 +74,13 @@ export class RelationsController{
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
 		switch(relationIns.kind.id){
-			case 1:
+			case ProductsRelationKindsEnum.ProductToProduct:
 				return await this.ppRelationValuesService.getAllSources(relation, target);				break;
-			case 2:
+			case ProductsRelationKindsEnum.ProductToOffer:
 				return await this.poRelationValuesService.getAllSources(relation, target);
-			case 3:
+			case ProductsRelationKindsEnum.OfferToProduct:
 				return await this.opRelationValuesService.getAllSources(relation, target);
-			case 4:
+			case ProductsRelationKindsEnum.OfferToOffer:
 				return await this.ooRelationValuesService.getAllSources(relation, target);
 		}
 	}
@@ -100,15 +101,15 @@ export class RelationsController{
 			throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 		}
 		switch(relationIns.kind.id){
-			case 1:
-			case 2:
+			case ProductsRelationKindsEnum.ProductToProduct:
+			case ProductsRelationKindsEnum.ProductToOffer:
 				const productIns = await this.catalogProductsService.findById(source);
 				if(productIns===null || productIns.catalog.id!==catalog){
 					throw new HttpException('Source product not found', HttpStatus.NOT_FOUND);
 				}
 				break;
-			case 3:
-			case 4:
+			case ProductsRelationKindsEnum.OfferToProduct:
+			case ProductsRelationKindsEnum.OfferToOffer:
 				const offerIns = await this.catalogProductOffersService.findById(source);
 				if(offerIns===null || offerIns.catalog.id!==catalog){
 					throw new HttpException('Source product offer not found', HttpStatus.NOT_FOUND);
@@ -116,15 +117,15 @@ export class RelationsController{
 				break;
 		}
 		switch(relationIns.kind.id){
-			case 1:
-			case 3:
+			case ProductsRelationKindsEnum.ProductToProduct:
+			case ProductsRelationKindsEnum.OfferToProduct:
 				const productIns = await this.catalogProductsService.findById(target);
 				if(productIns===null || productIns.catalog.id!==catalog){
 					throw new HttpException('Source product not found', HttpStatus.NOT_FOUND);
 				}
 				break;
-			case 2:
-			case 4:
+			case ProductsRelationKindsEnum.ProductToOffer:
+			case ProductsRelationKindsEnum.OfferToOffer:
 				const offerIns = await this.catalogProductOffersService.findById(target);
 				if(offerIns===null || offerIns.catalog.id!==catalog){
 					throw new HttpException('Source product offer not found', HttpStatus.NOT_FOUND);
@@ -141,19 +142,19 @@ export class RelationsController{
 		inverse.target = source;
 		return await this.productRelationsService.transactional(async (em) => {
 			switch(relationIns.kind.id){
-				case 1:
+				case ProductsRelationKindsEnum.ProductToProduct:
 					await this.ppRelationValuesService.create(base, em);
 					if(relationIns.symmetric){
 						await this.ppRelationValuesService.create(inverse, em);
 					}
 					break;
-				case 2:
+				case ProductsRelationKindsEnum.ProductToOffer:
 					await this.poRelationValuesService.create(base, em);
 					break;
-				case 3:
+				case ProductsRelationKindsEnum.OfferToProduct:
 					await this.opRelationValuesService.create(base, em);
 					break;
-				case 4:
+				case ProductsRelationKindsEnum.OfferToOffer:
 					await this.ooRelationValuesService.create(base, em);
 					if(relationIns.symmetric){
 						await this.ooRelationValuesService.create(inverse, em);
@@ -180,19 +181,19 @@ export class RelationsController{
 		}
 		return await this.productRelationsService.transactional(async (em) => {
 			switch(relationIns.kind.id){
-				case 1:
+				case ProductsRelationKindsEnum.ProductToProduct:
 					await this.ppRelationValuesService.removeByRelationAndSourceAndTarget(relation, source, target, em);
 					if(relationIns.symmetric){
 						await this.ppRelationValuesService.removeByRelationAndSourceAndTarget(relation, target, source, em);
 					}
 					break;
-				case 2:
+				case ProductsRelationKindsEnum.ProductToOffer:
 					await this.poRelationValuesService.removeByRelationAndSourceAndTarget(relation, source, target, em);
 					break;
-				case 3:
+				case ProductsRelationKindsEnum.OfferToProduct:
 					await this.opRelationValuesService.removeByRelationAndSourceAndTarget(relation, source, target, em);
 					break;
-				case 4:
+				case ProductsRelationKindsEnum.OfferToOffer:
 					await this.ooRelationValuesService.removeByRelationAndSourceAndTarget(relation, source, target, em);
 					if(relationIns.symmetric){
 						await this.ooRelationValuesService.removeByRelationAndSourceAndTarget(relation, target, source, em);

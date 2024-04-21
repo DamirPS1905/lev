@@ -16,6 +16,7 @@ import { CatalogPropertiesService } from './../../services/catalog-properties.se
 import { CatalogsService } from './../../services/catalogs.service';
 import { OfferPropertyValuesService } from './../../services/offer-property-values.service';
 import { PropertyTypesService } from './../../services/property-types.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -78,7 +79,7 @@ export class GenOfferPropertyValuesController {
 		if(productIns===null || !(productIns.catalog.id===catalog)){
 			throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.offerPropertyValuesService.transactional(async (em) => {
+		return await this.offerPropertyValuesService.transactional(async (em, fm) => {
 			const entity = await this.offerPropertyValuesService.findByOfferAndPropertyAndOrder(offer, property, order, em);
 			const offerIns = await this.catalogProductOffersService.findById(offer);
 			if(offerIns===null || !(offerIns.product.id===product)){
@@ -88,16 +89,21 @@ export class GenOfferPropertyValuesController {
 			if(propertyIns===null || !(propertyIns.catalog.id===catalog)){
 				throw new HttpException('Property not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateUpdate(entity, actor, catalog, product, offer, property, order, updateDto, em);
+			await this.validateUpdate(entity, actor, catalog, product, offer, property, order, updateDto, em, fm);
 			if(entity!==null){
-				return await this.offerPropertyValuesService.update(entity, updateDto, em);
+				const result = await this.offerPropertyValuesService.update(entity, updateDto, em);
+				await this.afterUpdate(entity, actor, catalog, product, offer, property, order, updateDto, em, fm);
+				return result;
 			} else {
-				return await this.offerPropertyValuesService.create(updateDto, em);
+				const result = await this.offerPropertyValuesService.create(updateDto, em);
+				await this.afterUpdate(entity, actor, catalog, product, offer, property, order, updateDto, em, fm);
+				return result;
 			}
 		});
 	}
 	
-	async validateUpdate(entity, actor: Actors, catalog: number, product: bigint, offer: bigint, property: number, order: number, updateDto: UpdateOfferPropertyValueDto, em: EntityManager) { }
+	async validateUpdate(entity, actor: Actors, catalog: number, product: bigint, offer: bigint, property: number, order: number, updateDto: UpdateOfferPropertyValueDto, em: EntityManager, fm: FsPatch) { }
+	async afterUpdate(entity, actor: Actors, catalog: number, product: bigint, offer: bigint, property: number, order: number, updateDto: UpdateOfferPropertyValueDto, em: EntityManager, fm: FsPatch) { }
 	
 	async delete(actor: Actors, catalog: number, product: bigint, offer: bigint, property: number, order: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
@@ -108,16 +114,18 @@ export class GenOfferPropertyValuesController {
 		if(productIns===null || !(productIns.catalog.id===catalog)){
 			throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.offerPropertyValuesService.transactional(async (em) => {
+		return await this.offerPropertyValuesService.transactional(async (em, fm) => {
 			const entity = await this.offerPropertyValuesService.findByOfferAndPropertyAndOrder(offer, property, order, em);
 			if(entity===null){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, actor, catalog, product, offer, property, order, em);
-			return await this.offerPropertyValuesService.remove(entity, em);
+			await this.validateDelete(entity, actor, catalog, product, offer, property, order, em, fm);
+			await this.offerPropertyValuesService.remove(entity, em);
+			await this.afterDelete(entity, actor, catalog, product, offer, property, order, em, fm);
 		});
 	}
 	
-	async validateDelete(entity, actor: Actors, catalog: number, product: bigint, offer: bigint, property: number, order: number, em: EntityManager) { }
+	async validateDelete(entity, actor: Actors, catalog: number, product: bigint, offer: bigint, property: number, order: number, em: EntityManager, fm: FsPatch) { }
+	async afterDelete(entity, actor: Actors, catalog: number, product: bigint, offer: bigint, property: number, order: number, em: EntityManager, fm: FsPatch) { }
 	
 }

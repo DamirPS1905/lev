@@ -9,6 +9,7 @@
 import { CreateCollectionPropertyValueDto } from './../../dtos/create-collection-property-value.dto';
 import { UpdateCollectionPropertyValueDto } from './../../dtos/update-collection-property-value.dto';
 import { CollectionPropertyValuesService } from './../../services/collection-property-values.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';

@@ -8,7 +8,7 @@
  */
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class GenCreateCompanyDto {
 	
@@ -19,5 +19,11 @@ export class GenCreateCompanyDto {
 	@MinLength(1)
 	@MaxLength(255)
 	title:string;
+	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	@IsString()
+	@Transform(({ value }: TransformFnParams) => value?.trim())
+	balance:string;
 	
 }

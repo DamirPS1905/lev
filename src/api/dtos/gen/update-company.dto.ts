@@ -20,4 +20,10 @@ export class GenUpdateCompanyDto {
 	@MaxLength(255)
 	title:string;
 	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	@IsString()
+	@Transform(({ value }: TransformFnParams) => value?.trim())
+	balance:string;
+	
 }

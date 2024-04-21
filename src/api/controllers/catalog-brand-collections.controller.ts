@@ -8,6 +8,7 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { Body, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiParam } from '@nestjs/swagger'
+import { FsPatch } from './../services/special/files.service';
 
 export class CatalogBrandCollectionsController extends GenCatalogBrandCollectionsController {
 	
@@ -33,9 +34,9 @@ export class CatalogBrandCollectionsController extends GenCatalogBrandCollection
 		return await super.create(actor, catalog, brand, createDto);
 	}
 	
-	async validateCreate(actor: Actors, catalog: number, brand: number, createDto: CreateCatalogBrandCollectionDto, em: EntityManager){
+	async validateCreate(actor: Actors, catalog: number, brand: number, createDto: CreateCatalogBrandCollectionDto, em: EntityManager, fm: FsPatch){
 		if(createDto.image){
-			createDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, createDto.image, true, em);
+			createDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, createDto.image, true, em, fm);
 		}
 	}
 	
@@ -47,9 +48,9 @@ export class CatalogBrandCollectionsController extends GenCatalogBrandCollection
 		return await super.update(actor, catalog, brand, id, updateDto);
 	}
 	
-	async validateUpdate(entity, actor: Actors, catalog: number, brand: number, id: number, updateDto: UpdateCatalogBrandCollectionDto, em: EntityManager){
+	async validateUpdate(entity, actor: Actors, catalog: number, brand: number, id: number, updateDto: UpdateCatalogBrandCollectionDto, em: EntityManager, fm: FsPatch){
 		if(updateDto.image){
-			updateDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, updateDto.image, true, em);
+			updateDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, updateDto.image, true, em, fm);
 		}
 	}
 	

@@ -8,7 +8,8 @@ import { EntityManager } from '@mikro-orm/postgresql'
 import { PropertyTuningDto } from './../dtos/property-tuning.dto'
 import { FileLoadTasksService } from './file-load-tasks.service'
 import { CreateFileLoadTaskDto } from './../dtos/create-file-load-task.dto'
-import { FilesService } from './special/files.service';
+import { FilesService, FsPatch } from './special/files.service';
+import { PropertyPrimitivesEnum } from './../enums/property-primitives.enum'
 
 @Injectable()
 export class PropertyTypesService extends GenPropertyTypesService {
@@ -40,13 +41,13 @@ export class PropertyTypesService extends GenPropertyTypesService {
 			let type = null,
 					indexKey = row.key;
 			switch(row.primitive){
-				case 1: type = 'int'; break;
-				case 2: type = 'float8'; break;
-				case 3: type = 'varchar'; break;
-				case 4: type = 'text'; break;
-				case 5: type = 'int'; indexKey += 'Index'; break;
-				case 6: type = 'float8'; indexKey += 'Index'; break;
-				case 8: type = 'bool'; break;
+				case PropertyPrimitivesEnum.Int: type = 'int'; break;
+				case PropertyPrimitivesEnum.Decimal: type = 'float8'; break;
+				case PropertyPrimitivesEnum.ShortText: type = 'varchar'; break;
+				case PropertyPrimitivesEnum.LongText: type = 'text'; break;
+				case PropertyPrimitivesEnum.IntWithUnit: type = 'int'; indexKey += 'Index'; break;
+				case PropertyPrimitivesEnum.DecimalWithUnit: type = 'float8'; indexKey += 'Index'; break;
+				case PropertyPrimitivesEnum.Boolean: type = 'bool'; break;
 				default: continue cycle;
 			}
 			const indexName = `property_values_${row.id}_${row.key}`,
@@ -69,8 +70,8 @@ export class PropertyTypesService extends GenPropertyTypesService {
 	
 	public getPrimitiveTransform(primitive: number, key: string){
 		switch(primitive){
-			case 5: 
-			case 6: return `[o.${key}, o.${key}Unit]`;
+			case PropertyPrimitivesEnum.IntWithUnit: 
+			case PropertyPrimitivesEnum.DecimalWithUnit: return `[o.${key}, o.${key}Unit]`;
 			default: return `o.${key}`;
 		}
 	}
@@ -131,31 +132,31 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		let result: Object = {};
 		for(let key of Object.keys(scheme)){
 			const info = scheme[key],
-						hasUnit = info.kind==5 || info.kind==6;
+						hasUnit = info.kind==PropertyPrimitivesEnum.IntWithUnit || info.kind==PropertyPrimitivesEnum.DecimalWithUnit;
 			switch(info.kind){
-				case 1:
+				case PropertyPrimitivesEnum.Int:
 					result[key] = "integer";
 					break;
-				case 2:
+				case PropertyPrimitivesEnum.Decimal:
 					result[key] = "number";
 					break;
-				case 3:
-				case 4:
+				case PropertyPrimitivesEnum.ShortText:
+				case PropertyPrimitivesEnum.LongText:
 					result[key] = "string";
 					break;
-				case 5:
+				case PropertyPrimitivesEnum.IntWithUnit:
 					result[key] = "integer";
 					result[key+"Unit"] = "integer (id of unit)";
 					break;
-				case 6:
+				case PropertyPrimitivesEnum.DecimalWithUnit:
 					result[key] = "number";
 					result[key+"Unit"] = "integer (id of unit)";
 					break;
-				case 7:
-				case 9:
+				case PropertyPrimitivesEnum.File:
+				case PropertyPrimitivesEnum.Image:
 					result[key] = "string (from existed image: `[key]` or from base64 content: `b64:[extension]:[base-64 encoded content]` or from url: `url:[extension]:[publically available url]` or `url::[publically available url]`)";
 					break;
-				case 8:
+				case PropertyPrimitivesEnum.Boolean:
 					result[key] = "boolean";
 					break;
 			}
@@ -168,7 +169,7 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		for(let key of Object.keys(sourceScheme)){
 			let schemeInfo = new PropertyTuningDto();
 			const info = sourceScheme[key],
-						hasUnit = info.kind==5 || info.kind==6;
+						hasUnit = info.kind==PropertyPrimitivesEnum.IntWithUnit || info.kind==PropertyPrimitivesEnum.DecimalWithUnit;
 			const fieldsList = hasUnit
 				? ['kind', 'unitsGroup', 'storageUnit', 'defaultUnit', 'displayUnit', 'defaultValue']
 				: ['kind', 'defaultValue'];
@@ -231,27 +232,27 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		
 	validateKindValue(kind: number, val: any){
 		switch(kind){
-			case 1:
-			case 5:
+			case PropertyPrimitivesEnum.Int:
+			case PropertyPrimitivesEnum.IntWithUnit:
 				if(!Number.isInteger(val)){
 					throw new Error('Value field ${key} assumed to be integer');
 				}
 				break;
-			case 2:
-			case 6:
+			case PropertyPrimitivesEnum.Decimal:
+			case PropertyPrimitivesEnum.DecimalWithUnit:
 				if(typeof val!=="number"){
 					throw new Error('Value field ${key} assumed to be number');
 				}
 				break;
-			case 8:
+			case PropertyPrimitivesEnum.Boolean:
 				if(typeof val!=="boolean"){
 					throw new Error('Value field ${key} assumed to be boolean');
 				}
 				break;
-			case 3:
-			case 4:
-			case 7:
-			case 9:
+			case PropertyPrimitivesEnum.LongText:
+			case PropertyPrimitivesEnum.ShortText:
+			case PropertyPrimitivesEnum.File:
+			case PropertyPrimitivesEnum.Image:
 				if(typeof val!=="string"){
 					throw new Error('Value field ${key} assumed to be string');
 				}
@@ -259,7 +260,7 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		}
 	}
 	
-	async validateSingleValue(company: number, scheme: any, value: any, catalog: number, emt: EntityManager = null){
+	async validateSingleValue(company: number, scheme: any, value: any, catalog: number, emt: EntityManager, fm: FsPatch){
 		if(!(value instanceof Object)) throw new Error('Value assumed to be an object');
 		for(let key of Object.keys(scheme)){
 			const info = scheme[key];
@@ -272,8 +273,8 @@ export class PropertyTypesService extends GenPropertyTypesService {
 			}
 			this.validateKindValue(info.kind, value[key]);
 			switch(info.kind){
-				case 5:
-				case 6:
+				case PropertyPrimitivesEnum.IntWithUnit:
+				case PropertyPrimitivesEnum.DecimalWithUnit:
 					const em = this.getEm(emt),
 								unitKey = `${key}Unit`;
 					if(!value.hasOwnProperty(unitKey)){
@@ -293,10 +294,10 @@ export class PropertyTypesService extends GenPropertyTypesService {
 								targetUnit = await this.getUnit(info.storageUnit, company, em);
 					value[key+'Index'] = this.convertValue(sourceUnit, targetUnit, value[key]);
 					break;
-				case 7:
-				case 9:
+				case PropertyPrimitivesEnum.Image:
+				case PropertyPrimitivesEnum.File:
 					value[key] = this.fileLoadTasksService
-						.processInput(company, catalog, value[key], info.kind===9, emt);
+						.processInput(company, catalog, value[key], info.kind===PropertyPrimitivesEnum.Image, emt, fm);
 					break;
 			}
 		}

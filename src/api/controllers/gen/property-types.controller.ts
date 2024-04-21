@@ -12,6 +12,7 @@ import { CreatePropertyTypeDto } from './../../dtos/create-property-type.dto';
 import { UpdatePropertyTypeDto } from './../../dtos/update-property-type.dto';
 import { CatalogsService } from './../../services/catalogs.service';
 import { PropertyTypesService } from './../../services/property-types.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';

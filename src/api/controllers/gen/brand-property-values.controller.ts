@@ -9,6 +9,7 @@
 import { CreateBrandPropertyValueDto } from './../../dtos/create-brand-property-value.dto';
 import { UpdateBrandPropertyValueDto } from './../../dtos/update-brand-property-value.dto';
 import { BrandPropertyValuesService } from './../../services/brand-property-values.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';

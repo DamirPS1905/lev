@@ -11,6 +11,7 @@ import { Actors } from './../../../entities/Actors';
 import { CreateCurrencyDto } from './../../dtos/create-currency.dto';
 import { UpdateCurrencyDto } from './../../dtos/update-currency.dto';
 import { CurrenciesService } from './../../services/currencies.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';

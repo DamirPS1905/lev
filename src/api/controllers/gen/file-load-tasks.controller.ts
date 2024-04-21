@@ -11,6 +11,7 @@ import { Actors } from './../../../entities/Actors';
 import { CreateFileLoadTaskDto } from './../../dtos/create-file-load-task.dto';
 import { UpdateFileLoadTaskDto } from './../../dtos/update-file-load-task.dto';
 import { FileLoadTasksService } from './../../services/file-load-tasks.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';

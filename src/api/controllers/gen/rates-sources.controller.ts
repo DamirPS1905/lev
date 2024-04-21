@@ -11,6 +11,7 @@ import { Actors } from './../../../entities/Actors';
 import { CreateRatesSourceDto } from './../../dtos/create-rates-source.dto';
 import { UpdateRatesSourceDto } from './../../dtos/update-rates-source.dto';
 import { RatesSourcesService } from './../../services/rates-sources.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';

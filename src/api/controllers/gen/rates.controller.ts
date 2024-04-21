@@ -11,6 +11,7 @@ import { UpdateRateDto } from './../../dtos/update-rate.dto';
 import { CurrenciesService } from './../../services/currencies.service';
 import { RatesSourcesService } from './../../services/rates-sources.service';
 import { RatesService } from './../../services/rates.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';

@@ -11,6 +11,7 @@ import { CatalogsService } from './../services/catalogs.service'
 import { OptionsPropertyValuesService } from './../services/options-property-values.service'
 import { PropertyTypesService } from './../services/property-types.service'
 import { CatalogBrandsService } from './../services/catalog-brands.service'
+import { MetatypesEnum } from './../enums/metatypes.enum'
 
 @ApiTags('Brand property values')
 @Controller('catalog/:catalog/brand/:brand')
@@ -25,7 +26,7 @@ export class BrandPropertyValuesController extends MetatypeValuesController<Bran
 		protected readonly catalogBrandsService: CatalogBrandsService
 	){
 		super(
-			2,
+			MetatypesEnum.CatalogBrand,
 			catalogMetatypePropertiesService,
 			catalogsService,
 			optionsPropertyValuesService,

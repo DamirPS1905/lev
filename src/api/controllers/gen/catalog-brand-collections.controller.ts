@@ -14,6 +14,7 @@ import { CatalogBrandCollectionsService } from './../../services/catalog-brand-c
 import { CatalogBrandsService } from './../../services/catalog-brands.service';
 import { CatalogsService } from './../../services/catalogs.service';
 import { FileLoadTasksService } from './../../services/file-load-tasks.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -72,7 +73,7 @@ export class GenCatalogBrandCollectionsController {
 		if(brandIns===null || !(brandIns.catalog.id===catalog)){
 			throw new HttpException('Brand not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.catalogBrandCollectionsService.transactional(async (em) => {
+		return await this.catalogBrandCollectionsService.transactional(async (em, fm) => {
 			const existed0 = await this.catalogBrandCollectionsService.findByBrandAndTitle(brand, createDto.title, em);
 			if(existed0!==null){
 				throw new HttpException('Duplicate (brand, title)', HttpStatus.CONFLICT);
@@ -81,12 +82,15 @@ export class GenCatalogBrandCollectionsController {
 			if(tmp===null){
 				throw new HttpException('Not found contrainst (brand)', HttpStatus.CONFLICT);
 			}
-			await this.validateCreate(actor, catalog, brand, createDto, em);
-			return await this.catalogBrandCollectionsService.create(createDto, em);
+			await this.validateCreate(actor, catalog, brand, createDto, em, fm);
+			const result = await this.catalogBrandCollectionsService.create(createDto, em);
+			await this.afterCreate(result, actor, catalog, brand, createDto, em, fm);
+			return result;
 		});
 	}
 	
-	async validateCreate(actor: Actors, catalog: number, brand: number, createDto: CreateCatalogBrandCollectionDto, em: EntityManager) { }
+	async validateCreate(actor: Actors, catalog: number, brand: number, createDto: CreateCatalogBrandCollectionDto, em: EntityManager, fm: FsPatch) { }
+	async afterCreate(entity, actor: Actors, catalog: number, brand: number, createDto: CreateCatalogBrandCollectionDto, em: EntityManager, fm: FsPatch) { }
 	
 	async update(actor: Actors, catalog: number, brand: number, id: number, updateDto: UpdateCatalogBrandCollectionDto) {
 		const catalogIns = await this.catalogsService.findById(catalog);
@@ -97,7 +101,7 @@ export class GenCatalogBrandCollectionsController {
 		if(brandIns===null || !(brandIns.catalog.id===catalog)){
 			throw new HttpException('Brand not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.catalogBrandCollectionsService.transactional(async (em) => {
+		return await this.catalogBrandCollectionsService.transactional(async (em, fm) => {
 			const entity = await this.catalogBrandCollectionsService.findById(id, em);
 			const tmp = await this.catalogBrandsService.findById(brand, em);
 			if(tmp===null){
@@ -112,12 +116,13 @@ export class GenCatalogBrandCollectionsController {
 					throw new HttpException('Duplicate (brand, title)', HttpStatus.CONFLICT);
 				}
 			}
-			await this.validateUpdate(entity, actor, catalog, brand, id, updateDto, em);
+			await this.validateUpdate(entity, actor, catalog, brand, id, updateDto, em, fm);
 			return await this.catalogBrandCollectionsService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, actor: Actors, catalog: number, brand: number, id: number, updateDto: UpdateCatalogBrandCollectionDto, em: EntityManager) { }
+	async validateUpdate(entity, actor: Actors, catalog: number, brand: number, id: number, updateDto: UpdateCatalogBrandCollectionDto, em: EntityManager, fm: FsPatch) { }
+	async afterUpdate(entity, actor: Actors, catalog: number, brand: number, id: number, updateDto: UpdateCatalogBrandCollectionDto, em: EntityManager, fm: FsPatch) { }
 	
 	async delete(actor: Actors, catalog: number, brand: number, id: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
@@ -128,16 +133,18 @@ export class GenCatalogBrandCollectionsController {
 		if(brandIns===null || !(brandIns.catalog.id===catalog)){
 			throw new HttpException('Brand not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.catalogBrandCollectionsService.transactional(async (em) => {
+		return await this.catalogBrandCollectionsService.transactional(async (em, fm) => {
 			const entity = await this.catalogBrandCollectionsService.findById(id, em);
 			if(entity===null || !(entity.brand.id===brand)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, actor, catalog, brand, id, em);
-			return await this.catalogBrandCollectionsService.remove(entity, em);
+			await this.validateDelete(entity, actor, catalog, brand, id, em, fm);
+			await this.catalogBrandCollectionsService.remove(entity, em);
+			await this.afterDelete(entity, actor, catalog, brand, id, em, fm);
 		});
 	}
 	
-	async validateDelete(entity, actor: Actors, catalog: number, brand: number, id: number, em: EntityManager) { }
+	async validateDelete(entity, actor: Actors, catalog: number, brand: number, id: number, em: EntityManager, fm: FsPatch) { }
+	async afterDelete(entity, actor: Actors, catalog: number, brand: number, id: number, em: EntityManager, fm: FsPatch) { }
 	
 }

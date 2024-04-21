@@ -11,6 +11,7 @@ import { Actors } from './../../../entities/Actors';
 import { CreateProductsRelationKindDto } from './../../dtos/create-products-relation-kind.dto';
 import { UpdateProductsRelationKindDto } from './../../dtos/update-products-relation-kind.dto';
 import { ProductsRelationKindsService } from './../../services/products-relation-kinds.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';

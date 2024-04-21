@@ -13,6 +13,7 @@ import { UpdateCatalogPropertyDto } from './../../dtos/update-catalog-property.d
 import { CatalogPropertiesService } from './../../services/catalog-properties.service';
 import { CatalogsService } from './../../services/catalogs.service';
 import { PropertyTypesService } from './../../services/property-types.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -61,7 +62,7 @@ export class GenCatalogPropertiesController {
 		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.catalogPropertiesService.transactional(async (em) => {
+		return await this.catalogPropertiesService.transactional(async (em, fm) => {
 			const existed0 = await this.catalogPropertiesService.findByCatalogAndTitle(catalog, createDto.title, em);
 			if(existed0!==null){
 				throw new HttpException('Duplicate (catalog, title)', HttpStatus.CONFLICT);
@@ -70,19 +71,22 @@ export class GenCatalogPropertiesController {
 			if(tmp===null){
 				throw new HttpException('Not found contrainst (type)', HttpStatus.CONFLICT);
 			}
-			await this.validateCreate(actor, catalog, createDto, em);
-			return await this.catalogPropertiesService.create(createDto, em);
+			await this.validateCreate(actor, catalog, createDto, em, fm);
+			const result = await this.catalogPropertiesService.create(createDto, em);
+			await this.afterCreate(result, actor, catalog, createDto, em, fm);
+			return result;
 		});
 	}
 	
-	async validateCreate(actor: Actors, catalog: number, createDto: CreateCatalogPropertyDto, em: EntityManager) { }
+	async validateCreate(actor: Actors, catalog: number, createDto: CreateCatalogPropertyDto, em: EntityManager, fm: FsPatch) { }
+	async afterCreate(entity, actor: Actors, catalog: number, createDto: CreateCatalogPropertyDto, em: EntityManager, fm: FsPatch) { }
 	
 	async update(actor: Actors, catalog: number, id: number, updateDto: UpdateCatalogPropertyDto) {
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.catalogPropertiesService.transactional(async (em) => {
+		return await this.catalogPropertiesService.transactional(async (em, fm) => {
 			const entity = await this.catalogPropertiesService.findById(id, em);
 			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
@@ -93,28 +97,31 @@ export class GenCatalogPropertiesController {
 					throw new HttpException('Duplicate (catalog, title)', HttpStatus.CONFLICT);
 				}
 			}
-			await this.validateUpdate(entity, actor, catalog, id, updateDto, em);
+			await this.validateUpdate(entity, actor, catalog, id, updateDto, em, fm);
 			return await this.catalogPropertiesService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, actor: Actors, catalog: number, id: number, updateDto: UpdateCatalogPropertyDto, em: EntityManager) { }
+	async validateUpdate(entity, actor: Actors, catalog: number, id: number, updateDto: UpdateCatalogPropertyDto, em: EntityManager, fm: FsPatch) { }
+	async afterUpdate(entity, actor: Actors, catalog: number, id: number, updateDto: UpdateCatalogPropertyDto, em: EntityManager, fm: FsPatch) { }
 	
 	async delete(actor: Actors, catalog: number, id: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);
 		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.catalogPropertiesService.transactional(async (em) => {
+		return await this.catalogPropertiesService.transactional(async (em, fm) => {
 			const entity = await this.catalogPropertiesService.findById(id, em);
 			if(entity===null || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, actor, catalog, id, em);
-			return await this.catalogPropertiesService.remove(entity, em);
+			await this.validateDelete(entity, actor, catalog, id, em, fm);
+			await this.catalogPropertiesService.remove(entity, em);
+			await this.afterDelete(entity, actor, catalog, id, em, fm);
 		});
 	}
 	
-	async validateDelete(entity, actor: Actors, catalog: number, id: number, em: EntityManager) { }
+	async validateDelete(entity, actor: Actors, catalog: number, id: number, em: EntityManager, fm: FsPatch) { }
+	async afterDelete(entity, actor: Actors, catalog: number, id: number, em: EntityManager, fm: FsPatch) { }
 	
 }

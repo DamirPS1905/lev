@@ -60,13 +60,13 @@ export class CatalogProductOffersController{
 			throw new HttpException('Article cannot be empty', HttpStatus.CONFLICT);
 		}
 		const productIns = await this.validatePath(actor, catalog, product);
-		return await this.catalogProductOffersService.transactional(async (em) => {
+		return await this.catalogProductOffersService.transactional(async (em, fm) => {
 			const existed0 = await this.catalogProductOffersService.findByCatalogAndArticle(catalog, createDto.article, em);
 			if(existed0!==null){
 				throw new HttpException('Offer with the same artice already exists in catalog', HttpStatus.CONFLICT);
 			}
 			if(createDto.image){
-				createDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, createDto.image, true, em);
+				createDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, createDto.image, true, em, fm);
 			}
 			if(productIns.offersCount===0){
 				const nullOffer = await this.catalogProductOffersService.findNullOfferByProduct(product, em);
@@ -92,7 +92,7 @@ export class CatalogProductOffersController{
 			}
 		}
 		const productIns = await this.validatePath(actor, catalog, product);
-		return await this.catalogProductOffersService.transactional(async (em) => {
+		return await this.catalogProductOffersService.transactional(async (em, fm) => {
 			const entity = await this.catalogProductOffersService.findById(id, em);
 			if(entity===null || entity.article===null || !(entity.product.id===product) || !(entity.catalog.id===catalog)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
@@ -104,7 +104,7 @@ export class CatalogProductOffersController{
 				}
 			}
 			if(updateDto.image){
-				updateDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, updateDto.image, true, em);
+				updateDto.image = await this.fileLoadTasksService.processInput(actor.company.id, catalog, updateDto.image, true, em, fm);
 			}
 			return await this.catalogProductOffersService.update(entity, updateDto, em);
 		});

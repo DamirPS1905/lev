@@ -11,6 +11,7 @@ import { Actors } from './../../../entities/Actors';
 import { CreateInstanceVersionDto } from './../../dtos/create-instance-version.dto';
 import { UpdateInstanceVersionDto } from './../../dtos/update-instance-version.dto';
 import { InstanceVersionsService } from './../../services/instance-versions.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';

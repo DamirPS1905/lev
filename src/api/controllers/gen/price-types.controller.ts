@@ -12,6 +12,7 @@ import { CreatePriceTypeDto } from './../../dtos/create-price-type.dto';
 import { UpdatePriceTypeDto } from './../../dtos/update-price-type.dto';
 import { CurrenciesService } from './../../services/currencies.service';
 import { PriceTypesService } from './../../services/price-types.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -44,7 +45,7 @@ export class GenPriceTypesController {
 	
 	async create(actor: Actors, createDto: CreatePriceTypeDto) {
 		createDto.company = actor.company.id;
-		return await this.priceTypesService.transactional(async (em) => {
+		return await this.priceTypesService.transactional(async (em, fm) => {
 			const existed0 = await this.priceTypesService.findByCompanyAndTitle(actor.company.id, createDto.title, em);
 			if(existed0!==null){
 				throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
@@ -63,15 +64,18 @@ export class GenPriceTypesController {
 			if(baseCurrencyIns===null){
 				throw new HttpException('Base currency not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateCreate(actor, createDto, em);
-			return await this.priceTypesService.create(createDto, em);
+			await this.validateCreate(actor, createDto, em, fm);
+			const result = await this.priceTypesService.create(createDto, em);
+			await this.afterCreate(result, actor, createDto, em, fm);
+			return result;
 		});
 	}
 	
-	async validateCreate(actor: Actors, createDto: CreatePriceTypeDto, em: EntityManager) { }
+	async validateCreate(actor: Actors, createDto: CreatePriceTypeDto, em: EntityManager, fm: FsPatch) { }
+	async afterCreate(entity, actor: Actors, createDto: CreatePriceTypeDto, em: EntityManager, fm: FsPatch) { }
 	
 	async update(actor: Actors, id: number, updateDto: UpdatePriceTypeDto) {
-		return await this.priceTypesService.transactional(async (em) => {
+		return await this.priceTypesService.transactional(async (em, fm) => {
 			const entity = await this.priceTypesService.findById(id, em);
 			if(updateDto.displayCurrency!==null){
 				if(updateDto.displayCurrency!==undefined){
@@ -92,24 +96,27 @@ export class GenPriceTypesController {
 					throw new HttpException('Duplicate (company, title)', HttpStatus.CONFLICT);
 				}
 			}
-			await this.validateUpdate(entity, actor, id, updateDto, em);
+			await this.validateUpdate(entity, actor, id, updateDto, em, fm);
 			return await this.priceTypesService.update(entity, updateDto, em);
 		});
 	}
 	
-	async validateUpdate(entity, actor: Actors, id: number, updateDto: UpdatePriceTypeDto, em: EntityManager) { }
+	async validateUpdate(entity, actor: Actors, id: number, updateDto: UpdatePriceTypeDto, em: EntityManager, fm: FsPatch) { }
+	async afterUpdate(entity, actor: Actors, id: number, updateDto: UpdatePriceTypeDto, em: EntityManager, fm: FsPatch) { }
 	
 	async delete(actor: Actors, id: number) {
-		return await this.priceTypesService.transactional(async (em) => {
+		return await this.priceTypesService.transactional(async (em, fm) => {
 			const entity = await this.priceTypesService.findById(id, em);
 			if(entity===null || !(entity.company.id===actor.company.id)){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, actor, id, em);
-			return await this.priceTypesService.remove(entity, em);
+			await this.validateDelete(entity, actor, id, em, fm);
+			await this.priceTypesService.remove(entity, em);
+			await this.afterDelete(entity, actor, id, em, fm);
 		});
 	}
 	
-	async validateDelete(entity, actor: Actors, id: number, em: EntityManager) { }
+	async validateDelete(entity, actor: Actors, id: number, em: EntityManager, fm: FsPatch) { }
+	async afterDelete(entity, actor: Actors, id: number, em: EntityManager, fm: FsPatch) { }
 	
 }

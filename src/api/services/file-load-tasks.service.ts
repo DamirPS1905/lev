@@ -3,13 +3,12 @@ import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios'
 import { uid } from 'uid';
-import { createWriteStream, existsSync } from 'node:fs'
+import { existsSync } from 'node:fs'
 import { lookup, extension } from 'mime-types'
 import { CreateFileLoadTaskDto } from './../dtos/create-file-load-task.dto'
 import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { writeFile } from 'fs/promises';
 import { FileLoadTasks } from './../../entities/FileLoadTasks';
-import { FilesService } from './special/files.service';
+import { FilesService, FsPatch } from './special/files.service';
 
 const gm = require("gm");
 
@@ -26,7 +25,7 @@ export class FileLoadTasksService extends GenFileLoadTasksService {
 		super(em, fm);
 	}
 	
-  @Cron('* * * * * *')
+  //@Cron('* * * * * *')
   async handleCron() {
 	  const ukey = uid(5);
 	  if(this.loading) {
@@ -40,14 +39,17 @@ export class FileLoadTasksService extends GenFileLoadTasksService {
 		  			list = await this.getNotLoaded(10, em);
 			for(let item of list){
 				try{
-					const response = await this.httpService.axiosRef.get(item.url, {
-									responseType: 'arraybuffer'
-								}),
-								fileBuffer = Buffer.from(response.data, 'binary');
-					await this.writeBuffer(fileBuffer, item.key, item.asImage);
-		   		item.processed = true;
-		   		item.loaded = true;
-		   		await em.persist(item).flush();
+					await this.transactional(async (em, fm) =>{
+						const response = await this.httpService.axiosRef.get(item.url, {
+										responseType: 'arraybuffer'
+									}),
+									fileBuffer = Buffer.from(response.data, 'binary');
+						await this.writeBuffer(fileBuffer, item.key, item.asImage, fm);
+			   		item.processed = true;
+			   		item.loaded = true;
+			   		item.error = null;
+			   		await em.persist(item).flush();
+					})
 				}catch(e){
 		   		item.processed = true;
 		   		item.loaded = false;
@@ -66,7 +68,7 @@ export class FileLoadTasksService extends GenFileLoadTasksService {
 		}
   }
 	
-	async processInput(company: number, catalog: number, value: string, asImage: boolean, emt: EntityManager = null){
+	async processInput(company: number, catalog: number, value: string, asImage: boolean, emt: EntityManager, fm: FsPatch){
 		let list = value.split(':');
 		if(list.length>3){
 			const [a, b, ...c] = list;
@@ -83,7 +85,7 @@ export class FileLoadTasksService extends GenFileLoadTasksService {
 				 	break;
 				case 'b64':
 					if(list.length===3){
-						return await this.store64(company, catalog, list[2].trim(), list[1].trim(), asImage);
+						return await this.store64(company, catalog, list[2].trim(), list[1].trim(), asImage, fm);
 					}else{
 						throw new Error('Extension is missed (correct format: `b64:[extension]:[base-64 encoded content]`)')
 					}
@@ -124,26 +126,17 @@ export class FileLoadTasksService extends GenFileLoadTasksService {
 		return key;
 	}
 		
-	async store64(company: number, catalog: number, data: string, ext: string, asImage: boolean){
+	async store64(company: number, catalog: number, data: string, ext: string, asImage: boolean, fm: FsPatch){
 		const key = this.newKey(company, catalog, ext);
-		await this.writeBuffer(Buffer.from(data, "base64"), key, asImage);
+		await this.writeBuffer(Buffer.from(data, "base64"), key, asImage, fm);
 		return key;
 	}
 		
-	private write(im, path){
-		return new Promise((resolve, reject) => {
-	    im.write(path, function(error) {
-			  if(error) reject(error);
-			  else resolve(im)
-			})
-	  })
-	}
-	
 	private toBuffer(im){
 		return new Promise<Buffer>((resolve, reject) => {
 	    im.toBuffer(function(error, buffer) {
 			  if(error) reject(error);
-			  else resolve(buffer)
+			  else resolve(buffer);
 			})
 	  })
 	}
@@ -157,23 +150,22 @@ export class FileLoadTasksService extends GenFileLoadTasksService {
 	  })
 	}
 	
-	async writeBuffer(buffer, key, asImage){
+	async writeBuffer(buffer, key, asImage, fm: FsPatch){
 		if(asImage){
 			const im = gm(buffer),
 						size = await this.size(im);
-			console.log(size);
-			await this.write(im.noProfile(), `./images/${key}`);
+			await fm.write(`./images/${key}`, await this.toBuffer(im.noProfile()));
 			if(size.width>512 || size.height>512){
-				await this.write(im
+				await fm.write(`./images/p-${key}`, 
+					await this.toBuffer(im
 					.resize(512, 512)
 					.noProfile()
-					.strip(),
-					`./images/p-${key}`);
+					.strip()));
 			}else{
-				await this.write(im.noProfile(), `./images/p-${key}`);
+				await fm.write(`./images/p-${key}`, await this.toBuffer(im.noProfile()));
 			}
 		}else{
-			await writeFile(buffer, `./images/${key}`);
+			await fm.write(`./images/${key}`, buffer);
 		}
 	}
 	

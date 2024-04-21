@@ -7,7 +7,7 @@ import { Stores } from './Stores';
 import { UnitGroups } from './UnitGroups';
 import { Units } from './Units';
 import { Users } from './Users';
-import { Collection, Entity, OneToMany, PrimaryKey, Property, Unique, type Hidden } from '@mikro-orm/core';
+import { Collection, Entity, OneToMany, PrimaryKey, Property, Unique, type Hidden, type Opt } from '@mikro-orm/core';
 
 @Entity()
 export class Companies {
@@ -18,6 +18,9 @@ export class Companies {
   @Unique({ name: 'companies_title_uind' })
   @Property()
   title!: string;
+
+  @Property({ type: 'string', columnType: 'numeric(15,2)', defaultRaw: `0` })
+  balance!: string & Opt;
 
 	// gen - begin
 	

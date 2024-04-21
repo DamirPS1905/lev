@@ -85,7 +85,7 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
-		return await this.valuesService.transactional(async (em) => {
+		return await this.valuesService.transactional(async (em, fm) => {
 			await this.validateInstance(catalog, instance, em);
 			const [propertyIns, scheme] = await this.validateAttachment(catalog, property, instance, em);
 			if(propertyIns.options){
@@ -105,20 +105,20 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 				if(propertyIns.multiple){
 					if(updateDto instanceof Array){
 						for(let i = 0; i<updateDto.length; i++){
-							await this.writeOne(actor.company.id, instance, propertyIns, scheme, updateDto[i], i, em);
+							await this.writeOne(actor.company.id, instance, propertyIns, scheme, updateDto[i], i, em, fm);
 						}
 						await this.valuesService.removeExtraByInstanceAndPropertyAndMaxOrder(instance, propertyIns.id, updateDto.length, true, em);
 					}else{
 						throw new HttpException('You should provide array for multiple properties', HttpStatus.CONFLICT);
 					}
 				}else{
-					await this.writeOne(actor.company.id, instance, propertyIns, scheme, updateDto, 0, em);
+					await this.writeOne(actor.company.id, instance, propertyIns, scheme, updateDto, 0, em, fm);
 				}
 			}
 		});
 	}
 	
-	async writeOne(company, instance, propertyIns, scheme, value, order, em){
+	async writeOne(company, instance, propertyIns, scheme, value, order, em, fm){
 		try{
 			const entity = await this.valuesService.findByInstanceAndPropertyAndOrder(instance, propertyIns.id, order, em);
 			let valKey = entity===null? null: entity.value;
@@ -126,7 +126,7 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 				const conn = em.getConnection();
 				valKey = (await conn.execute(`SELECT nextval('property_value_id')::int8 as res`))[0].res;
 			}
-			const val = await this.propertyTypesService.validateSingleValue(company, scheme, value, propertyIns.catalog.id, em);
+			const val = await this.propertyTypesService.validateSingleValue(company, scheme, value, propertyIns.catalog.id, em, fm);
 			await em.upsert(PropertyValues, {
 				valueKey: valKey,
 				type: propertyIns.type.id,

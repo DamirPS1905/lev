@@ -13,6 +13,7 @@ import { CatalogsService } from './../services/catalogs.service'
 import { OptionsPropertyValuesService } from './../services/options-property-values.service'
 import { PropertyTypesService } from './../services/property-types.service'
 import { CatalogTypesService } from './../services/catalog-types.service'
+import { MetatypesEnum } from './../enums/metatypes.enum'
 
 @ApiTags('Type property values')
 @Controller('catalog/:catalog/type/:type')
@@ -27,7 +28,7 @@ export class TypePropertyValuesController extends MetatypeValuesController<TypeP
 		protected readonly catalogTypesService: CatalogTypesService
 	){
 		super(
-			1,
+			MetatypesEnum.CatalogType,
 			catalogMetatypePropertiesService,
 			catalogsService,
 			optionsPropertyValuesService,

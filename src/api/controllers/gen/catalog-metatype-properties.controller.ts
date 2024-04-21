@@ -15,6 +15,7 @@ import { CatalogPropertiesService } from './../../services/catalog-properties.se
 import { CatalogsService } from './../../services/catalogs.service';
 import { MetatypesService } from './../../services/metatypes.service';
 import { PropertyTypesService } from './../../services/property-types.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -48,7 +49,7 @@ export class GenCatalogMetatypePropertiesController {
 		updateDto.metatype = metatype;
 		updateDto.catalog = catalog;
 		updateDto.property = property;
-		return await this.catalogMetatypePropertiesService.transactional(async (em) => {
+		return await this.catalogMetatypePropertiesService.transactional(async (em, fm) => {
 			const entity = await this.catalogMetatypePropertiesService.findByCatalogAndPropertyAndMetatype(catalog, property, metatype, em);
 			const propertyIns = await this.catalogPropertiesService.findById(property);
 			if(propertyIns===null || !(propertyIns.catalog.id===catalog)){
@@ -62,28 +63,35 @@ export class GenCatalogMetatypePropertiesController {
 			if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 				throw new HttpException('Catalog not found', HttpStatus.CONFLICT);
 			}
-			await this.validateUpdate(entity, actor, catalog, property, metatype, updateDto, em);
+			await this.validateUpdate(entity, actor, catalog, property, metatype, updateDto, em, fm);
 			if(entity!==null){
-				return await this.catalogMetatypePropertiesService.update(entity, updateDto, em);
+				const result = await this.catalogMetatypePropertiesService.update(entity, updateDto, em);
+				await this.afterUpdate(entity, actor, catalog, property, metatype, updateDto, em, fm);
+				return result;
 			} else {
-				return await this.catalogMetatypePropertiesService.create(updateDto, em);
+				const result = await this.catalogMetatypePropertiesService.create(updateDto, em);
+				await this.afterUpdate(entity, actor, catalog, property, metatype, updateDto, em, fm);
+				return result;
 			}
 		});
 	}
 	
-	async validateUpdate(entity, actor: Actors, catalog: number, property: number, metatype: number, updateDto: UpdateCatalogMetatypePropertyDto, em: EntityManager) { }
+	async validateUpdate(entity, actor: Actors, catalog: number, property: number, metatype: number, updateDto: UpdateCatalogMetatypePropertyDto, em: EntityManager, fm: FsPatch) { }
+	async afterUpdate(entity, actor: Actors, catalog: number, property: number, metatype: number, updateDto: UpdateCatalogMetatypePropertyDto, em: EntityManager, fm: FsPatch) { }
 	
 	async delete(actor: Actors, catalog: number, property: number, metatype: number) {
-		return await this.catalogMetatypePropertiesService.transactional(async (em) => {
+		return await this.catalogMetatypePropertiesService.transactional(async (em, fm) => {
 			const entity = await this.catalogMetatypePropertiesService.findByCatalogAndPropertyAndMetatype(catalog, property, metatype, em);
 			if(entity===null){
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
-			await this.validateDelete(entity, actor, catalog, property, metatype, em);
-			return await this.catalogMetatypePropertiesService.remove(entity, em);
+			await this.validateDelete(entity, actor, catalog, property, metatype, em, fm);
+			await this.catalogMetatypePropertiesService.remove(entity, em);
+			await this.afterDelete(entity, actor, catalog, property, metatype, em, fm);
 		});
 	}
 	
-	async validateDelete(entity, actor: Actors, catalog: number, property: number, metatype: number, em: EntityManager) { }
+	async validateDelete(entity, actor: Actors, catalog: number, property: number, metatype: number, em: EntityManager, fm: FsPatch) { }
+	async afterDelete(entity, actor: Actors, catalog: number, property: number, metatype: number, em: EntityManager, fm: FsPatch) { }
 	
 }

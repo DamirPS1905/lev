@@ -11,6 +11,7 @@ import { Actors } from './../../../entities/Actors';
 import { CreatePropertyPrimitiveDto } from './../../dtos/create-property-primitive.dto';
 import { UpdatePropertyPrimitiveDto } from './../../dtos/update-property-primitive.dto';
 import { PropertyPrimitivesService } from './../../services/property-primitives.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';

@@ -10,6 +10,7 @@ import { CreateOptionsPropertyValueDto } from './../../dtos/create-options-prope
 import { UpdateOptionsPropertyValueDto } from './../../dtos/update-options-property-value.dto';
 import { OptionsPropertyValuesService } from './../../services/options-property-values.service';
 import { PropertyTypesService } from './../../services/property-types.service';
+import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';

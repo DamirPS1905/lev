@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 16.1
+-- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
 SET statement_timeout = 0;
@@ -682,7 +682,8 @@ ALTER TABLE public.collection_property_values OWNER TO dev;
 
 CREATE TABLE public.companies (
     id integer NOT NULL,
-    title character varying NOT NULL
+    title character varying NOT NULL,
+    balance numeric(15,2) DEFAULT 0 NOT NULL
 );
 
 
@@ -1822,8 +1823,8 @@ COPY public.collection_property_values (instance, property, "order", value) FROM
 -- Data for Name: companies; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.companies (id, title) FROM stdin;
-1	test
+COPY public.companies (id, title, balance) FROM stdin;
+1	test	0.00
 \.
 
 
@@ -1896,6 +1897,12 @@ COPY public.file_load_tasks (id, url, processed, loaded, key, error, as_image, c
 --
 
 COPY public.instance_types (id, title) FROM stdin;
+1	Type
+2	Brand
+3	Collection
+4	Product
+5	Offer
+6	Property
 \.
 
 
@@ -2027,10 +2034,10 @@ COPY public.product_relations (id, catalog, title, kind, "symmetric") FROM stdin
 --
 
 COPY public.products_relation_kinds (id, title) FROM stdin;
-1	Product-to-product
-2	Product-to-offer
-3	Offer-to-product
-4	Offer-to-offer
+1	Product to product
+2	Product to offer
+3	Offer to product
+4	Offer to offer
 \.
 
 
@@ -2093,7 +2100,7 @@ COPY public.property_values (value_key, type, value) FROM stdin;
 26	1	{"value": "ger"}
 27	2	{"value": true}
 34	8	{"file": "0-1-1-0-ff17f6baff7855f820ddf.png", "title": "yopta", "fileExt": "png"}
-35	8	{"file": "0-1-1-0-f17f6baff7855f820ddff.jpeg", "title": "yopta"}
+35	8	{"file": {}, "title": "hou"}
 \.
 
 
@@ -3433,7 +3440,7 @@ SELECT pg_catalog.setval('public.file_load_tasks_id_seq', 4, true);
 -- Name: instance_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.instance_types_id_seq', 1, false);
+SELECT pg_catalog.setval('public.instance_types_id_seq', 6, true);
 
 
 --

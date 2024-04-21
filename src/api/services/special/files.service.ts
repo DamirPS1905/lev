@@ -6,8 +6,8 @@ import { lookup, extension } from 'mime-types'
 @Injectable()
 export class FilesService{
 	
-	getPatch(): Patch{
-		return new Patch();
+	getPatch(): FsPatch{
+		return new FsPatch();
 	}
 	
 	public async transactional(cb){
@@ -23,7 +23,7 @@ export class FilesService{
 	
 }
 
-export class Patch{
+export class FsPatch{
 	
 	private changes = [];
 	
@@ -32,7 +32,7 @@ export class Patch{
 			await rename(path, path+'.bak');
 			this.changes.unshift({type: 'backup', path: path});
 		}
-		await writeFile(buffer, path);
+		await writeFile(path, buffer);
 		this.changes.unshift({type: 'write', path: path});
 	}
 	
