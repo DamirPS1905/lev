@@ -35,6 +35,28 @@
             "class": "AmountsController"
         }
     ],
+    "extraServices": [
+        {
+            "path": "api\/services\/special\/files.service",
+            "class": "FilesService"
+        }
+    ],
+    "baseUsedServices": [
+        {
+            "from": "@mikro-orm\/postgresql",
+            "class": "EntityManager",
+            "var": "em"
+        },
+        {
+            "path": "api\/services\/special\/files.service",
+            "class": "FilesService",
+            "var": "fm"
+        }
+    ],
+    "baseService": {
+        "path": "api\/services\/abstract\/abstract.service",
+        "class": "AService"
+    },
     "imports": [
         {
             "from": "@nestjs\/axios",
@@ -1620,6 +1642,50 @@
                 },
                 "key": {
                     "def": "def"
+                }
+            }
+        },
+        "instance_versions": {
+            "def": "def",
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": false,
+            "fields": {
+                "company": {
+                    "def": "company"
+                },
+                "catalog": {
+                    "def": "def"
+                },
+                "instance_type": {
+                    "def": "def"
+                },
+                "instance": {
+                    "def": "def"
+                },
+                "version": {
+                    "def": "def"
+                },
+                "deleted": {
+                    "def": "def"
+                }
+            }
+        },
+        "instance_types": {
+            "def": "def",
+            "create": false,
+            "update": false,
+            "delete": false,
+            "getOne": false,
+            "fields": {
+                "id": {
+                    "def": "id",
+                    "unique": true
+                },
+                "title": {
+                    "def": "title",
+                    "unique": true
                 }
             }
         }

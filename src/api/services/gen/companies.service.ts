@@ -9,20 +9,19 @@
 import { Companies } from './../../../entities/Companies';
 import { CreateCompanyDto } from './../../dtos/create-company.dto';
 import { UpdateCompanyDto } from './../../dtos/update-company.dto';
+import { AService } from './../abstract/abstract.service';
+import { FilesService } from './../special/files.service';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, wrap } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class GenCompaniesService {
+export class GenCompaniesService extends AService{
 	
 	constructor(
-		protected readonly em: EntityManager,
-	){}
-	
-	getEm(emt: EntityManager = null) {
-		return emt || this.em.fork();
-	}
+		em: EntityManager,
+		fm: FilesService,
+	){ super(em, fm); }
 	
 	async create(createDto: CreateCompanyDto, emt: EntityManager = null) {
 		const em = this.getEm(emt),
@@ -42,9 +41,6 @@ export class GenCompaniesService {
 		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
-	
-	async transactional(cb){ return await this.em.fork().transactional(cb); }
-	
 	
 	findById(id: number, emt: EntityManager = null) {
 		const em = this.getEm(emt);

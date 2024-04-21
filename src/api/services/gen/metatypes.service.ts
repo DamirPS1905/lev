@@ -9,20 +9,19 @@
 import { Metatypes } from './../../../entities/Metatypes';
 import { CreateMetatypeDto } from './../../dtos/create-metatype.dto';
 import { UpdateMetatypeDto } from './../../dtos/update-metatype.dto';
+import { AService } from './../abstract/abstract.service';
+import { FilesService } from './../special/files.service';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, wrap } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class GenMetatypesService {
+export class GenMetatypesService extends AService{
 	
 	constructor(
-		protected readonly em: EntityManager,
-	){}
-	
-	getEm(emt: EntityManager = null) {
-		return emt || this.em.fork();
-	}
+		em: EntityManager,
+		fm: FilesService,
+	){ super(em, fm); }
 	
 	async create(createDto: CreateMetatypeDto, emt: EntityManager = null) {
 		const em = this.getEm(emt),
@@ -42,9 +41,6 @@ export class GenMetatypesService {
 		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
-	
-	async transactional(cb){ return await this.em.fork().transactional(cb); }
-	
 	
 	findByTitle(title: string, emt: EntityManager = null) {
 		const em = this.getEm(emt);

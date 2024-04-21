@@ -9,20 +9,19 @@
 import { BrandPropertyValues } from './../../../entities/BrandPropertyValues';
 import { CreateBrandPropertyValueDto } from './../../dtos/create-brand-property-value.dto';
 import { UpdateBrandPropertyValueDto } from './../../dtos/update-brand-property-value.dto';
+import { AService } from './../abstract/abstract.service';
+import { FilesService } from './../special/files.service';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, wrap } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class GenBrandPropertyValuesService {
+export class GenBrandPropertyValuesService extends AService{
 	
 	constructor(
-		protected readonly em: EntityManager,
-	){}
-	
-	getEm(emt: EntityManager = null) {
-		return emt || this.em.fork();
-	}
+		em: EntityManager,
+		fm: FilesService,
+	){ super(em, fm); }
 	
 	async create(createDto: CreateBrandPropertyValueDto, emt: EntityManager = null) {
 		const em = this.getEm(emt),
@@ -42,9 +41,6 @@ export class GenBrandPropertyValuesService {
 		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
-	
-	async transactional(cb){ return await this.em.fork().transactional(cb); }
-	
 	
 	findByInstanceAndPropertyAndOrder(instance: number, property: number, order: number, emt: EntityManager = null) {
 		const em = this.getEm(emt);

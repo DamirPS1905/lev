@@ -49,7 +49,8 @@ require('dotenv').config();
 	  onProcessedMetadata: (metadata, platform) => {
 	    metadata.forEach(meta => {
 		    meta.indexes.forEach(p => {
-			    p.expression = p.expression.replace(/['']/g, "\\'");
+			    if(p.expression)
+			    	p.expression = p.expression.replace(/['']/g, "\\'");
 		    })
 		    const tbl = meta.collection;
 		    meta.props.forEach(prop => {

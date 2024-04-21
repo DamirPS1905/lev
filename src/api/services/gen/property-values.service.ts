@@ -9,20 +9,19 @@
 import { PropertyValues } from './../../../entities/PropertyValues';
 import { CreatePropertyValueDto } from './../../dtos/create-property-value.dto';
 import { UpdatePropertyValueDto } from './../../dtos/update-property-value.dto';
+import { AService } from './../abstract/abstract.service';
+import { FilesService } from './../special/files.service';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, wrap } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class GenPropertyValuesService {
+export class GenPropertyValuesService extends AService{
 	
 	constructor(
-		protected readonly em: EntityManager,
-	){}
-	
-	getEm(emt: EntityManager = null) {
-		return emt || this.em.fork();
-	}
+		em: EntityManager,
+		fm: FilesService,
+	){ super(em, fm); }
 	
 	async create(createDto: CreatePropertyValueDto, emt: EntityManager = null) {
 		const em = this.getEm(emt),
@@ -42,9 +41,6 @@ export class GenPropertyValuesService {
 		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
-	
-	async transactional(cb){ return await this.em.fork().transactional(cb); }
-	
 	
 	findByValueKey(valueKey: bigint, emt: EntityManager = null) {
 		const em = this.getEm(emt);

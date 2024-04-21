@@ -9,20 +9,19 @@
 import { CatalogProperties } from './../../../entities/CatalogProperties';
 import { CreateCatalogPropertyDto } from './../../dtos/create-catalog-property.dto';
 import { UpdateCatalogPropertyDto } from './../../dtos/update-catalog-property.dto';
+import { AService } from './../abstract/abstract.service';
+import { FilesService } from './../special/files.service';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, wrap } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class GenCatalogPropertiesService {
+export class GenCatalogPropertiesService extends AService{
 	
 	constructor(
-		protected readonly em: EntityManager,
-	){}
-	
-	getEm(emt: EntityManager = null) {
-		return emt || this.em.fork();
-	}
+		em: EntityManager,
+		fm: FilesService,
+	){ super(em, fm); }
 	
 	async create(createDto: CreateCatalogPropertyDto, emt: EntityManager = null) {
 		const em = this.getEm(emt),
@@ -42,9 +41,6 @@ export class GenCatalogPropertiesService {
 		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
-	
-	async transactional(cb){ return await this.em.fork().transactional(cb); }
-	
 	
 	findByCatalogAndTitle(catalog: number, title: string, emt: EntityManager = null) {
 		const em = this.getEm(emt);

@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 16.1
--- Dumped by pg_dump version 16.1
+-- Dumped by pg_dump version 16.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -788,6 +788,56 @@ ALTER SEQUENCE public.file_load_tasks_id_seq OWNED BY public.file_load_tasks.id;
 
 
 --
+-- Name: instance_types; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.instance_types (
+    id integer NOT NULL,
+    title character varying NOT NULL
+);
+
+
+ALTER TABLE public.instance_types OWNER TO dev;
+
+--
+-- Name: instance_types_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.instance_types_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.instance_types_id_seq OWNER TO dev;
+
+--
+-- Name: instance_types_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
+--
+
+ALTER SEQUENCE public.instance_types_id_seq OWNED BY public.instance_types.id;
+
+
+--
+-- Name: instance_versions; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.instance_versions (
+    company integer NOT NULL,
+    catalog integer NOT NULL,
+    instance_type integer NOT NULL,
+    instance bigint NOT NULL,
+    version bigint NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.instance_versions OWNER TO dev;
+
+--
 -- Name: offer_amounts; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -1387,6 +1437,20 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: versions_seq; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.versions_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.versions_seq OWNER TO dev;
+
+--
 -- Name: actor_types id; Type: DEFAULT; Schema: public; Owner: dev
 --
 
@@ -1475,6 +1539,13 @@ ALTER TABLE ONLY public.currencies ALTER COLUMN id SET DEFAULT nextval('public.c
 --
 
 ALTER TABLE ONLY public.file_load_tasks ALTER COLUMN id SET DEFAULT nextval('public.file_load_tasks_id_seq'::regclass);
+
+
+--
+-- Name: instance_types id; Type: DEFAULT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.instance_types ALTER COLUMN id SET DEFAULT nextval('public.instance_types_id_seq'::regclass);
 
 
 --
@@ -1603,7 +1674,7 @@ COPY public.brand_property_values (instance, property, "order", value) FROM stdi
 --
 
 COPY public.catalog_brand_collections (id, brand, title, image) FROM stdin;
-1	6	ops	0-1-1-0-f17f6baff7855f820ddff.jpeg
+1	6	cool	0-1-1-0-f17f6baff7855f820ddff.jpeg
 \.
 
 
@@ -1817,6 +1888,22 @@ COPY public.file_load_tasks (id, url, processed, loaded, key, error, as_image, c
 2	//static2.bigstockphoto.com/5/2/6/large1500/62597684.jpg	t	f	0-1-1-0-b6c8b211bcb583a7fe818.https	-3007: ENOTFOUND	t	1
 3	https://static2.bigstockphoto.com/5/2/6/large1500/62597684.jpg	t	t	0-1-1-0-d091a564f29611fe42300.jpeg	-3007: ENOTFOUND	t	1
 4	https://static2.bigstockphoto.com/5/2/6/large1500/62597684.jpg	t	f	0-1-1-0-963ba439c67c0fc1978c1.jpg	-3007: ENOTFOUND	t	1
+\.
+
+
+--
+-- Data for Name: instance_types; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.instance_types (id, title) FROM stdin;
+\.
+
+
+--
+-- Data for Name: instance_versions; Type: TABLE DATA; Schema: public; Owner: dev
+--
+
+COPY public.instance_versions (company, catalog, instance_type, instance, version, deleted) FROM stdin;
 \.
 
 
@@ -3343,6 +3430,13 @@ SELECT pg_catalog.setval('public.file_load_tasks_id_seq', 4, true);
 
 
 --
+-- Name: instance_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.instance_types_id_seq', 1, false);
+
+
+--
 -- Name: price_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
@@ -3417,6 +3511,13 @@ SELECT pg_catalog.setval('public.units_id_seq', 5, true);
 --
 
 SELECT pg_catalog.setval('public.users_id_seq', 1, false);
+
+
+--
+-- Name: versions_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.versions_seq', 1, false);
 
 
 --
@@ -3673,6 +3774,30 @@ ALTER TABLE ONLY public.file_load_tasks
 
 ALTER TABLE ONLY public.collection_property_values
     ADD CONSTRAINT instance_property_values_pk PRIMARY KEY (instance, property, "order");
+
+
+--
+-- Name: instance_types instance_types_pk; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.instance_types
+    ADD CONSTRAINT instance_types_pk PRIMARY KEY (id);
+
+
+--
+-- Name: instance_types instance_types_title_uind; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.instance_types
+    ADD CONSTRAINT instance_types_title_uind UNIQUE (title);
+
+
+--
+-- Name: instance_versions instance_versions_pk; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.instance_versions
+    ADD CONSTRAINT instance_versions_pk PRIMARY KEY (instance_type, instance);
 
 
 --
@@ -3968,6 +4093,13 @@ ALTER TABLE ONLY public.users
 --
 
 CREATE INDEX file_load_tasks_processed_ind ON public.file_load_tasks USING btree (processed DESC);
+
+
+--
+-- Name: instance_versions_company_version_ind; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE INDEX instance_versions_company_version_ind ON public.instance_versions USING btree (company DESC, version DESC);
 
 
 --

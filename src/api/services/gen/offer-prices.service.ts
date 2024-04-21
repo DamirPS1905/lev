@@ -9,20 +9,19 @@
 import { OfferPrices } from './../../../entities/OfferPrices';
 import { CreateOfferPriceDto } from './../../dtos/create-offer-price.dto';
 import { UpdateOfferPriceDto } from './../../dtos/update-offer-price.dto';
+import { AService } from './../abstract/abstract.service';
+import { FilesService } from './../special/files.service';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, wrap } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class GenOfferPricesService {
+export class GenOfferPricesService extends AService{
 	
 	constructor(
-		protected readonly em: EntityManager,
-	){}
-	
-	getEm(emt: EntityManager = null) {
-		return emt || this.em.fork();
-	}
+		em: EntityManager,
+		fm: FilesService,
+	){ super(em, fm); }
 	
 	async create(createDto: CreateOfferPriceDto, emt: EntityManager = null) {
 		const em = this.getEm(emt),
@@ -42,9 +41,6 @@ export class GenOfferPricesService {
 		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
-	
-	async transactional(cb){ return await this.em.fork().transactional(cb); }
-	
 	
 	findByOfferAndPriceType(offer: bigint, priceType: number, emt: EntityManager = null) {
 		const em = this.getEm(emt);

@@ -9,20 +9,19 @@
 import { OptionsPropertyValues } from './../../../entities/OptionsPropertyValues';
 import { CreateOptionsPropertyValueDto } from './../../dtos/create-options-property-value.dto';
 import { UpdateOptionsPropertyValueDto } from './../../dtos/update-options-property-value.dto';
+import { AService } from './../abstract/abstract.service';
+import { FilesService } from './../special/files.service';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, wrap } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class GenOptionsPropertyValuesService {
+export class GenOptionsPropertyValuesService extends AService{
 	
 	constructor(
-		protected readonly em: EntityManager,
-	){}
-	
-	getEm(emt: EntityManager = null) {
-		return emt || this.em.fork();
-	}
+		em: EntityManager,
+		fm: FilesService,
+	){ super(em, fm); }
 	
 	async create(createDto: CreateOptionsPropertyValueDto, emt: EntityManager = null) {
 		const em = this.getEm(emt),
@@ -42,9 +41,6 @@ export class GenOptionsPropertyValuesService {
 		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
-	
-	async transactional(cb){ return await this.em.fork().transactional(cb); }
-	
 	
 	findByPropertyAndHash(property: number, hash: string, emt: EntityManager = null) {
 		const em = this.getEm(emt);

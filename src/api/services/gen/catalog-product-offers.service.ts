@@ -9,20 +9,19 @@
 import { CatalogProductOffers } from './../../../entities/CatalogProductOffers';
 import { CreateCatalogProductOfferDto } from './../../dtos/create-catalog-product-offer.dto';
 import { UpdateCatalogProductOfferDto } from './../../dtos/update-catalog-product-offer.dto';
+import { AService } from './../abstract/abstract.service';
+import { FilesService } from './../special/files.service';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, wrap } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class GenCatalogProductOffersService {
+export class GenCatalogProductOffersService extends AService{
 	
 	constructor(
-		protected readonly em: EntityManager,
-	){}
-	
-	getEm(emt: EntityManager = null) {
-		return emt || this.em.fork();
-	}
+		em: EntityManager,
+		fm: FilesService,
+	){ super(em, fm); }
 	
 	async create(createDto: CreateCatalogProductOfferDto, emt: EntityManager = null) {
 		const em = this.getEm(emt),
@@ -42,9 +41,6 @@ export class GenCatalogProductOffersService {
 		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
-	
-	async transactional(cb){ return await this.em.fork().transactional(cb); }
-	
 	
 	findById(id: bigint, emt: EntityManager = null) {
 		const em = this.getEm(emt);

@@ -8,6 +8,7 @@ import { EntityManager } from '@mikro-orm/postgresql'
 import { PropertyTuningDto } from './../dtos/property-tuning.dto'
 import { FileLoadTasksService } from './file-load-tasks.service'
 import { CreateFileLoadTaskDto } from './../dtos/create-file-load-task.dto'
+import { FilesService } from './special/files.service';
 
 @Injectable()
 export class PropertyTypesService extends GenPropertyTypesService {
@@ -17,9 +18,10 @@ export class PropertyTypesService extends GenPropertyTypesService {
 	
 	constructor(
 		protected readonly fileLoadTasksService: FileLoadTasksService,
-		protected readonly em: EntityManager,
+		em: EntityManager,
+		fm: FilesService,
 	){
-		super(em);
+		super(em, fm);
 	}
 	
   //@Cron('* * * * * *')

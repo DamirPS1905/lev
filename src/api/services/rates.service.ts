@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { EntityManager, wrap } from '@mikro-orm/postgresql'
 import { CurrenciesService } from './currencies.service'
 import { RatesSourcesService } from './rates-sources.service'
+import { FilesService } from './special/files.service';
 
 @Injectable()
 export class RatesService extends GenRatesService {
@@ -10,9 +11,10 @@ export class RatesService extends GenRatesService {
 	constructor(
 		protected readonly currenciesService: CurrenciesService,
 		protected readonly ratesSourcesService: RatesSourcesService,
-		protected readonly em: EntityManager,
+		em: EntityManager,
+		fm: FilesService,
 	){
-		super(em);
+		super(em, fm);
 	}
 	
 	async getRate(from: number, to: number, sourceId: number = 1){

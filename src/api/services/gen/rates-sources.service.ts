@@ -9,20 +9,19 @@
 import { RatesSources } from './../../../entities/RatesSources';
 import { CreateRatesSourceDto } from './../../dtos/create-rates-source.dto';
 import { UpdateRatesSourceDto } from './../../dtos/update-rates-source.dto';
+import { AService } from './../abstract/abstract.service';
+import { FilesService } from './../special/files.service';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, wrap } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class GenRatesSourcesService {
+export class GenRatesSourcesService extends AService{
 	
 	constructor(
-		protected readonly em: EntityManager,
-	){}
-	
-	getEm(emt: EntityManager = null) {
-		return emt || this.em.fork();
-	}
+		em: EntityManager,
+		fm: FilesService,
+	){ super(em, fm); }
 	
 	async create(createDto: CreateRatesSourceDto, emt: EntityManager = null) {
 		const em = this.getEm(emt),
@@ -42,9 +41,6 @@ export class GenRatesSourcesService {
 		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
-	
-	async transactional(cb){ return await this.em.fork().transactional(cb); }
-	
 	
 	findByTitle(title: string, emt: EntityManager = null) {
 		const em = this.getEm(emt);

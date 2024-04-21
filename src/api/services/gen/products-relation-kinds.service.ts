@@ -9,20 +9,19 @@
 import { ProductsRelationKinds } from './../../../entities/ProductsRelationKinds';
 import { CreateProductsRelationKindDto } from './../../dtos/create-products-relation-kind.dto';
 import { UpdateProductsRelationKindDto } from './../../dtos/update-products-relation-kind.dto';
+import { AService } from './../abstract/abstract.service';
+import { FilesService } from './../special/files.service';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, wrap } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class GenProductsRelationKindsService {
+export class GenProductsRelationKindsService extends AService{
 	
 	constructor(
-		protected readonly em: EntityManager,
-	){}
-	
-	getEm(emt: EntityManager = null) {
-		return emt || this.em.fork();
-	}
+		em: EntityManager,
+		fm: FilesService,
+	){ super(em, fm); }
 	
 	async create(createDto: CreateProductsRelationKindDto, emt: EntityManager = null) {
 		const em = this.getEm(emt),
@@ -42,9 +41,6 @@ export class GenProductsRelationKindsService {
 		const em = this.getEm(emt);
 		return em.remove(instance).flush();
 	}
-	
-	async transactional(cb){ return await this.em.fork().transactional(cb); }
-	
 	
 	findByTitle(title: string, emt: EntityManager = null) {
 		const em = this.getEm(emt);

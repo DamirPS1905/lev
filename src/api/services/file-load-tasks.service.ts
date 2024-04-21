@@ -9,6 +9,7 @@ import { CreateFileLoadTaskDto } from './../dtos/create-file-load-task.dto'
 import { EntityManager, wrap } from '@mikro-orm/postgresql'
 import { writeFile } from 'fs/promises';
 import { FileLoadTasks } from './../../entities/FileLoadTasks';
+import { FilesService } from './special/files.service';
 
 const gm = require("gm");
 
@@ -19,9 +20,10 @@ export class FileLoadTasksService extends GenFileLoadTasksService {
   
 	constructor(
 		em: EntityManager,
+		fm: FilesService,
 		private readonly httpService: HttpService,
 	){
-		super(em);
+		super(em, fm);
 	}
 	
   @Cron('* * * * * *')
@@ -131,8 +133,17 @@ export class FileLoadTasksService extends GenFileLoadTasksService {
 	private write(im, path){
 		return new Promise((resolve, reject) => {
 	    im.write(path, function(error) {
-			  if (error) reject(error);
+			  if(error) reject(error);
 			  else resolve(im)
+			})
+	  })
+	}
+	
+	private toBuffer(im){
+		return new Promise<Buffer>((resolve, reject) => {
+	    im.toBuffer(function(error, buffer) {
+			  if(error) reject(error);
+			  else resolve(buffer)
 			})
 	  })
 	}
@@ -140,7 +151,7 @@ export class FileLoadTasksService extends GenFileLoadTasksService {
 	private size(im){
 		return new Promise<any>((resolve, reject) => {
 	    im.size(function(error, size) {
-			  if (error) reject(error);
+			  if(error) reject(error);
 			  else resolve(size)
 			})
 	  })

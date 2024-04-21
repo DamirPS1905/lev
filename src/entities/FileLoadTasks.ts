@@ -1,4 +1,4 @@
-import { Entity, type Hidden, ManyToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
+import { Entity, type Hidden, Index, ManyToOne, type Opt, PrimaryKey, Property } from '@mikro-orm/core';
 import { Companies } from './Companies';
 
 @Entity()
@@ -10,6 +10,7 @@ export class FileLoadTasks {
   @Property()
   url!: string;
 
+  @Index({ name: 'file_load_tasks_processed_ind' })
   @Property({ type: 'boolean' })
   processed: boolean & Opt = false;
 
