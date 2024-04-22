@@ -1,4 +1,4 @@
-import { Entity, type Hidden, Index, ManyToOne, type Opt, PrimaryKeyProp, Property } from '@mikro-orm/core';
+import { Entity, Index, ManyToOne, type Opt, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { CatalogProducts } from './CatalogProducts';
 import { PriceTypes } from './PriceTypes';
 
@@ -34,5 +34,8 @@ export class ProductPrices {
 
   @Property({ type: 'boolean' })
   deleted: boolean & Opt = false;
+
+  @Property({ autoincrement: true })
+  version!: bigint;
 
 }

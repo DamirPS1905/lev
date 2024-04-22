@@ -156,6 +156,24 @@ $$;
 ALTER FUNCTION public.catalogs_after_insert_fnc() OWNER TO dev;
 
 --
+-- Name: offer_prices_before_update_fnc(); Type: FUNCTION; Schema: public; Owner: dev
+--
+
+CREATE FUNCTION public.offer_prices_before_update_fnc() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+	BEGIN
+NEW.last_change = NEW."index" - OLD."index";
+NEW.changed_at = CURRENT_TIMESTAMP;
+NEW.version = (SELECT nextval('offer_prices_time')::int8);
+RETURN NEW;
+	END;
+$$;
+
+
+ALTER FUNCTION public.offer_prices_before_update_fnc() OWNER TO dev;
+
+--
 -- Name: prices_before_update_fnc(); Type: FUNCTION; Schema: public; Owner: dev
 --
 
@@ -171,6 +189,24 @@ $$;
 
 
 ALTER FUNCTION public.prices_before_update_fnc() OWNER TO dev;
+
+--
+-- Name: product_prices_before_update_fnc(); Type: FUNCTION; Schema: public; Owner: dev
+--
+
+CREATE FUNCTION public.product_prices_before_update_fnc() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+	BEGIN
+NEW.last_change = NEW."index" - OLD."index";
+NEW.changed_at = CURRENT_TIMESTAMP;
+NEW.version = (SELECT nextval('product_prices_time')::int8);
+RETURN NEW;
+	END;
+$$;
+
+
+ALTER FUNCTION public.product_prices_before_update_fnc() OWNER TO dev;
 
 --
 -- Name: rates_after_update_insert_fnc(); Type: FUNCTION; Schema: public; Owner: dev
@@ -854,6 +890,20 @@ CREATE TABLE public.offer_amounts (
 ALTER TABLE public.offer_amounts OWNER TO dev;
 
 --
+-- Name: offer_prices_time; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.offer_prices_time
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.offer_prices_time OWNER TO dev;
+
+--
 -- Name: offer_prices; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -867,6 +917,7 @@ CREATE TABLE public.offer_prices (
     index numeric(18,2) NOT NULL,
     changed_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted boolean DEFAULT false NOT NULL,
+    version bigint DEFAULT nextval('public.offer_prices_time'::regclass) NOT NULL,
     CONSTRAINT offer_prices_value_check CHECK ((value >= (0)::numeric))
 );
 
@@ -990,6 +1041,20 @@ ALTER SEQUENCE public.price_types_id_seq OWNED BY public.price_types.id;
 
 
 --
+-- Name: product_prices_time; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.product_prices_time
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.product_prices_time OWNER TO dev;
+
+--
 -- Name: product_prices; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -1003,6 +1068,7 @@ CREATE TABLE public.product_prices (
     index numeric(18,2) NOT NULL,
     changed_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted boolean DEFAULT false NOT NULL,
+    version bigint DEFAULT nextval('public.product_prices_time'::regclass) NOT NULL,
     CONSTRAINT product_prices_value_check CHECK ((value >= (0)::numeric))
 );
 
@@ -1940,8 +2006,9 @@ COPY public.offer_amounts (offer, store, amount, changed_at) FROM stdin;
 -- Data for Name: offer_prices; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.offer_prices (offer, price_type, value, currency, last_change, updated_at, index, changed_at, deleted) FROM stdin;
-1	1	3.50	16	26.27	2024-04-11 04:56:14.803+03	326.27	2024-04-11 04:56:14.668721+03	f
+COPY public.offer_prices (offer, price_type, value, currency, last_change, updated_at, index, changed_at, deleted, version) FROM stdin;
+1	1	3.16	16	-28.94	2024-04-23 00:55:20.547+03	297.33	2024-04-23 00:55:20.329963+03	f	1
+5	1	2.16	16	0.00	2024-04-23 00:58:17.91+03	203.24	2024-04-23 00:58:17.838802+03	f	4
 \.
 
 
@@ -2008,10 +2075,10 @@ COPY public.price_types (id, company, title, display_currency, base_currency) FR
 -- Data for Name: product_prices; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.product_prices (product, price_type, value, currency, last_change, updated_at, index, changed_at, deleted) FROM stdin;
-1	1	2.00	16	130.64	2024-04-11 04:27:45.017+03	186.44	2024-04-11 04:27:44.839267+03	f
-4	1	6.00	16	0.00	2024-04-22 05:25:22.573+03	564.55	2024-04-22 05:25:22.403223+03	f
-5	1	7.00	16	0.00	2024-04-22 05:25:37.185+03	658.65	2024-04-22 05:26:15.933639+03	t
+COPY public.product_prices (product, price_type, value, currency, last_change, updated_at, index, changed_at, deleted, version) FROM stdin;
+4	1	4.00	16	-188.18	2024-04-23 00:23:27.97+03	376.37	2024-04-23 00:23:27.793011+03	f	1
+5	1	6.00	16	94.09	2024-04-23 00:24:11.47+03	564.55	2024-04-23 00:24:11.367968+03	f	2
+1	1	6.47	16	422.34	2024-04-23 00:24:34.997+03	608.78	2024-04-23 00:24:34.918384+03	f	3
 \.
 
 
@@ -3448,10 +3515,24 @@ SELECT pg_catalog.setval('public.instance_types_id_seq', 6, true);
 
 
 --
+-- Name: offer_prices_time; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.offer_prices_time', 4, true);
+
+
+--
 -- Name: price_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
 SELECT pg_catalog.setval('public.price_types_id_seq', 2, true);
+
+
+--
+-- Name: product_prices_time; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.product_prices_time', 3, true);
 
 
 --
@@ -4264,14 +4345,14 @@ CREATE TRIGGER catalogs_after_insert AFTER INSERT ON public.catalogs FOR EACH RO
 -- Name: offer_prices offer_prices_before_update; Type: TRIGGER; Schema: public; Owner: dev
 --
 
-CREATE TRIGGER offer_prices_before_update BEFORE UPDATE ON public.offer_prices FOR EACH ROW WHEN (((old.index IS DISTINCT FROM new.index) OR (old.deleted IS DISTINCT FROM new.deleted))) EXECUTE FUNCTION public.prices_before_update_fnc();
+CREATE TRIGGER offer_prices_before_update BEFORE UPDATE ON public.offer_prices FOR EACH ROW WHEN (((old.index IS DISTINCT FROM new.index) OR (old.deleted IS DISTINCT FROM new.deleted))) EXECUTE FUNCTION public.offer_prices_before_update_fnc();
 
 
 --
 -- Name: product_prices product_prices_before_update; Type: TRIGGER; Schema: public; Owner: dev
 --
 
-CREATE TRIGGER product_prices_before_update BEFORE UPDATE ON public.product_prices FOR EACH ROW WHEN (((old.index IS DISTINCT FROM new.index) OR (old.deleted IS DISTINCT FROM new.deleted))) EXECUTE FUNCTION public.prices_before_update_fnc();
+CREATE TRIGGER product_prices_before_update BEFORE UPDATE ON public.product_prices FOR EACH ROW WHEN (((old.index IS DISTINCT FROM new.index) OR (old.deleted IS DISTINCT FROM new.deleted))) EXECUTE FUNCTION public.product_prices_before_update_fnc();
 
 
 --

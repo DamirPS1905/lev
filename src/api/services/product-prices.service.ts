@@ -24,6 +24,17 @@ export class ProductPricesService extends GenProductPricesService {
 		  .getResult();
 	}
 	
+	async findNewByPriceTypeAndCatalog(priceType: number, catalog: number, from: bigint, limit: number, emt: EntityManager = null) {
+		return await this.getEm(emt)
+			.createQueryBuilder(ProductPrices, 'pp')
+		  .select(['pp.*'])
+		  .join('pp.product', 'p')
+		  .where({'p.catalog': catalog, 'pp.version': {$gt: from}, 'pp.priceType': priceType })
+		  .orderBy({ 'pp.version': "ASC" })
+		  .limit(limit)
+		  .getResult();
+	}
+	
 	async listActualByPriceTypeAndCatalog(priceType: number, catalog: number, offset: number, limit: number, emt: EntityManager = null) {
 		return await this.getEm(emt)
 			.createQueryBuilder(ProductPrices, 'pp')

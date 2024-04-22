@@ -5,7 +5,7 @@ import { UpdateProductPriceDto } from './../dtos/update-product-price.dto'
 import { ProductPricesService } from './../services/product-prices.service'
 import { GenProductPricesController } from './gen/product-prices.controller'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Controller, DefaultValuePipe, UseGuards, Body, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Query } from '@nestjs/common'
+import { Controller, DefaultValuePipe, ParseEnumPipe, UseGuards, Body, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ParseBigIntPipe } from './../../pipes/parse-bigint.pipe'
 import { ApiQuery, ApiOperation, ApiParam } from '@nestjs/swagger'
@@ -29,7 +29,7 @@ export class ProductPricesController extends GenProductPricesController {
 		return await this.productPricesService.findActualByProduct(product);
 	}
 	
-	@Get('price/:priceType/all')
+	@Get('price/:priceType/products/all')
 	@ApiOperation({summary: "Получение цен определенного типа товаров в каталоге"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'priceType', description: 'ID типа цены'})
@@ -48,6 +48,26 @@ export class ProductPricesController extends GenProductPricesController {
 			throw new HttpException('Price type not found', HttpStatus.NOT_FOUND);
 		}
 		return await this.productPricesService.listActualByPriceTypeAndCatalog(priceType, catalog, offset, limit);
+	}
+	
+	@Get('price/:priceType/products/updates-from/:version')
+	@ApiOperation({summary: "Получение цен определенного типа товаров в каталоге"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'priceType', description: 'ID типа цены'})
+	@ApiParam({name: 'version', description: 'Последняя версия цен товаров полученная от апи'})
+	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
+	async findNewByType(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('priceType', ParseIntPipe) priceType: number, @Param('version', ParseBigIntPipe) version: bigint, @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number) {
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		const priceTypeIns = await this.priceTypesService.findById(priceType);
+		if(priceTypeIns===null || !(priceTypeIns.company.id===actor.company.id)){
+			throw new HttpException('Price type not found', HttpStatus.NOT_FOUND);
+		}
+		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
+		if(limit>5000) limit = 5000;
+		return await this.productPricesService.findNewByPriceTypeAndCatalog(priceType, catalog, version, limit);
 	}
 	
 	@Get('product/:product/price/:priceType')

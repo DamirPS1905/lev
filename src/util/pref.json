@@ -1063,6 +1063,10 @@
                 "deleted": {
                     "def": "def",
                     "dtoDisallow": true
+                },
+                "version": {
+                    "def": "def",
+                    "dto": false
                 }
             },
             "extraRouteParams": [
@@ -1081,11 +1085,12 @@
         },
         "offer_prices": {
             "def": "def",
-            "apiPathName": "offer\/:offer\/price",
+            "apiPathName": "",
             "create": false,
+            "list": false,
             "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog",
-            "methodPath": ":priceType",
+            "methodPath": "offer\/:offer\/price\/:priceType",
             "extraServices": "instance_versions, rates",
             "fields": {
                 "offer": {
@@ -1139,6 +1144,10 @@
                 "deleted": {
                     "def": "def",
                     "dtoDisallow": true
+                },
+                "version": {
+                    "def": "def",
+                    "dto": false
                 }
             },
             "extraRouteParams": [

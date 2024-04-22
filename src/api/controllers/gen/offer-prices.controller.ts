@@ -25,7 +25,7 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger';
 @ApiHeader({ name: 'X-API-KEY', required: true, description: 'Ваш идентефикатор апи' })
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Offer prices')
-@Controller('catalog/:catalog/offer/:offer/price')
+@Controller('catalog/:catalog/')
 export class GenOfferPricesController {
 	constructor(
 		protected readonly catalogProductOffersService: CatalogProductOffersService,
@@ -35,18 +35,6 @@ export class GenOfferPricesController {
 		protected readonly priceTypesService: PriceTypesService,
 		protected readonly ratesService: RatesService,
 	) { }
-	
-	async findAll(actor: Actors, catalog: number, offer: bigint) {
-		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
-			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
-		}
-		const offerIns = await this.catalogProductOffersService.findById(offer);
-		if(offerIns===null || !(offerIns.catalog.id===catalog)){
-			throw new HttpException('Offer not found', HttpStatus.NOT_FOUND);
-		}
-		return await this.offerPricesService.findAllByOffer(offer);
-	}
 	
 	async findOne(actor: Actors, catalog: number, offer: bigint, priceType: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);

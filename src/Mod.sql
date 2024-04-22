@@ -183,33 +183,6 @@ CREATE OR REPLACE TRIGGER catalogs_after_insert
 CREATE INDEX property_values_1_value ON property_values (((value ->> 'value')::varchar))
 WHERE type = 1;
 
-CREATE OR REPLACE FUNCTION public.prices_before_update_fnc()
-RETURNS trigger 
-AS $function$
-	BEGIN
-NEW.last_change = NEW."index" - OLD."index";
-NEW.changed_at = CURRENT_TIMESTAMP;
-RETURN NEW;
-	END;
-$function$
-LANGUAGE 'plpgsql';
-
-
-CREATE OR REPLACE TRIGGER product_prices_before_update
-    BEFORE UPDATE
-    ON public.product_prices
-    FOR EACH ROW
-	WHEN (OLD."index" IS DISTINCT FROM NEW."index") OR (OLD."deleted" IS DISTINCT FROM NEW."deleted")
-	EXECUTE PROCEDURE prices_before_update_fnc();
-
-CREATE OR REPLACE TRIGGER offer_prices_before_update
-    BEFORE UPDATE
-    ON public.offer_prices
-    FOR EACH ROW
-	WHEN (OLD."index" IS DISTINCT FROM NEW."index") OR (OLD."deleted" IS DISTINCT FROM NEW."deleted")
-	EXECUTE PROCEDURE prices_before_update_fnc();
-
-
 CREATE OR REPLACE FUNCTION public.catalog_types_after_insert_fnc()
 RETURNS trigger 
 AS $function$
@@ -341,3 +314,42 @@ CREATE OR REPLACE TRIGGER catalog_products_after_insert
 	AFTER INSERT ON catalog_products
 	FOR EACH ROW
 	EXECUTE FUNCTION catalog_products_after_insert_fnc();
+
+CREATE OR REPLACE FUNCTION public.product_prices_before_update_fnc()
+RETURNS trigger 
+AS $function$
+	BEGIN
+NEW.last_change = NEW."index" - OLD."index";
+NEW.changed_at = CURRENT_TIMESTAMP;
+NEW.version = (SELECT nextval('product_prices_time')::int8);
+RETURN NEW;
+	END;
+$function$
+LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION public.offer_prices_before_update_fnc()
+RETURNS trigger 
+AS $function$
+	BEGIN
+NEW.last_change = NEW."index" - OLD."index";
+NEW.changed_at = CURRENT_TIMESTAMP;
+NEW.version = (SELECT nextval('offer_prices_time')::int8);
+RETURN NEW;
+	END;
+$function$
+LANGUAGE 'plpgsql';
+
+
+CREATE OR REPLACE TRIGGER product_prices_before_update
+    BEFORE UPDATE
+    ON public.product_prices
+    FOR EACH ROW
+	WHEN ((OLD."index" IS DISTINCT FROM NEW."index") OR (OLD."deleted" IS DISTINCT FROM NEW."deleted"))
+	EXECUTE PROCEDURE product_prices_before_update_fnc();
+
+CREATE OR REPLACE TRIGGER offer_prices_before_update
+    BEFORE UPDATE
+    ON public.offer_prices
+    FOR EACH ROW
+	WHEN ((OLD."index" IS DISTINCT FROM NEW."index") OR (OLD."deleted" IS DISTINCT FROM NEW."deleted"))
+	EXECUTE PROCEDURE offer_prices_before_update_fnc();
