@@ -4202,10 +4202,24 @@ CREATE INDEX offer_prices_index_ind ON public.offer_prices USING btree (index DE
 
 
 --
+-- Name: offer_prices_price_type_version_ind; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE INDEX offer_prices_price_type_version_ind ON public.offer_prices USING btree (price_type, version);
+
+
+--
 -- Name: product_prices_index_ind; Type: INDEX; Schema: public; Owner: dev
 --
 
 CREATE INDEX product_prices_index_ind ON public.product_prices USING btree (index DESC);
+
+
+--
+-- Name: product_prices_price_type_version_ind; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE INDEX product_prices_price_type_version_ind ON public.product_prices USING btree (price_type, version);
 
 
 --
