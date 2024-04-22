@@ -212,7 +212,7 @@
         "catalog_types": {
             "def": "catDef",
             "apiPathName": "type",
-            "extraServices": "file_load_tasks, catalog_types_overload, property_in_types",
+            "extraServices": "instance_versions, file_load_tasks, catalog_types_overload, property_in_types",
             "fields": {
                 "id": {
                     "def": "id",
@@ -248,7 +248,7 @@
         "catalog_brands": {
             "def": "catDef",
             "apiPathName": "brand",
-            "extraServices": "file_load_tasks",
+            "extraServices": "instance_versions, file_load_tasks",
             "fields": {
                 "id": {
                     "def": "id",
@@ -274,7 +274,7 @@
         "catalog_products": {
             "def": "catDef",
             "apiPathName": "products",
-            "extraServices": "file_load_tasks, catalog_product_offers",
+            "extraServices": "instance_versions, file_load_tasks, catalog_product_offers",
             "fields": {
                 "id": {
                     "def": "id",
@@ -344,7 +344,7 @@
             "apiPathName": "offer",
             "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog\/product\/:product",
-            "extraServices": "file_load_tasks",
+            "extraServices": "instance_versions, file_load_tasks",
             "fields": {
                 "id": {
                     "def": "id",
@@ -445,7 +445,7 @@
             "create": false,
             "apiPrefix": "catalog\/:catalog\/product\/:product",
             "methodPath": "property\/:property",
-            "extraServices": "property_types",
+            "extraServices": "instance_versions, property_types",
             "fields": {
                 "offer": {
                     "def": "pk",
@@ -504,7 +504,7 @@
         "catalog_properties": {
             "def": "catDef",
             "apiPathName": "properties",
-            "extraServices": "property_types",
+            "extraServices": "instance_versions, property_types",
             "fields": {
                 "id": {
                     "def": "id",
@@ -546,7 +546,7 @@
             "delete": false,
             "getOne": false,
             "list": false,
-            "extraServices": "property_types",
+            "extraServices": "instance_versions, property_types",
             "fields": {
                 "property": {
                     "def": "def",
@@ -575,7 +575,7 @@
             "create": false,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": "property\/:property",
-            "extraServices": "property_types",
+            "extraServices": "instance_versions, property_types",
             "fields": {
                 "product": {
                     "def": "pk",
@@ -753,6 +753,7 @@
         "unit_groups": {
             "def": "def",
             "paginateByMax": 0,
+            "extraServices": "instance_versions",
             "fields": {
                 "id": {
                     "def": "id",
@@ -789,6 +790,7 @@
             "def": "def",
             "apiPathName": "unit-group\/:group\/units",
             "paginateByMax": 0,
+            "extraServices": "instance_versions",
             "fields": {
                 "id": {
                     "def": "id",
@@ -964,6 +966,7 @@
         "price_types": {
             "def": "def",
             "paginateByMax": 0,
+            "extraServices": "instance_versions",
             "fields": {
                 "id": {
                     "def": "id",
@@ -1001,12 +1004,13 @@
         },
         "product_prices": {
             "def": "def",
-            "apiPathName": "product\/:product\/price",
+            "apiPathName": "",
             "create": false,
+            "list": false,
             "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog",
-            "methodPath": ":priceType",
-            "extraServices": "rates",
+            "methodPath": "product\/:product\/price\/:priceType",
+            "extraServices": "instance_versions, rates",
             "fields": {
                 "product": {
                     "def": "pk",
@@ -1055,6 +1059,10 @@
                 "changed_at": {
                     "def": "def",
                     "dto": false
+                },
+                "deleted": {
+                    "def": "def",
+                    "dtoDisallow": true
                 }
             },
             "extraRouteParams": [
@@ -1078,7 +1086,7 @@
             "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": ":priceType",
-            "extraServices": "rates",
+            "extraServices": "instance_versions, rates",
             "fields": {
                 "offer": {
                     "def": "pk",
@@ -1127,6 +1135,10 @@
                 "changed_at": {
                     "def": "def",
                     "dto": false
+                },
+                "deleted": {
+                    "def": "def",
+                    "dtoDisallow": true
                 }
             },
             "extraRouteParams": [
@@ -1146,6 +1158,7 @@
         "stores": {
             "def": "def",
             "paginateByMax": 0,
+            "extraServices": "instance_versions",
             "fields": {
                 "id": {
                     "def": "id",
@@ -1180,7 +1193,7 @@
             "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": ":store\/amount",
-            "extraServices": "property_types, units",
+            "extraServices": "instance_versions, property_types, units",
             "fields": {
                 "offer": {
                     "def": "pk",
@@ -1252,7 +1265,7 @@
             "list": false,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": ":property",
-            "extraServices": "catalog_types_overload, property_types",
+            "extraServices": "instance_versions, catalog_types_overload, property_types",
             "fields": {
                 "type": {
                     "def": "pk",
@@ -1326,7 +1339,7 @@
             "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog",
             "methodPath": "property\/:property",
-            "extraServices": "property_types",
+            "extraServices": "instance_versions, property_types",
             "fields": {
                 "metatype": {
                     "def": "pk",
@@ -1378,7 +1391,7 @@
             "list": false,
             "paginateByMax": 0,
             "methodPath": "property\/:property",
-            "extraServices": "catalog_metatype_properties, catalogs, catalog_types, catalog_properties, property_types, property_values, options_property_values",
+            "extraServices": "instance_versions, catalog_metatype_properties, catalogs, catalog_types, catalog_properties, property_types, property_values, options_property_values",
             "fields": {
                 "instance": {
                     "def": "pk",
@@ -1436,7 +1449,7 @@
             "apiPathName": "collection",
             "paginateByMax": 0,
             "apiPrefix": "catalog\/:catalog\/brand\/:brand",
-            "extraServices": "file_load_tasks",
+            "extraServices": "instance_versions, file_load_tasks",
             "fields": {
                 "id": {
                     "def": "id",
@@ -1587,6 +1600,7 @@
         "product_relations": {
             "def": "catDef",
             "paginateByMax": 0,
+            "extraServices": "instance_versions",
             "fields": {
                 "id": {
                     "def": "id",

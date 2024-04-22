@@ -12,6 +12,7 @@ import { CreateProductPriceDto } from './../../dtos/create-product-price.dto';
 import { UpdateProductPriceDto } from './../../dtos/update-product-price.dto';
 import { CatalogProductsService } from './../../services/catalog-products.service';
 import { CatalogsService } from './../../services/catalogs.service';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { PriceTypesService } from './../../services/price-types.service';
 import { ProductPricesService } from './../../services/product-prices.service';
 import { RatesService } from './../../services/rates.service';
@@ -24,27 +25,16 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger';
 @ApiHeader({ name: 'X-API-KEY', required: true, description: 'Ваш идентефикатор апи' })
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Product prices')
-@Controller('catalog/:catalog/product/:product/price')
+@Controller('catalog/:catalog/')
 export class GenProductPricesController {
 	constructor(
 		protected readonly catalogProductsService: CatalogProductsService,
 		protected readonly catalogsService: CatalogsService,
+		protected readonly instanceVersionsService: InstanceVersionsService,
 		protected readonly priceTypesService: PriceTypesService,
 		protected readonly productPricesService: ProductPricesService,
 		protected readonly ratesService: RatesService,
 	) { }
-	
-	async findAll(actor: Actors, catalog: number, product: bigint) {
-		const catalogIns = await this.catalogsService.findById(catalog);
-		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
-			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
-		}
-		const productIns = await this.catalogProductsService.findById(product);
-		if(productIns===null || !(productIns.catalog.id===catalog)){
-			throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
-		}
-		return await this.productPricesService.findAllByProduct(product);
-	}
 	
 	async findOne(actor: Actors, catalog: number, product: bigint, priceType: number) {
 		const catalogIns = await this.catalogsService.findById(catalog);

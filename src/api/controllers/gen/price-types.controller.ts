@@ -11,6 +11,7 @@ import { Actors } from './../../../entities/Actors';
 import { CreatePriceTypeDto } from './../../dtos/create-price-type.dto';
 import { UpdatePriceTypeDto } from './../../dtos/update-price-type.dto';
 import { CurrenciesService } from './../../services/currencies.service';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { PriceTypesService } from './../../services/price-types.service';
 import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
@@ -25,6 +26,7 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger';
 export class GenPriceTypesController {
 	constructor(
 		protected readonly currenciesService: CurrenciesService,
+		protected readonly instanceVersionsService: InstanceVersionsService,
 		protected readonly priceTypesService: PriceTypesService,
 	) { }
 	

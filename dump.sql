@@ -866,6 +866,7 @@ CREATE TABLE public.offer_prices (
     updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     index numeric(18,2) NOT NULL,
     changed_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    deleted boolean DEFAULT false NOT NULL,
     CONSTRAINT offer_prices_value_check CHECK ((value >= (0)::numeric))
 );
 
@@ -1001,6 +1002,7 @@ CREATE TABLE public.product_prices (
     updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     index numeric(18,2) NOT NULL,
     changed_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    deleted boolean DEFAULT false NOT NULL,
     CONSTRAINT product_prices_value_check CHECK ((value >= (0)::numeric))
 );
 
@@ -1938,8 +1940,8 @@ COPY public.offer_amounts (offer, store, amount, changed_at) FROM stdin;
 -- Data for Name: offer_prices; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.offer_prices (offer, price_type, value, currency, last_change, updated_at, index, changed_at) FROM stdin;
-1	1	3.50	16	26.27	2024-04-11 04:56:14.803+03	326.27	2024-04-11 04:56:14.668721+03
+COPY public.offer_prices (offer, price_type, value, currency, last_change, updated_at, index, changed_at, deleted) FROM stdin;
+1	1	3.50	16	26.27	2024-04-11 04:56:14.803+03	326.27	2024-04-11 04:56:14.668721+03	f
 \.
 
 
@@ -2006,8 +2008,10 @@ COPY public.price_types (id, company, title, display_currency, base_currency) FR
 -- Data for Name: product_prices; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.product_prices (product, price_type, value, currency, last_change, updated_at, index, changed_at) FROM stdin;
-1	1	2.00	16	130.64	2024-04-11 04:27:45.017+03	186.44	2024-04-11 04:27:44.839267+03
+COPY public.product_prices (product, price_type, value, currency, last_change, updated_at, index, changed_at, deleted) FROM stdin;
+1	1	2.00	16	130.64	2024-04-11 04:27:45.017+03	186.44	2024-04-11 04:27:44.839267+03	f
+4	1	6.00	16	0.00	2024-04-22 05:25:22.573+03	564.55	2024-04-22 05:25:22.403223+03	f
+5	1	7.00	16	0.00	2024-04-22 05:25:37.185+03	658.65	2024-04-22 05:26:15.933639+03	t
 \.
 
 
@@ -4260,14 +4264,14 @@ CREATE TRIGGER catalogs_after_insert AFTER INSERT ON public.catalogs FOR EACH RO
 -- Name: offer_prices offer_prices_before_update; Type: TRIGGER; Schema: public; Owner: dev
 --
 
-CREATE TRIGGER offer_prices_before_update BEFORE UPDATE ON public.offer_prices FOR EACH ROW WHEN ((old.index IS DISTINCT FROM new.index)) EXECUTE FUNCTION public.prices_before_update_fnc();
+CREATE TRIGGER offer_prices_before_update BEFORE UPDATE ON public.offer_prices FOR EACH ROW WHEN (((old.index IS DISTINCT FROM new.index) OR (old.deleted IS DISTINCT FROM new.deleted))) EXECUTE FUNCTION public.prices_before_update_fnc();
 
 
 --
 -- Name: product_prices product_prices_before_update; Type: TRIGGER; Schema: public; Owner: dev
 --
 
-CREATE TRIGGER product_prices_before_update BEFORE UPDATE ON public.product_prices FOR EACH ROW WHEN ((old.index IS DISTINCT FROM new.index)) EXECUTE FUNCTION public.prices_before_update_fnc();
+CREATE TRIGGER product_prices_before_update BEFORE UPDATE ON public.product_prices FOR EACH ROW WHEN (((old.index IS DISTINCT FROM new.index) OR (old.deleted IS DISTINCT FROM new.deleted))) EXECUTE FUNCTION public.prices_before_update_fnc();
 
 
 --

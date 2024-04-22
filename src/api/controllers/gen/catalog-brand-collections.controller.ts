@@ -14,6 +14,7 @@ import { CatalogBrandCollectionsService } from './../../services/catalog-brand-c
 import { CatalogBrandsService } from './../../services/catalog-brands.service';
 import { CatalogsService } from './../../services/catalogs.service';
 import { FileLoadTasksService } from './../../services/file-load-tasks.service';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
@@ -30,6 +31,7 @@ export class GenCatalogBrandCollectionsController {
 		protected readonly catalogBrandsService: CatalogBrandsService,
 		protected readonly catalogsService: CatalogsService,
 		protected readonly fileLoadTasksService: FileLoadTasksService,
+		protected readonly instanceVersionsService: InstanceVersionsService,
 	) { }
 	
 	async findAll(actor: Actors, catalog: number, brand: number) {

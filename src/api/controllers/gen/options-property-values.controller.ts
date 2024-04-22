@@ -8,6 +8,7 @@
  */
 import { CreateOptionsPropertyValueDto } from './../../dtos/create-options-property-value.dto';
 import { UpdateOptionsPropertyValueDto } from './../../dtos/update-options-property-value.dto';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { OptionsPropertyValuesService } from './../../services/options-property-values.service';
 import { PropertyTypesService } from './../../services/property-types.service';
 import { FsPatch } from './../../services/special/files.service';
@@ -22,6 +23,7 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger';
 @Controller('catalog/:catalog/options-property-value')
 export class GenOptionsPropertyValuesController {
 	constructor(
+		protected readonly instanceVersionsService: InstanceVersionsService,
 		protected readonly optionsPropertyValuesService: OptionsPropertyValuesService,
 		protected readonly propertyTypesService: PropertyTypesService,
 	) { }

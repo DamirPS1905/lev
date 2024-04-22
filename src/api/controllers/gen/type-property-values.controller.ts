@@ -12,6 +12,7 @@ import { CatalogMetatypePropertiesService } from './../../services/catalog-metat
 import { CatalogPropertiesService } from './../../services/catalog-properties.service';
 import { CatalogTypesService } from './../../services/catalog-types.service';
 import { CatalogsService } from './../../services/catalogs.service';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { OptionsPropertyValuesService } from './../../services/options-property-values.service';
 import { PropertyTypesService } from './../../services/property-types.service';
 import { PropertyValuesService } from './../../services/property-values.service';
@@ -32,6 +33,7 @@ export class GenTypePropertyValuesController {
 		protected readonly catalogPropertiesService: CatalogPropertiesService,
 		protected readonly catalogTypesService: CatalogTypesService,
 		protected readonly catalogsService: CatalogsService,
+		protected readonly instanceVersionsService: InstanceVersionsService,
 		protected readonly optionsPropertyValuesService: OptionsPropertyValuesService,
 		protected readonly propertyTypesService: PropertyTypesService,
 		protected readonly propertyValuesService: PropertyValuesService,

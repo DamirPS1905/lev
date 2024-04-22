@@ -12,6 +12,7 @@ import { CreateOfferPriceDto } from './../../dtos/create-offer-price.dto';
 import { UpdateOfferPriceDto } from './../../dtos/update-offer-price.dto';
 import { CatalogProductOffersService } from './../../services/catalog-product-offers.service';
 import { CatalogsService } from './../../services/catalogs.service';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { OfferPricesService } from './../../services/offer-prices.service';
 import { PriceTypesService } from './../../services/price-types.service';
 import { RatesService } from './../../services/rates.service';
@@ -29,6 +30,7 @@ export class GenOfferPricesController {
 	constructor(
 		protected readonly catalogProductOffersService: CatalogProductOffersService,
 		protected readonly catalogsService: CatalogsService,
+		protected readonly instanceVersionsService: InstanceVersionsService,
 		protected readonly offerPricesService: OfferPricesService,
 		protected readonly priceTypesService: PriceTypesService,
 		protected readonly ratesService: RatesService,

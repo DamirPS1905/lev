@@ -11,6 +11,7 @@ import { Actors } from './../../../entities/Actors';
 import { CreateProductRelationDto } from './../../dtos/create-product-relation.dto';
 import { UpdateProductRelationDto } from './../../dtos/update-product-relation.dto';
 import { CatalogsService } from './../../services/catalogs.service';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { ProductRelationsService } from './../../services/product-relations.service';
 import { ProductsRelationKindsService } from './../../services/products-relation-kinds.service';
 import { FsPatch } from './../../services/special/files.service';
@@ -26,6 +27,7 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger';
 export class GenProductRelationsController {
 	constructor(
 		protected readonly catalogsService: CatalogsService,
+		protected readonly instanceVersionsService: InstanceVersionsService,
 		protected readonly productRelationsService: ProductRelationsService,
 		protected readonly productsRelationKindsService: ProductsRelationKindsService,
 	) { }

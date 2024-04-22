@@ -24,11 +24,11 @@ export class PriceTypes {
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => OfferPrices, mappedBy: 'priceType', hidden: true })
-	offerPricesByPriceType: Collection<OfferPrices> & Hidden = new Collection<OfferPrices>(this);
-	
 	@OneToMany({ entity: () => ProductPrices, mappedBy: 'priceType', hidden: true })
 	productPricesByPriceType: Collection<ProductPrices> & Hidden = new Collection<ProductPrices>(this);
+	
+	@OneToMany({ entity: () => OfferPrices, mappedBy: 'priceType', hidden: true })
+	offerPricesByPriceType: Collection<OfferPrices> & Hidden = new Collection<OfferPrices>(this);
 	
 	// gen - end
 }

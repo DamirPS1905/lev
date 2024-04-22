@@ -17,6 +17,7 @@ import { CatalogProductsService } from './../../services/catalog-products.servic
 import { CatalogTypesService } from './../../services/catalog-types.service';
 import { CatalogsService } from './../../services/catalogs.service';
 import { FileLoadTasksService } from './../../services/file-load-tasks.service';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { FsPatch } from './../../services/special/files.service';
 import { UnitsService } from './../../services/units.service';
 import { EntityManager } from '@mikro-orm/postgresql';
@@ -37,6 +38,7 @@ export class GenCatalogProductsController {
 		protected readonly catalogTypesService: CatalogTypesService,
 		protected readonly catalogsService: CatalogsService,
 		protected readonly fileLoadTasksService: FileLoadTasksService,
+		protected readonly instanceVersionsService: InstanceVersionsService,
 		protected readonly unitsService: UnitsService,
 	) { }
 	

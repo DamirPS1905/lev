@@ -9,6 +9,7 @@ import { Body, Delete, Get, Param, ParseIntPipe, Patch, Post, HttpException, Htt
 import { AuthGuard } from '@nestjs/passport'
 import { ApiOperation, ApiParam } from '@nestjs/swagger'
 import { FsPatch } from './../services/special/files.service';
+import { InstanceTypesEnum } from './../enums/instance-types.enum'
 
 export class CatalogTypesController extends GenCatalogTypesController {
 	
@@ -45,6 +46,10 @@ export class CatalogTypesController extends GenCatalogTypesController {
 	 	createDto.level = parentType.level + 1;
 	}
 	
+	async afterCreate(entity, actor: Actors, catalog: number, createDto: CreateCatalogTypeDto, em: EntityManager, fm: FsPatch) {
+		await this.instanceVersionsService.upVersion(actor.company.id, catalog, InstanceTypesEnum.Type, entity.id, em);
+	}
+	
 	@Patch(':id')
 	@ApiOperation({summary: "Обновление определенного типа товаров"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
@@ -70,6 +75,10 @@ export class CatalogTypesController extends GenCatalogTypesController {
 	  }
 	}
 	
+	async afterUpdate(entity, actor: Actors, catalog: number, id: number, updateDto: UpdateCatalogTypeDto, em: EntityManager, fm: FsPatch){
+		await this.instanceVersionsService.upVersion(actor.company.id, catalog, InstanceTypesEnum.Type, entity.id, em);
+	}
+	
 	@Delete(':id')
 	@ApiOperation({summary: "Уадление определенного типа товаров"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
@@ -84,11 +93,15 @@ export class CatalogTypesController extends GenCatalogTypesController {
 		}
 	}
 	
-	async processInputType(catalog: number, parent: number, em: EntityManager = null){
-		if(parent===0){
+	async afterDelete(entity, actor: Actors, catalog: number, id: number, em: EntityManager) {
+		await this.instanceVersionsService.upDeleted(actor.company.id, catalog, InstanceTypesEnum.Type, entity.id, em);
+	}
+	
+	async processInputType(catalog: number, type: number, em: EntityManager = null){
+		if(type===0){
 			return (await this.catalogTypesService.findRoot(catalog, em)).id;
 		}else{
-			return parent;
+			return type;
 		}
 	}
 

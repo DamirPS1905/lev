@@ -31,4 +31,6 @@ export class GenUpdateOfferPriceDto {
 	
 	index:string;
 	
+	deleted:boolean;
+	
 }

@@ -1,4 +1,4 @@
-import { Entity, Index, ManyToOne, type Opt, PrimaryKeyProp, Property } from '@mikro-orm/core';
+import { Entity, type Hidden, Index, ManyToOne, type Opt, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { CatalogProductOffers } from './CatalogProductOffers';
 import { PriceTypes } from './PriceTypes';
 
@@ -31,5 +31,8 @@ export class OfferPrices {
 
   @Property({ type: 'Date', length: 6, defaultRaw: `CURRENT_TIMESTAMP` })
   changedAt!: Date & Opt;
+
+  @Property({ type: 'boolean', hidden: true })
+  deleted: boolean & Hidden & Opt = false;
 
 }

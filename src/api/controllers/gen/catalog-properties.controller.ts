@@ -12,6 +12,7 @@ import { CreateCatalogPropertyDto } from './../../dtos/create-catalog-property.d
 import { UpdateCatalogPropertyDto } from './../../dtos/update-catalog-property.dto';
 import { CatalogPropertiesService } from './../../services/catalog-properties.service';
 import { CatalogsService } from './../../services/catalogs.service';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { PropertyTypesService } from './../../services/property-types.service';
 import { FsPatch } from './../../services/special/files.service';
 import { EntityManager } from '@mikro-orm/postgresql';
@@ -27,6 +28,7 @@ export class GenCatalogPropertiesController {
 	constructor(
 		protected readonly catalogPropertiesService: CatalogPropertiesService,
 		protected readonly catalogsService: CatalogsService,
+		protected readonly instanceVersionsService: InstanceVersionsService,
 		protected readonly propertyTypesService: PropertyTypesService,
 	) { }
 	

@@ -49,6 +49,7 @@ export class TypePropertyValuesController extends MetatypeValuesController<TypeP
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'type', description: 'ID типа товара'})
 	async findAll(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number) {
+		type = await this.processInputType(catalog, type);
 		return await super.findAll(actor, catalog, type);
 	}
 	
@@ -58,6 +59,7 @@ export class TypePropertyValuesController extends MetatypeValuesController<TypeP
 	@ApiParam({name: 'type', description: 'ID типа товара'})
 	@ApiParam({name: 'property', description: 'ID свойства'})
 	async findOne(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number) {
+		type = await this.processInputType(catalog, type);
 		return await super.findOne(actor, catalog, type, property);
 	}
 	
@@ -79,6 +81,7 @@ export class TypePropertyValuesController extends MetatypeValuesController<TypeP
 	  },
 	})	
 	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number, @Body() updateDto: Object | Array<Object>) {
+		type = await this.processInputType(catalog, type);
 		return super.update(actor, catalog, type, property, updateDto);
 	}	
 	
@@ -88,7 +91,16 @@ export class TypePropertyValuesController extends MetatypeValuesController<TypeP
 	@ApiParam({name: 'type', description: 'ID типа товара'})
 	@ApiParam({name: 'property', description: 'ID свойства'})
 	async delete(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number) {
+		type = await this.processInputType(catalog, type);
 		return super.delete(actor, catalog, type, property);
-	}	
+	}
+	
+	async processInputType(catalog: number, type: number, em: EntityManager = null){
+		if(type===0){
+			return (await this.catalogTypesService.findRoot(catalog, em)).id;
+		}else{
+			return type;
+		}
+	}
 	
 }

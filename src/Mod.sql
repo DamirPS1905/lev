@@ -199,14 +199,14 @@ CREATE OR REPLACE TRIGGER product_prices_before_update
     BEFORE UPDATE
     ON public.product_prices
     FOR EACH ROW
-	WHEN (OLD."index" IS DISTINCT FROM NEW."index")
+	WHEN (OLD."index" IS DISTINCT FROM NEW."index") OR (OLD."deleted" IS DISTINCT FROM NEW."deleted")
 	EXECUTE PROCEDURE prices_before_update_fnc();
 
 CREATE OR REPLACE TRIGGER offer_prices_before_update
     BEFORE UPDATE
     ON public.offer_prices
     FOR EACH ROW
-	WHEN (OLD."index" IS DISTINCT FROM NEW."index")
+	WHEN (OLD."index" IS DISTINCT FROM NEW."index") OR (OLD."deleted" IS DISTINCT FROM NEW."deleted")
 	EXECUTE PROCEDURE prices_before_update_fnc();
 
 

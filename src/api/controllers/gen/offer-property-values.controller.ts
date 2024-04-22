@@ -14,6 +14,7 @@ import { CatalogProductOffersService } from './../../services/catalog-product-of
 import { CatalogProductsService } from './../../services/catalog-products.service';
 import { CatalogPropertiesService } from './../../services/catalog-properties.service';
 import { CatalogsService } from './../../services/catalogs.service';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { OfferPropertyValuesService } from './../../services/offer-property-values.service';
 import { PropertyTypesService } from './../../services/property-types.service';
 import { FsPatch } from './../../services/special/files.service';
@@ -32,6 +33,7 @@ export class GenOfferPropertyValuesController {
 		protected readonly catalogProductsService: CatalogProductsService,
 		protected readonly catalogPropertiesService: CatalogPropertiesService,
 		protected readonly catalogsService: CatalogsService,
+		protected readonly instanceVersionsService: InstanceVersionsService,
 		protected readonly offerPropertyValuesService: OfferPropertyValuesService,
 		protected readonly propertyTypesService: PropertyTypesService,
 	) { }

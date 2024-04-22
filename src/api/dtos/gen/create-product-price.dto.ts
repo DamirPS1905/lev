@@ -31,4 +31,6 @@ export class GenCreateProductPriceDto {
 	
 	index:string;
 	
+	deleted:boolean;
+	
 }

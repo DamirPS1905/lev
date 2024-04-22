@@ -10,6 +10,7 @@ import { AuthInfo } from './../../../decorators/auth.decorator';
 import { Actors } from './../../../entities/Actors';
 import { CreateUnitDto } from './../../dtos/create-unit.dto';
 import { UpdateUnitDto } from './../../dtos/update-unit.dto';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { FsPatch } from './../../services/special/files.service';
 import { UnitGroupsService } from './../../services/unit-groups.service';
 import { UnitsService } from './../../services/units.service';
@@ -24,6 +25,7 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger';
 @Controller('unit-group/:group/units')
 export class GenUnitsController {
 	constructor(
+		protected readonly instanceVersionsService: InstanceVersionsService,
 		protected readonly unitGroupsService: UnitGroupsService,
 		protected readonly unitsService: UnitsService,
 	) { }

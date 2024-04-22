@@ -20,6 +20,7 @@ export class PropertyInTypesController extends GenPropertyInTypesController {
 		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
+		type = await this.processInputType(catalog, type);
 		const typeIns = await this.catalogTypesService.findById(type);
 		if(typeIns===null || !(typeIns.catalog.id===catalog)){
 			throw new HttpException('Product type not found', HttpStatus.NOT_FOUND);
@@ -36,6 +37,7 @@ export class PropertyInTypesController extends GenPropertyInTypesController {
 		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
 			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
 		}
+		type = await this.processInputType(catalog, type);
 		const typeIns = await this.catalogTypesService.findById(type);
 		if(typeIns===null || !(typeIns.catalog.id===catalog)){
 			throw new HttpException('Product type not found', HttpStatus.NOT_FOUND);
@@ -49,6 +51,7 @@ export class PropertyInTypesController extends GenPropertyInTypesController {
 	@ApiParam({name: 'type', description: 'ID типа товара'})
 	@ApiParam({name: 'property', description: 'ID свойства'})
 	async findOne(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number) {
+		type = await this.processInputType(catalog, type);
 		return await super.findOne(actor, catalog, type, property);
 	}
 	
@@ -58,6 +61,7 @@ export class PropertyInTypesController extends GenPropertyInTypesController {
 	@ApiParam({name: 'type', description: 'ID типа товара'})
 	@ApiParam({name: 'property', description: 'ID свойства'})
 	async update(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number, @Body() updateDto: UpdatePropertyInTypeDto) {
+		type = await this.processInputType(catalog, type);
 		return await super.update(actor, catalog, type, property, updateDto);
 	}
 	
@@ -84,7 +88,16 @@ export class PropertyInTypesController extends GenPropertyInTypesController {
 	@ApiParam({name: 'type', description: 'ID типа товара'})
 	@ApiParam({name: 'property', description: 'ID свойства'})
 	async delete(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('type', ParseIntPipe) type: number, @Param('property', ParseIntPipe) property: number) {
+		type = await this.processInputType(catalog, type);
 		return await super.delete(actor, catalog, type, property);
+	}
+	
+	async processInputType(catalog: number, type: number, em: EntityManager = null){
+		if(type===0){
+			return (await this.catalogTypesService.findRoot(catalog, em)).id;
+		}else{
+			return type;
+		}
 	}
 	
 }

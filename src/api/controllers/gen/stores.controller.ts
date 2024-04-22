@@ -10,6 +10,7 @@ import { AuthInfo } from './../../../decorators/auth.decorator';
 import { Actors } from './../../../entities/Actors';
 import { CreateStoreDto } from './../../dtos/create-store.dto';
 import { UpdateStoreDto } from './../../dtos/update-store.dto';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { FsPatch } from './../../services/special/files.service';
 import { StoresService } from './../../services/stores.service';
 import { EntityManager } from '@mikro-orm/postgresql';
@@ -23,6 +24,7 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger';
 @Controller('store')
 export class GenStoresController {
 	constructor(
+		protected readonly instanceVersionsService: InstanceVersionsService,
 		protected readonly storesService: StoresService,
 	) { }
 	

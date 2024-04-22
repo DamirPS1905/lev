@@ -5,22 +5,52 @@ import { UpdateProductPriceDto } from './../dtos/update-product-price.dto'
 import { ProductPricesService } from './../services/product-prices.service'
 import { GenProductPricesController } from './gen/product-prices.controller'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { Body, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch } from '@nestjs/common'
+import { Controller, DefaultValuePipe, UseGuards, Body, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ParseBigIntPipe } from './../../pipes/parse-bigint.pipe'
-import { ApiOperation, ApiParam } from '@nestjs/swagger'
+import { ApiQuery, ApiOperation, ApiParam } from '@nestjs/swagger'
+import { refill } from './../../util/utils';
 
 export class ProductPricesController extends GenProductPricesController {
 	
-	@Get('all')
+	@Get('product/:product/price/all')
 	@ApiOperation({summary: "Получение всех цен товара"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'product', description: 'ID товара'})
 	async findAll(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('product', ParseBigIntPipe) product: bigint) {
-		return await super.findAll(actor, catalog, product);
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		const productIns = await this.catalogProductsService.findById(product);
+		if(productIns===null || !(productIns.catalog.id===catalog)){
+			throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+		}
+		return await this.productPricesService.findActualByProduct(product);
 	}
 	
-	@Get(':priceType')
+	@Get('price/:priceType/all')
+	@ApiOperation({summary: "Получение цен определенного типа товаров в каталоге"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'priceType', description: 'ID типа цены'})
+	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
+	@ApiQuery({ name: 'offset', description: 'Count of skipping entities', required: false})
+	async findAllByType(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('priceType', ParseIntPipe) priceType: number, @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number, @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number) {
+		if(offset<0) throw new HttpException('Wrong offset value', HttpStatus.BAD_REQUEST);
+		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
+		if(limit>5000) limit = 5000;
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		const priceTypeIns = await this.priceTypesService.findById(priceType);
+		if(priceTypeIns===null || !(priceTypeIns.company.id===actor.company.id)){
+			throw new HttpException('Price type not found', HttpStatus.NOT_FOUND);
+		}
+		return await this.productPricesService.listActualByPriceTypeAndCatalog(priceType, catalog, offset, limit);
+	}
+	
+	@Get('product/:product/price/:priceType')
 	@ApiOperation({summary: "Получение цены товара определенного типа"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'product', description: 'ID товара'})
@@ -29,7 +59,13 @@ export class ProductPricesController extends GenProductPricesController {
 		return await super.findOne(actor, catalog, product, priceType);
 	}
 	
-	@Patch(':priceType')
+	async validateRead(entity, actor: Actors, catalog: number, product: bigint, priceType: number){
+		if(entity.deleted){
+			throw new HttpException('Product price not found', HttpStatus.NOT_FOUND);
+		}
+	}
+		
+	@Patch('product/:product/price/:priceType')
 	@ApiOperation({summary: "Задание или обновлене цены товара определенного типа"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'product', description: 'ID товара'})
@@ -50,15 +86,30 @@ export class ProductPricesController extends GenProductPricesController {
 		}catch(e){
 			throw new HttpException(e.message, HttpStatus.CONFLICT);
 		}
+		updateDto.deleted = false;
 	}
 	
-	@Delete(':priceType')
+	@Delete('product/:product/price/:priceType')
 	@ApiOperation({summary: "Удаление цены товара определенного типа"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'product', description: 'ID товара'})
 	@ApiParam({name: 'priceType', description: 'ID типа цены'})
 	async delete(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('product', ParseBigIntPipe) product: bigint, @Param('priceType', ParseIntPipe) priceType: number) {
-		return await super.delete(actor, catalog, product, priceType);
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		const productIns = await this.catalogProductsService.findById(product);
+		if(productIns===null || !(productIns.catalog.id===catalog)){
+			throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+		}
+		return await this.productPricesService.transactional(async (em, fm) => {
+			const entity = await this.productPricesService.findByProductAndPriceType(product, priceType, em);
+			if(entity===null || entity.deleted){
+				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
+			}
+			await this.productPricesService.update(entity, refill(UpdateProductPriceDto, {deleted: true}), em);
+		});
 	}
 	
 	

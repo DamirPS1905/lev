@@ -13,6 +13,7 @@ import { UpdateCatalogMetatypePropertyDto } from './../../dtos/update-catalog-me
 import { CatalogMetatypePropertiesService } from './../../services/catalog-metatype-properties.service';
 import { CatalogPropertiesService } from './../../services/catalog-properties.service';
 import { CatalogsService } from './../../services/catalogs.service';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { MetatypesService } from './../../services/metatypes.service';
 import { PropertyTypesService } from './../../services/property-types.service';
 import { FsPatch } from './../../services/special/files.service';
@@ -30,6 +31,7 @@ export class GenCatalogMetatypePropertiesController {
 		protected readonly catalogMetatypePropertiesService: CatalogMetatypePropertiesService,
 		protected readonly catalogPropertiesService: CatalogPropertiesService,
 		protected readonly catalogsService: CatalogsService,
+		protected readonly instanceVersionsService: InstanceVersionsService,
 		protected readonly metatypesService: MetatypesService,
 		protected readonly propertyTypesService: PropertyTypesService,
 	) { }

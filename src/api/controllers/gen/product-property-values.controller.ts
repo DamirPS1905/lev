@@ -13,6 +13,7 @@ import { UpdateProductPropertyValueDto } from './../../dtos/update-product-prope
 import { CatalogProductsService } from './../../services/catalog-products.service';
 import { CatalogPropertiesService } from './../../services/catalog-properties.service';
 import { CatalogsService } from './../../services/catalogs.service';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { ProductPropertyValuesService } from './../../services/product-property-values.service';
 import { PropertyTypesService } from './../../services/property-types.service';
 import { FsPatch } from './../../services/special/files.service';
@@ -30,6 +31,7 @@ export class GenProductPropertyValuesController {
 		protected readonly catalogProductsService: CatalogProductsService,
 		protected readonly catalogPropertiesService: CatalogPropertiesService,
 		protected readonly catalogsService: CatalogsService,
+		protected readonly instanceVersionsService: InstanceVersionsService,
 		protected readonly productPropertyValuesService: ProductPropertyValuesService,
 		protected readonly propertyTypesService: PropertyTypesService,
 	) { }

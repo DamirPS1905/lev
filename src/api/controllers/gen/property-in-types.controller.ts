@@ -14,6 +14,7 @@ import { CatalogPropertiesService } from './../../services/catalog-properties.se
 import { CatalogTypesOverloadService } from './../../services/catalog-types-overload.service';
 import { CatalogTypesService } from './../../services/catalog-types.service';
 import { CatalogsService } from './../../services/catalogs.service';
+import { InstanceVersionsService } from './../../services/instance-versions.service';
 import { PropertyInTypesService } from './../../services/property-in-types.service';
 import { PropertyTypesService } from './../../services/property-types.service';
 import { FsPatch } from './../../services/special/files.service';
@@ -32,6 +33,7 @@ export class GenPropertyInTypesController {
 		protected readonly catalogTypesOverloadService: CatalogTypesOverloadService,
 		protected readonly catalogTypesService: CatalogTypesService,
 		protected readonly catalogsService: CatalogsService,
+		protected readonly instanceVersionsService: InstanceVersionsService,
 		protected readonly propertyInTypesService: PropertyInTypesService,
 		protected readonly propertyTypesService: PropertyTypesService,
 	) { }
