@@ -30,16 +30,16 @@ export class CatalogProductOffers {
   @Property({ nullable: true })
   image?: string;
 
-  @ManyToMany({ entity: () => Stores, pivotTable: 'offer_amounts', pivotEntity: () => OfferAmounts, joinColumn: 'offer', inverseJoinColumn: 'store', hidden: true })
+  @ManyToMany({ entity: () => Stores, pivotTable: 'offer_amounts', pivotEntity: () => OfferAmounts, joinColumn: 'offer', inverseJoinColumn: 'store', fixedOrder: true, fixedOrderColumn: 'version', hidden: true })
   offerAmounts: Collection<Stores> & Hidden = new Collection<Stores>(this);
 
 	// gen - begin
 	
-	@OneToMany({ entity: () => OfferAmounts, mappedBy: 'offer', hidden: true })
-	offerAmountsByOffer: Collection<OfferAmounts> & Hidden = new Collection<OfferAmounts>(this);
-	
 	@OneToMany({ entity: () => OfferPrices, mappedBy: 'offer', hidden: true })
 	offerPricesByOffer: Collection<OfferPrices> & Hidden = new Collection<OfferPrices>(this);
+	
+	@OneToMany({ entity: () => OfferAmounts, mappedBy: 'offer', hidden: true })
+	offerAmountsByOffer: Collection<OfferAmounts> & Hidden = new Collection<OfferAmounts>(this);
 	
 	@OneToMany({ entity: () => OfferPropertyValues, mappedBy: 'offer', hidden: true })
 	offerPropertyValuesByOffer: Collection<OfferPropertyValues> & Hidden = new Collection<OfferPropertyValues>(this);

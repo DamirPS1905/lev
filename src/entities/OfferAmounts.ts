@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, type Opt, PrimaryKeyProp, Property } from '@mikro-orm/core';
+import { Entity, Index, ManyToOne, type Opt, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { CatalogProductOffers } from './CatalogProductOffers';
 import { Stores } from './Stores';
 
@@ -18,5 +18,9 @@ export class OfferAmounts {
 
   @Property({ type: 'Date', length: 6, defaultRaw: `CURRENT_TIMESTAMP` })
   changedAt!: Date & Opt;
+
+  @Index({ name: 'offer_amounts_version_ind' })
+  @Property({ autoincrement: true })
+  version!: bigint;
 
 }

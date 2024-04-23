@@ -10,7 +10,7 @@ export class OfferPrices {
   @ManyToOne({ entity: () => CatalogProductOffers, fieldName: 'offer', deleteRule: 'cascade', primary: true })
   offer!: CatalogProductOffers;
 
-  @ManyToOne({ entity: () => PriceTypes, fieldName: 'price_type', deleteRule: 'cascade', primary: true })
+  @ManyToOne({ entity: () => PriceTypes, fieldName: 'price_type', deleteRule: 'cascade', primary: true, index: 'offer_prices_price_type_version_ind' })
   priceType!: PriceTypes;
 
   @Property({ columnType: 'numeric(18,2)' })

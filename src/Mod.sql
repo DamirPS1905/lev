@@ -353,3 +353,22 @@ CREATE OR REPLACE TRIGGER offer_prices_before_update
     FOR EACH ROW
 	WHEN ((OLD."index" IS DISTINCT FROM NEW."index") OR (OLD."deleted" IS DISTINCT FROM NEW."deleted"))
 	EXECUTE PROCEDURE offer_prices_before_update_fnc();
+
+
+CREATE OR REPLACE FUNCTION public.offer_amounts_before_update_fnc()
+RETURNS trigger 
+AS $function$
+	BEGIN
+NEW.changed_at = CURRENT_TIMESTAMP;
+NEW.version = (SELECT nextval('amounts_time')::int8);
+RETURN NEW;
+	END;
+$function$
+LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE TRIGGER offer_amounts_before_update
+    BEFORE UPDATE
+    ON public.offer_amounts
+    FOR EACH ROW
+	WHEN (OLD."amount" IS DISTINCT FROM NEW."amount")
+	EXECUTE PROCEDURE offer_amounts_before_update_fnc();

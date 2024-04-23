@@ -35,6 +35,17 @@ export class OfferPricesService extends GenOfferPricesService {
 		  .getResult();
 	}
 	
+	async findNewByCatalog(catalog: number, from: bigint, limit: number, emt: EntityManager = null) {
+		return await this.getEm(emt)
+			.createQueryBuilder(OfferPrices, 'op')
+		  .select(['op.*'])
+		  .join('op.offer', 'p')
+		  .where({'p.catalog': catalog, 'op.version': {$gt: from}})
+		  .orderBy({ 'op.version': "ASC" })
+		  .limit(limit)
+		  .getResult();
+	}
+	
 	async listActualByPriceTypeAndCatalog(priceType: number, catalog: number, offset: number, limit: number, emt: EntityManager = null) {
 		return await this.getEm(emt)
 			.createQueryBuilder(OfferPrices, 'op')

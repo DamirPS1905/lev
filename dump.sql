@@ -156,6 +156,23 @@ $$;
 ALTER FUNCTION public.catalogs_after_insert_fnc() OWNER TO dev;
 
 --
+-- Name: offer_amounts_before_update_fnc(); Type: FUNCTION; Schema: public; Owner: dev
+--
+
+CREATE FUNCTION public.offer_amounts_before_update_fnc() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+	BEGIN
+NEW.changed_at = CURRENT_TIMESTAMP;
+NEW.version = (SELECT nextval('amounts_time')::int8);
+RETURN NEW;
+	END;
+$$;
+
+
+ALTER FUNCTION public.offer_amounts_before_update_fnc() OWNER TO dev;
+
+--
 -- Name: offer_prices_before_update_fnc(); Type: FUNCTION; Schema: public; Owner: dev
 --
 
@@ -320,6 +337,20 @@ ALTER SEQUENCE public.actors_id_seq OWNER TO dev;
 
 ALTER SEQUENCE public.actors_id_seq OWNED BY public.actors.id;
 
+
+--
+-- Name: amounts_time; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.amounts_time
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.amounts_time OWNER TO dev;
 
 --
 -- Name: api_keys; Type: TABLE; Schema: public; Owner: dev
@@ -883,6 +914,7 @@ CREATE TABLE public.offer_amounts (
     store integer NOT NULL,
     amount numeric(18,6) DEFAULT 0 NOT NULL,
     changed_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    version bigint DEFAULT nextval('public.amounts_time'::regclass) NOT NULL,
     CONSTRAINT offer_amounts_amount_check CHECK ((amount >= (0)::numeric))
 );
 
@@ -1997,8 +2029,9 @@ COPY public.metatypes (id, title) FROM stdin;
 -- Data for Name: offer_amounts; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.offer_amounts (offer, store, amount, changed_at) FROM stdin;
-2	1	40.560000	2024-04-18 04:22:35.851778+03
+COPY public.offer_amounts (offer, store, amount, changed_at, version) FROM stdin;
+2	1	40.560000	2024-04-18 04:22:35.851778+03	1
+12	1	7.000000	2024-04-23 02:51:06.407777+03	2
 \.
 
 
@@ -3424,6 +3457,13 @@ SELECT pg_catalog.setval('public.actors_id_seq', 1, true);
 
 
 --
+-- Name: amounts_time; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.amounts_time', 2, true);
+
+
+--
 -- Name: api_keys_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
@@ -4195,6 +4235,20 @@ CREATE INDEX instance_versions_company_version_ind ON public.instance_versions U
 
 
 --
+-- Name: offer_amounts_amount_changed_at_ind; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE INDEX offer_amounts_amount_changed_at_ind ON public.offer_amounts USING btree (amount, changed_at);
+
+
+--
+-- Name: offer_amounts_version_ind; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE INDEX offer_amounts_version_ind ON public.offer_amounts USING btree (version);
+
+
+--
 -- Name: offer_prices_index_ind; Type: INDEX; Schema: public; Owner: dev
 --
 
@@ -4353,6 +4407,13 @@ CREATE TRIGGER catalog_types_after_update AFTER UPDATE ON public.catalog_types F
 --
 
 CREATE TRIGGER catalogs_after_insert AFTER INSERT ON public.catalogs FOR EACH ROW EXECUTE FUNCTION public.catalogs_after_insert_fnc();
+
+
+--
+-- Name: offer_amounts offer_amounts_before_update; Type: TRIGGER; Schema: public; Owner: dev
+--
+
+CREATE TRIGGER offer_amounts_before_update BEFORE UPDATE ON public.offer_amounts FOR EACH ROW WHEN ((old.amount IS DISTINCT FROM new.amount)) EXECUTE FUNCTION public.offer_amounts_before_update_fnc();
 
 
 --

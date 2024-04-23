@@ -1233,6 +1233,10 @@
                 "changed_at": {
                     "def": "def",
                     "dto": false
+                },
+                "version": {
+                    "def": "def",
+                    "dto": false
                 }
             },
             "extraRouteParams": [

@@ -10,10 +10,11 @@ import { PropertyTypesService } from './../services/property-types.service';
 import { StoresService } from './../services/stores.service';
 import { UnitsService } from './../services/units.service';
 import { EntityManager, wrap } from '@mikro-orm/postgresql'
-import { Controller, HttpException, HttpStatus, UseGuards, Body, Delete, Get, Param, ParseIntPipe, Patch } from '@nestjs/common'
+import { Controller, DefaultValuePipe, HttpException, HttpStatus, UseGuards, Body, Delete, Get, Param, ParseIntPipe, Patch, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ParseBigIntPipe } from './../../pipes/parse-bigint.pipe'
-import { ApiHeader, ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger'
+import { ApiQuery, ApiHeader, ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger'
+import { refill } from './../../util/utils';
 
 @ApiHeader({ name: 'X-API-KEY', required: true, description: 'Ваш идентефикатор апи' })
 @UseGuards(AuthGuard('api-key'))
@@ -30,7 +31,55 @@ export class AmountsController{
 		protected readonly storesService: StoresService,
 		protected readonly unitsService: UnitsService,
 	) { }
-		
+	
+	@Get('offers/updates-from/:version')
+	@ApiOperation({summary: "Получение изменившихся остаков товарных предложений на всех складах"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'version', description: 'Последняя версия остатков товаров полученная от апи'})
+	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
+	async findAllOffer(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('version', ParseBigIntPipe) version: bigint, @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number) {
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		return await this.offerAmountsService.readNewByCatalogTOffers(catalog, version, limit);
+	}
+	
+	@Get('products/updates-from/:version')
+	@ApiOperation({summary: "Получение изменившихся остаков товаров без товарных предложений (или с одним товарным предложением) на всех складах"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'version', description: 'Последняя версия остатков товарных предложений полученная от апи'})
+	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
+	async findAllProduct(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('version', ParseBigIntPipe) version: bigint, @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number) {
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		return await this.offerAmountsService.readNewByCatalogTProducts(catalog, version, limit);
+	}
+	
+	@Get('store/:store/offers/updates-from/:version')
+	@ApiOperation({summary: "Получение изменившихся остаков товарных предложений на определенном складе"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'store', description: 'ID склада'})
+	@ApiParam({name: 'version', description: 'Последняя версия остатков товаров полученная от апи'})
+	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
+	async findAllByStoreOffer(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('store', ParseIntPipe) store: number, @Param('version', ParseBigIntPipe) version: bigint, @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number) {
+		await this.commonValidatePath(actor, catalog, store);
+		return await this.offerAmountsService.readNewByCatalogAndStoreTOffers(catalog, store, version, limit);
+	}
+	
+	@Get('store/:store/products/updates-from/:version')
+	@ApiOperation({summary: "Получение изменившихся остаков товаров без товарных предложений (или с одним товарным предложением) на определенном складе"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'store', description: 'ID склада'})
+	@ApiParam({name: 'version', description: 'Последняя версия остатков товарных предложений полученная от апи'})
+	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
+	async findAllByStoreProduct(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('store', ParseIntPipe) store: number, @Param('version', ParseBigIntPipe) version: bigint, @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number) {
+		await this.commonValidatePath(actor, catalog, store);
+		return await this.offerAmountsService.readNewByCatalogAndStoreTProducts(catalog, store, version, limit);
+	}
+	
 	@Get('offer/:offer/store/all')
 	@ApiOperation({summary: "Получение остаков товарного предложения на всех складах"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
@@ -41,7 +90,7 @@ export class AmountsController{
 	}
 	
 	@Get('product/:product/store/all')
-	@ApiOperation({summary: "Получение остаков товарного предложения на всех складах"})
+	@ApiOperation({summary: "Получение остаков товара без товарных предложений (или с одним товарным предложением) на всех складах"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'product', description: 'ID товара'})
 	async findAllByProduct(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('product', ParseBigIntPipe) product: bigint) {
@@ -91,7 +140,7 @@ export class AmountsController{
 				return await this.offerAmountsService.update(entity, updateDto, em);
 			} else {
 				updateDto.store = store; 
-				updateDto.offer = offerIns.id; 
+				updateDto.offer = offerIns.id;
 				return await this.offerAmountsService.create(updateDto, em);
 			}
 		});
@@ -176,7 +225,7 @@ export class AmountsController{
 	}
 	
 	@Delete('offer/:offer/store/:store/amount')
-	@ApiOperation({summary: "Удаление записи об остаках товарного предложения на определенном складе"})
+	@ApiOperation({summary: "Обнуление остаков товарного предложения на определенном складе"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'offer', description: 'ID товарного предложения'})
 	@ApiParam({name: 'store', description: 'ID склада'})
@@ -184,15 +233,14 @@ export class AmountsController{
 		const offerIns = await this.validateOfferPath(actor, catalog, offer, store);
 		return await this.offerAmountsService.transactional(async (em) => {
 			const entity = await this.offerAmountsService.findByOfferAndStore(offer, store, em);
-			if(entity===null){
-				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
+			if(entity!==null){
+				await this.offerAmountsService.update(entity, refill(UpdateOfferAmountDto, {amonut: 0}), em);
 			}
-			return await this.offerAmountsService.remove(entity, em);
 		});
 	}
 	
 	@Delete('product/:product/store/:store/amount')
-	@ApiOperation({summary: "Удаление записи об остаках товара без товарных предложений (или с одним товарным предложением) на определенном складе"})
+	@ApiOperation({summary: "Обнуление остаков товара без товарных предложений (или с одним товарным предложением) на определенном складе"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'product', description: 'ID товарного предложения'})
 	@ApiParam({name: 'store', description: 'ID склада'})
@@ -201,7 +249,7 @@ export class AmountsController{
 		return await this.offerAmountsService.transactional(async (em) => {
 			const entity = await this.offerAmountsService.findByOfferAndStore(offerIns.id, store, em);
 			if(entity!==null){
-				return await this.offerAmountsService.remove(entity, em);
+				await this.offerAmountsService.update(entity, refill(UpdateOfferAmountDto, {amount: 0}), em);
 			}
 		});
 	}

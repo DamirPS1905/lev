@@ -30,7 +30,7 @@ export class OfferPricesController extends GenOfferPricesController {
 	}
 	
 	@Get('price/:priceType/offers/all')
-	@ApiOperation({summary: "Получение цен определенного типа товарных предложений в каталоге"})
+	@ApiOperation({summary: "Получение изменившихся цен определенного типа товарных предложений в каталоге"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
 	@ApiParam({name: 'priceType', description: 'ID типа цены'})
 	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
@@ -68,6 +68,21 @@ export class OfferPricesController extends GenOfferPricesController {
 		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
 		if(limit>5000) limit = 5000;
 		return await this.offerPricesService.findNewByPriceTypeAndCatalog(priceType, catalog, version, limit);
+	}
+	
+	@Get('offers/updates-from/:version')
+	@ApiOperation({summary: "Получение цен определенного типа товарных предложений в каталоге"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'version', description: 'Последняя версия цен товаров полученная от апи'})
+	@ApiQuery({name: 'limit', description: 'Maximum count of returning entities', required: false})
+	async findNew(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('version', ParseBigIntPipe) version: bigint, @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number) {
+		const catalogIns = await this.catalogsService.findById(catalog);
+		if(catalogIns===null || !(catalogIns.company.id===actor.company.id)){
+			throw new HttpException('Catalog not found', HttpStatus.NOT_FOUND);
+		}
+		if(limit<0) throw new HttpException('Wrong limit value', HttpStatus.BAD_REQUEST);
+		if(limit>5000) limit = 5000;
+		return await this.offerPricesService.findNewByCatalog(catalog, version, limit);
 	}
 	
 	@Get('offer/:offer/price/:priceType')
