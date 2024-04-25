@@ -18,8 +18,23 @@ export class OpRelationValuesService extends GenOpRelationValuesService {
 		await this.getEm().getConnection().execute(qu);
 	}
 	
-	state(dto: CreateOpRelationValueDto, emt: EntityManager = null){
-		return this.getEm(emt).upsert(OpRelationValues, dto);
+	async findNewByRelation(relation: number, from: bigint, limit: number, emt: EntityManager = null) {
+		return await this.getEm(emt)
+			.createQueryBuilder(OpRelationValues, 'pp')
+		  .select(['*'])
+		  .where({'relation': relation, 'version': {$gt: from} })
+		  .orderBy({'version': "ASC" })
+		  .limit(limit)
+		  .getResult();
+	}
+	
+	async state(dto: CreateOpRelationValueDto, emt: EntityManager = null){
+		const qu = `insert into "op_relation_values" ("deleted", "relation", "source", "target")
+								values (?, ?, ?, ?) 
+								on conflict ("relation", "source", "target") 
+								do update set "deleted" = excluded."deleted"`;
+		await this.getEm(emt).getConnection().execute(qu, [dto.deleted, dto.relation, dto.source, dto.target], 'run');
+		//wtf: return this.getEm(emt).upsert(OpRelationValues, dto);
 	}
 	
 	async removeByRelationAndSourceAndTarget(relation: number, source: bigint, target: bigint, emt: EntityManager = null) {
@@ -34,7 +49,7 @@ export class OpRelationValuesService extends GenOpRelationValuesService {
 			.createQueryBuilder(CatalogProducts, 'p')
 		  .select(['p.*'])
 		  .join('p.opRelationValuesByTarget', 'r')
-		  .where({'r.source': source, 'r.relation': relation, 'p.deleted': false })
+		  .where({'r.source': source, 'r.relation': relation, 'r.deleted': false })
 		  .getResult();
 	}
 	
@@ -43,7 +58,7 @@ export class OpRelationValuesService extends GenOpRelationValuesService {
 			.createQueryBuilder(CatalogProductOffers, 'p')
 		  .select(['p.*'])
 		  .join('p.opRelationValuesBySource', 'r')
-		  .where({'r.target': target, 'r.relation': relation, 'p.deleted': false })
+		  .where({'r.target': target, 'r.relation': relation, 'r.deleted': false })
 		  .getResult();
 	}
 	

@@ -2140,6 +2140,9 @@ COPY public.po_relation_values (relation, source, target, version, deleted, chan
 COPY public.pp_relation_values (relation, source, target, version, deleted, changed_at) FROM stdin;
 1	3	4	1	f	2024-04-25 05:21:14.525772+03
 1	4	3	2	f	2024-04-25 05:21:14.525772+03
+1	5	4	46	t	2024-04-26 01:06:39.035808+03
+1	4	5	47	t	2024-04-26 01:06:39.035808+03
+1	5	3	48	f	2024-04-26 01:12:09.810029+03
 1	3	5	6	f	2024-04-25 05:35:31.417377+03
 \.
 
@@ -3671,7 +3674,7 @@ SELECT pg_catalog.setval('public.rates_sources_id_seq', 1, true);
 -- Name: relations_time; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.relations_time', 39, true);
+SELECT pg_catalog.setval('public.relations_time', 49, true);
 
 
 --
