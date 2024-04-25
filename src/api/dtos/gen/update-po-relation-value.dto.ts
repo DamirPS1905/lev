@@ -24,4 +24,8 @@ export class GenUpdatePoRelationValueDto {
 	@ApiProperty({ required: false })
 	target:bigint;
 	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	deleted:boolean;
+	
 }

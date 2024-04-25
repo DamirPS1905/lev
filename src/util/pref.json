@@ -1544,6 +1544,17 @@
                 },
                 "target": {
                     "def": "def"
+                },
+                "version": {
+                    "def": "def",
+                    "dto": false
+                },
+                "deleted": {
+                    "def": "def"
+                },
+                "changed_at": {
+                    "def": "def",
+                    "dto": false
                 }
             }
         },
@@ -1559,6 +1570,17 @@
                 },
                 "target": {
                     "def": "def"
+                },
+                "version": {
+                    "def": "def",
+                    "dto": false
+                },
+                "deleted": {
+                    "def": "def"
+                },
+                "changed_at": {
+                    "def": "def",
+                    "dto": false
                 }
             }
         },
@@ -1574,6 +1596,17 @@
                 },
                 "target": {
                     "def": "def"
+                },
+                "version": {
+                    "def": "def",
+                    "dto": false
+                },
+                "deleted": {
+                    "def": "def"
+                },
+                "changed_at": {
+                    "def": "def",
+                    "dto": false
                 }
             }
         },
@@ -1607,6 +1640,17 @@
                 },
                 "target": {
                     "def": "def"
+                },
+                "version": {
+                    "def": "def",
+                    "dto": false
+                },
+                "deleted": {
+                    "def": "def"
+                },
+                "changed_at": {
+                    "def": "def",
+                    "dto": false
                 }
             }
         },

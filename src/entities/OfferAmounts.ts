@@ -3,6 +3,7 @@ import { CatalogProductOffers } from './CatalogProductOffers';
 import { Stores } from './Stores';
 
 @Entity()
+@Index({ name: 'offer_amounts_amount_changed_at_ind', properties: ['amount', 'changedAt'] })
 export class OfferAmounts {
 
   [PrimaryKeyProp]?: ['offer', 'store'];

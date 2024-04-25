@@ -24,4 +24,8 @@ export class GenCreatePoRelationValueDto {
 	@ApiProperty({ required: false })
 	target:bigint;
 	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	deleted:boolean;
+	
 }

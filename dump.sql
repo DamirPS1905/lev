@@ -244,6 +244,23 @@ $$;
 ALTER FUNCTION public.rates_after_update_insert_fnc() OWNER TO dev;
 
 --
+-- Name: relations_before_update_fnc(); Type: FUNCTION; Schema: public; Owner: dev
+--
+
+CREATE FUNCTION public.relations_before_update_fnc() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+	BEGIN
+NEW.changed_at = CURRENT_TIMESTAMP;
+NEW.version = (SELECT nextval('relations_time')::int8);
+RETURN NEW;
+	END;
+$$;
+
+
+ALTER FUNCTION public.relations_before_update_fnc() OWNER TO dev;
+
+--
 -- Name: unit_groups_after_update_fnc(); Type: FUNCTION; Schema: public; Owner: dev
 --
 
@@ -971,13 +988,30 @@ CREATE TABLE public.offer_property_values (
 ALTER TABLE public.offer_property_values OWNER TO dev;
 
 --
+-- Name: relations_time; Type: SEQUENCE; Schema: public; Owner: dev
+--
+
+CREATE SEQUENCE public.relations_time
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.relations_time OWNER TO dev;
+
+--
 -- Name: oo_relation_values; Type: TABLE; Schema: public; Owner: dev
 --
 
 CREATE TABLE public.oo_relation_values (
     relation integer NOT NULL,
     source bigint NOT NULL,
-    target bigint NOT NULL
+    target bigint NOT NULL,
+    version bigint DEFAULT nextval('public.relations_time'::regclass) NOT NULL,
+    deleted boolean DEFAULT false NOT NULL,
+    changed_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -990,7 +1024,10 @@ ALTER TABLE public.oo_relation_values OWNER TO dev;
 CREATE TABLE public.op_relation_values (
     relation integer NOT NULL,
     source bigint NOT NULL,
-    target bigint NOT NULL
+    target bigint NOT NULL,
+    version bigint DEFAULT nextval('public.relations_time'::regclass) NOT NULL,
+    deleted boolean DEFAULT false NOT NULL,
+    changed_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1016,7 +1053,10 @@ ALTER TABLE public.options_property_values OWNER TO dev;
 CREATE TABLE public.po_relation_values (
     relation integer NOT NULL,
     source bigint NOT NULL,
-    target bigint NOT NULL
+    target bigint NOT NULL,
+    version bigint DEFAULT nextval('public.relations_time'::regclass) NOT NULL,
+    deleted boolean DEFAULT false NOT NULL,
+    changed_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1029,7 +1069,10 @@ ALTER TABLE public.po_relation_values OWNER TO dev;
 CREATE TABLE public.pp_relation_values (
     relation integer NOT NULL,
     source bigint NOT NULL,
-    target bigint NOT NULL
+    target bigint NOT NULL,
+    version bigint DEFAULT nextval('public.relations_time'::regclass) NOT NULL,
+    deleted boolean DEFAULT false NOT NULL,
+    changed_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -2003,6 +2046,9 @@ COPY public.instance_types (id, title) FROM stdin;
 4	Product
 5	Offer
 6	Property
+7	Price type
+8	Store
+9	Relation
 \.
 
 
@@ -2011,6 +2057,7 @@ COPY public.instance_types (id, title) FROM stdin;
 --
 
 COPY public.instance_versions (company, catalog, instance_type, instance, version, deleted) FROM stdin;
+1	1	9	1	1	f
 \.
 
 
@@ -2057,7 +2104,7 @@ COPY public.offer_property_values (offer, property, "order", value) FROM stdin;
 -- Data for Name: oo_relation_values; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.oo_relation_values (relation, source, target) FROM stdin;
+COPY public.oo_relation_values (relation, source, target, version, deleted, changed_at) FROM stdin;
 \.
 
 
@@ -2065,7 +2112,7 @@ COPY public.oo_relation_values (relation, source, target) FROM stdin;
 -- Data for Name: op_relation_values; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.op_relation_values (relation, source, target) FROM stdin;
+COPY public.op_relation_values (relation, source, target, version, deleted, changed_at) FROM stdin;
 \.
 
 
@@ -2083,7 +2130,7 @@ COPY public.options_property_values (property, value, hash) FROM stdin;
 -- Data for Name: po_relation_values; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.po_relation_values (relation, source, target) FROM stdin;
+COPY public.po_relation_values (relation, source, target, version, deleted, changed_at) FROM stdin;
 \.
 
 
@@ -2091,7 +2138,10 @@ COPY public.po_relation_values (relation, source, target) FROM stdin;
 -- Data for Name: pp_relation_values; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-COPY public.pp_relation_values (relation, source, target) FROM stdin;
+COPY public.pp_relation_values (relation, source, target, version, deleted, changed_at) FROM stdin;
+1	3	4	1	f	2024-04-25 05:21:14.525772+03
+1	4	3	2	f	2024-04-25 05:21:14.525772+03
+1	3	5	6	f	2024-04-25 05:35:31.417377+03
 \.
 
 
@@ -2130,6 +2180,7 @@ COPY public.product_property_values (product, property, "order", value) FROM std
 --
 
 COPY public.product_relations (id, catalog, title, kind, "symmetric") FROM stdin;
+1	1	get	1	t
 \.
 
 
@@ -3551,7 +3602,7 @@ SELECT pg_catalog.setval('public.file_load_tasks_id_seq', 4, true);
 -- Name: instance_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.instance_types_id_seq', 6, true);
+SELECT pg_catalog.setval('public.instance_types_id_seq', 9, true);
 
 
 --
@@ -3579,7 +3630,7 @@ SELECT pg_catalog.setval('public.product_prices_time', 3, true);
 -- Name: product_relations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.product_relations_id_seq', 1, false);
+SELECT pg_catalog.setval('public.product_relations_id_seq', 1, true);
 
 
 --
@@ -3618,6 +3669,13 @@ SELECT pg_catalog.setval('public.rates_sources_id_seq', 1, true);
 
 
 --
+-- Name: relations_time; Type: SEQUENCE SET; Schema: public; Owner: dev
+--
+
+SELECT pg_catalog.setval('public.relations_time', 6, true);
+
+
+--
 -- Name: stores_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
@@ -3649,7 +3707,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 -- Name: versions_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.versions_seq', 1, false);
+SELECT pg_catalog.setval('public.versions_seq', 1, true);
 
 
 --
@@ -4421,6 +4479,34 @@ CREATE TRIGGER offer_amounts_before_update BEFORE UPDATE ON public.offer_amounts
 --
 
 CREATE TRIGGER offer_prices_before_update BEFORE UPDATE ON public.offer_prices FOR EACH ROW WHEN (((old.index IS DISTINCT FROM new.index) OR (old.deleted IS DISTINCT FROM new.deleted))) EXECUTE FUNCTION public.offer_prices_before_update_fnc();
+
+
+--
+-- Name: oo_relation_values oo_relation_values_before_update; Type: TRIGGER; Schema: public; Owner: dev
+--
+
+CREATE TRIGGER oo_relation_values_before_update BEFORE UPDATE ON public.oo_relation_values FOR EACH ROW WHEN ((old.deleted IS DISTINCT FROM new.deleted)) EXECUTE FUNCTION public.relations_before_update_fnc();
+
+
+--
+-- Name: op_relation_values op_relation_values_before_update; Type: TRIGGER; Schema: public; Owner: dev
+--
+
+CREATE TRIGGER op_relation_values_before_update BEFORE UPDATE ON public.op_relation_values FOR EACH ROW WHEN ((old.deleted IS DISTINCT FROM new.deleted)) EXECUTE FUNCTION public.relations_before_update_fnc();
+
+
+--
+-- Name: po_relation_values po_relation_values_before_update; Type: TRIGGER; Schema: public; Owner: dev
+--
+
+CREATE TRIGGER po_relation_values_before_update BEFORE UPDATE ON public.po_relation_values FOR EACH ROW WHEN ((old.deleted IS DISTINCT FROM new.deleted)) EXECUTE FUNCTION public.relations_before_update_fnc();
+
+
+--
+-- Name: pp_relation_values pp_relation_values_before_update; Type: TRIGGER; Schema: public; Owner: dev
+--
+
+CREATE TRIGGER pp_relation_values_before_update BEFORE UPDATE ON public.pp_relation_values FOR EACH ROW WHEN ((old.deleted IS DISTINCT FROM new.deleted)) EXECUTE FUNCTION public.relations_before_update_fnc();
 
 
 --

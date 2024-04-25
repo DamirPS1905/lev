@@ -55,17 +55,17 @@ export class CatalogProducts {
 	@OneToMany({ entity: () => ProductPropertyValues, mappedBy: 'product', hidden: true })
 	productPropertyValuesByProduct: Collection<ProductPropertyValues> & Hidden = new Collection<ProductPropertyValues>(this);
 	
-	@OneToMany({ entity: () => PoRelationValues, mappedBy: 'source', hidden: true })
-	poRelationValuesBySource: Collection<PoRelationValues> & Hidden = new Collection<PoRelationValues>(this);
-	
-	@OneToMany({ entity: () => OpRelationValues, mappedBy: 'target', hidden: true })
-	opRelationValuesByTarget: Collection<OpRelationValues> & Hidden = new Collection<OpRelationValues>(this);
-	
 	@OneToMany({ entity: () => PpRelationValues, mappedBy: 'target', hidden: true })
 	ppRelationValuesByTarget: Collection<PpRelationValues> & Hidden = new Collection<PpRelationValues>(this);
 	
 	@OneToMany({ entity: () => PpRelationValues, mappedBy: 'source', hidden: true })
 	ppRelationValuesBySource: Collection<PpRelationValues> & Hidden = new Collection<PpRelationValues>(this);
+	
+	@OneToMany({ entity: () => PoRelationValues, mappedBy: 'source', hidden: true })
+	poRelationValuesBySource: Collection<PoRelationValues> & Hidden = new Collection<PoRelationValues>(this);
+	
+	@OneToMany({ entity: () => OpRelationValues, mappedBy: 'target', hidden: true })
+	opRelationValuesByTarget: Collection<OpRelationValues> & Hidden = new Collection<OpRelationValues>(this);
 	
 	// gen - end
 }

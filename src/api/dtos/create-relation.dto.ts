@@ -6,5 +6,7 @@ export class CreateRelationDto {
 	source:bigint;
 	
 	target:bigint;
+		
+	deleted:boolean;
 	
 }

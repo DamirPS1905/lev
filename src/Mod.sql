@@ -372,3 +372,43 @@ CREATE OR REPLACE TRIGGER offer_amounts_before_update
     FOR EACH ROW
 	WHEN (OLD."amount" IS DISTINCT FROM NEW."amount")
 	EXECUTE PROCEDURE offer_amounts_before_update_fnc();
+
+CREATE OR REPLACE FUNCTION public.relations_before_update_fnc()
+RETURNS trigger 
+AS $function$
+	BEGIN
+NEW.changed_at = CURRENT_TIMESTAMP;
+NEW.version = (SELECT nextval('relations_time')::int8);
+RETURN NEW;
+	END;
+$function$
+LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE TRIGGER pp_relation_values_before_update
+    BEFORE UPDATE
+    ON public.pp_relation_values
+    FOR EACH ROW
+	WHEN (OLD."deleted" IS DISTINCT FROM NEW."deleted")
+	EXECUTE PROCEDURE relations_before_update_fnc();
+
+CREATE OR REPLACE TRIGGER po_relation_values_before_update
+    BEFORE UPDATE
+    ON public.po_relation_values
+    FOR EACH ROW
+	WHEN (OLD."deleted" IS DISTINCT FROM NEW."deleted")
+	EXECUTE PROCEDURE relations_before_update_fnc();
+
+CREATE OR REPLACE TRIGGER op_relation_values_before_update
+    BEFORE UPDATE
+    ON public.op_relation_values
+    FOR EACH ROW
+	WHEN (OLD."deleted" IS DISTINCT FROM NEW."deleted")
+	EXECUTE PROCEDURE relations_before_update_fnc();
+
+CREATE OR REPLACE TRIGGER oo_relation_values_before_update
+    BEFORE UPDATE
+    ON public.oo_relation_values
+    FOR EACH ROW
+	WHEN (OLD."deleted" IS DISTINCT FROM NEW."deleted")
+	EXECUTE PROCEDURE relations_before_update_fnc();
+

@@ -24,4 +24,8 @@ export class GenCreateOoRelationValueDto {
 	@ApiProperty({ required: false })
 	target:bigint;
 	
+	@IsOptional()
+	@ApiProperty({ required: false })
+	deleted:boolean;
+	
 }

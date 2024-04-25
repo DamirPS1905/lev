@@ -26,6 +26,9 @@ export class ProductRelations {
 
 	// gen - begin
 	
+	@OneToMany({ entity: () => PpRelationValues, mappedBy: 'relation', hidden: true })
+	ppRelationValuesByRelation: Collection<PpRelationValues> & Hidden = new Collection<PpRelationValues>(this);
+	
 	@OneToMany({ entity: () => PoRelationValues, mappedBy: 'relation', hidden: true })
 	poRelationValuesByRelation: Collection<PoRelationValues> & Hidden = new Collection<PoRelationValues>(this);
 	
@@ -34,9 +37,6 @@ export class ProductRelations {
 	
 	@OneToMany({ entity: () => OoRelationValues, mappedBy: 'relation', hidden: true })
 	ooRelationValuesByRelation: Collection<OoRelationValues> & Hidden = new Collection<OoRelationValues>(this);
-	
-	@OneToMany({ entity: () => PpRelationValues, mappedBy: 'relation', hidden: true })
-	ppRelationValuesByRelation: Collection<PpRelationValues> & Hidden = new Collection<PpRelationValues>(this);
 	
 	// gen - end
 }

@@ -14,4 +14,7 @@ export enum InstanceTypesEnum{
 	Product = 4,
 	Offer = 5,
 	Property = 6,
+	PriceType = 7,
+	Store = 8,
+	Relation = 9,
 }

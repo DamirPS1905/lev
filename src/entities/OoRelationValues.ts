@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, PrimaryKeyProp } from '@mikro-orm/core';
+import { Entity, ManyToOne, type Opt, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { CatalogProductOffers } from './CatalogProductOffers';
 import { ProductRelations } from './ProductRelations';
 
@@ -15,5 +15,14 @@ export class OoRelationValues {
 
   @ManyToOne({ entity: () => CatalogProductOffers, fieldName: 'target', deleteRule: 'cascade', primary: true })
   target!: CatalogProductOffers;
+
+  @Property({ autoincrement: true })
+  version!: bigint;
+
+  @Property({ type: 'boolean' })
+  deleted: boolean & Opt = false;
+
+  @Property({ type: 'Date', length: 6, defaultRaw: `CURRENT_TIMESTAMP` })
+  changedAt!: Date & Opt;
 
 }

@@ -136,28 +136,30 @@ export class RelationsController{
 		base.relation = relation;
 		base.source = source;
 		base.target = target;
+		base.deleted = false;
 		const inverse = new CreateRelationDto();
 		inverse.relation = relation;
 		inverse.source = target;
 		inverse.target = source;
+		inverse.deleted = false;
 		return await this.productRelationsService.transactional(async (em) => {
 			switch(relationIns.kind.id){
 				case ProductsRelationKindsEnum.ProductToProduct:
-					await this.ppRelationValuesService.create(base, em);
+					await this.ppRelationValuesService.state(base, em);
 					if(relationIns.symmetric){
-						await this.ppRelationValuesService.create(inverse, em);
+						await this.ppRelationValuesService.state(inverse, em);
 					}
 					break;
 				case ProductsRelationKindsEnum.ProductToOffer:
-					await this.poRelationValuesService.create(base, em);
+					await this.poRelationValuesService.state(base, em);
 					break;
 				case ProductsRelationKindsEnum.OfferToProduct:
-					await this.opRelationValuesService.create(base, em);
+					await this.opRelationValuesService.state(base, em);
 					break;
 				case ProductsRelationKindsEnum.OfferToOffer:
-					await this.ooRelationValuesService.create(base, em);
+					await this.ooRelationValuesService.state(base, em);
 					if(relationIns.symmetric){
-						await this.ooRelationValuesService.create(inverse, em);
+						await this.ooRelationValuesService.state(inverse, em);
 					}
 					break;
 			}

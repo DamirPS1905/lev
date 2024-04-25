@@ -1,15 +1,31 @@
-import { GenPpRelationValuesService } from './gen/pp-relation-values.service';
-import { Injectable } from '@nestjs/common';
-import { PpRelationValues } from './../../entities/PpRelationValues';
-import { EntityManager, wrap } from '@mikro-orm/postgresql';
 import { CatalogProducts } from './../../entities/CatalogProducts';
+import { PpRelationValues } from './../../entities/PpRelationValues';
+import { CreatePpRelationValueDto } from './../dtos/create-pp-relation-value.dto';
+import { GenPpRelationValuesService } from './gen/pp-relation-values.service';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class PpRelationValuesService extends GenPpRelationValuesService {
 	
-	removeByRelationAndSourceAndTarget(relation: number, source: bigint, target: bigint, emt: EntityManager = null) {
+  @Cron('20 */2 * * *')
+	async sanitize(){
+		const qu = `DELETE FROM public.pp_relation_values 
+								WHERE "changed_at" < CURRENT_TIMESTAMP - INTERVAL '1 week'
+									AND "deleted"`;
+		await this.getEm().getConnection().execute(qu);
+	}
+	
+	state(dto: CreatePpRelationValueDto, emt: EntityManager = null){
+		return this.getEm(emt).upsert(PpRelationValues, dto);
+	}
+	
+	async removeByRelationAndSourceAndTarget(relation: number, source: bigint, target: bigint, emt: EntityManager = null) {
 		const em = this.getEm(emt);
-		return em.remove(em.getReference(PpRelationValues, [relation, source, target])).flush();
+		const ref = em.getReference(PpRelationValues, [relation, source, target]);
+		ref.deleted = true;
+		await em.flush();
 	}
 	
 	async getAllTargets(relation: number, source: bigint, emt: EntityManager = null){
@@ -17,7 +33,7 @@ export class PpRelationValuesService extends GenPpRelationValuesService {
 			.createQueryBuilder(CatalogProducts, 'p')
 		  .select(['p.*'])
 		  .join('p.ppRelationValuesByTarget', 'r')
-		  .where({'r.source': source, 'r.relation': relation })
+		  .where({'r.source': source, 'r.relation': relation, 'p.deleted': false })
 		  .getResult();
 	}
 	
@@ -26,7 +42,7 @@ export class PpRelationValuesService extends GenPpRelationValuesService {
 			.createQueryBuilder(CatalogProducts, 'p')
 		  .select(['p.*'])
 		  .join('p.ppRelationValuesBySource', 'r')
-		  .where({'r.target': target, 'r.relation': relation })
+		  .where({'r.target': target, 'r.relation': relation, 'p.deleted': false })
 		  .getResult();
 	}
 	
