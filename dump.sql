@@ -1916,6 +1916,7 @@ COPY public.catalog_types (id, catalog, title, parent, root, level) FROM stdin;
 11	1	boots	2	f	1
 13	1	kkkk	12	f	4
 12	1	fff	11	f	2
+14	3	root-3	\N	t	0
 \.
 
 
@@ -1948,6 +1949,7 @@ COPY public.catalog_types_overload (parent, child, delta) FROM stdin;
 
 COPY public.catalogs (id, title, company) FROM stdin;
 1	ololo	1
+3	upd test	1
 \.
 
 
@@ -3522,7 +3524,7 @@ SELECT pg_catalog.setval('public.api_keys_id_seq', 4, true);
 -- Name: brands_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.brands_id_seq', 13, true);
+SELECT pg_catalog.setval('public.brands_id_seq', 14, true);
 
 
 --
@@ -3571,7 +3573,7 @@ SELECT pg_catalog.setval('public.catalog_properties_id_seq', 8, true);
 -- Name: catalogs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.catalogs_id_seq', 2, true);
+SELECT pg_catalog.setval('public.catalogs_id_seq', 3, true);
 
 
 --
@@ -3669,7 +3671,7 @@ SELECT pg_catalog.setval('public.rates_sources_id_seq', 1, true);
 -- Name: relations_time; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.relations_time', 38, true);
+SELECT pg_catalog.setval('public.relations_time', 39, true);
 
 
 --

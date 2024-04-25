@@ -1,13 +1,14 @@
-import { AuthInfo } from './../../decorators/auth.decorator'
-import { Actors } from './../../entities/Actors'
-import { CreateCatalogDto } from './../dtos/create-catalog.dto'
-import { UpdateCatalogDto } from './../dtos/update-catalog.dto'
-import { CatalogsService } from './../services/catalogs.service'
-import { GenCatalogsController } from './gen/catalogs.controller'
-import { EntityManager } from '@mikro-orm/postgresql'
-import { DefaultValuePipe, Get, Param, ParseIntPipe, Query } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
-import { ApiOperation } from '@nestjs/swagger'
+import { AuthInfo } from './../../decorators/auth.decorator';
+import { Actors } from './../../entities/Actors';
+import { CreateCatalogDto } from './../dtos/create-catalog.dto';
+import { UpdateCatalogDto } from './../dtos/update-catalog.dto';
+import { CatalogsService } from './../services/catalogs.service';
+import { FsPatch } from './../services/special/files.service';
+import { GenCatalogsController } from './gen/catalogs.controller';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Body, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiOperation, ApiParam } from '@nestjs/swagger';
 
 export class CatalogsController extends GenCatalogsController {
 	
@@ -15,6 +16,26 @@ export class CatalogsController extends GenCatalogsController {
 	@ApiOperation({summary: "Получение списка каталогов"})
 	async findAll(@AuthInfo() actor: Actors) {
 		return await super.findAll(actor);
+	}
+	
+	//@Post()
+	@ApiOperation({summary: "Создание нового каталога"})
+	async create(@AuthInfo() actor: Actors, @Body() createDto: CreateCatalogDto) {
+		return await super.create(actor, createDto);
+	}
+	
+	//@Patch(':id')
+	@ApiOperation({summary: "Обновление каталога"})
+	@ApiParam({name: 'id', description: 'ID каталога'})
+	async update(@AuthInfo() actor: Actors, @Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateCatalogDto) {
+		return await super.update(actor, id, updateDto);
+	}
+	
+	//@Delete(':id')
+	@ApiOperation({summary: "Удаление каталога"})
+	@ApiParam({name: 'id', description: 'ID каталога'})
+	async delete(@AuthInfo() actor: Actors, @Param('id', ParseIntPipe) id: number) {
+		return await super.delete(actor, id);
 	}
 	
 	
