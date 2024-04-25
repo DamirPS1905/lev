@@ -6,10 +6,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app
-	  .useGlobalPipes(new ValidationPipe({
-		  transform: true
-	  }));
+  app.useGlobalPipes(new ValidationPipe({
+	  transform: true
+  }));
   const config = new DocumentBuilder()
     .setTitle('Leveon API')
     .setDescription('Leveon API description')

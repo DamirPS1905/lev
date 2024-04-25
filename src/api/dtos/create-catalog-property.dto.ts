@@ -1,12 +1,13 @@
 import { GenCreateCatalogPropertyDto } from './gen/create-catalog-property.dto';
-import { PropertyTuningDto } from './property-tuning.dto'
-import { ApiProperty, getSchemaPath } from '@nestjs/swagger'
-import { IsOptional, ValidateNested } from 'class-validator'
-import { Type } from 'class-transformer'
+import { PropertyTuningDto } from './property-tuning.dto';
+import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsOptional, ValidateNested } from 'class-validator';
 
 export class CreateCatalogPropertyDto extends GenCreateCatalogPropertyDto {
 	
 	@IsOptional()
+	@ApiExtraModels(PropertyTuningDto)
 	@ApiProperty({ 
 		required: false, 
 		type: 'object',

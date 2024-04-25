@@ -15,6 +15,10 @@ import { ScheduleModule } from '@nestjs/schedule';
 	  ConfigModule.forRoot(),
 	  MikroOrmModule.forRoot(),
 	  ExchangeApi,
-	  AuthModuls: [AppService, RCBService],
+	  AuthModule,
+	  HttpModule
+	 ],
+	 controllers: [AppController],
+	 providers: [AppService, RCBService],
 })
 export class AppModule {}

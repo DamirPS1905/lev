@@ -17,6 +17,7 @@ import { CatalogProductsService } from './../services/catalog-products.service';
 import { ProductsRelationKindsEnum } from './../enums/products-relation-kinds.enum'
 
 @ApiHeader({ name: 'X-API-KEY', required: true, description: 'Ваш идентефикатор апи' })
+@UseGuards(AuthGuard('api-key'))
 @ApiTags('Product and/or offers relations')
 @Controller('catalog/:catalog/product-relation/:relation')
 export class RelationsController{
