@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common';
+import { ExchangeApi } from './api/exchange-api.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { ExchangeApi } from './api/exchange-api.module';
 import { AuthModule } from './auth/auth.module';
+import { RCBService } from './tasks/rcb.service';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
-import { RCBService } from './tasks/rcb.service'
-import { HttpModule } from '@nestjs/axios'
 
 @Module({
   imports: [
@@ -15,10 +15,6 @@ import { HttpModule } from '@nestjs/axios'
 	  ConfigModule.forRoot(),
 	  MikroOrmModule.forRoot(),
 	  ExchangeApi,
-	  AuthModule,
-	  HttpModule
-  ],
-  controllers: [AppController],
-  providers: [AppService, RCBService],
+	  AuthModuls: [AppService, RCBService],
 })
 export class AppModule {}

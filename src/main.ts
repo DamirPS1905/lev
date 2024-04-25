@@ -1,14 +1,15 @@
-import { NestFactory } from '@nestjs/core';
+import { PropertyTuningDto } from './api/dtos/property-tuning.dto';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { PropertyTuningDto } from './api/dtos/property-tuning.dto'
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe({
-	  transform: true
-  }));
+  app
+	  .useGlobalPipes(new ValidationPipe({
+		  transform: true
+	  }));
   const config = new DocumentBuilder()
     .setTitle('Leveon API')
     .setDescription('Leveon API description')

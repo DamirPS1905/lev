@@ -163,9 +163,6 @@ CREATE OR REPLACE FUNCTION public.catalogs_after_insert_fnc()
 RETURNS trigger 
 AS $function$
 	BEGIN
-INSERT INTO public.catalog_metatypes (catalog, metatype)
-SELECT NEW.id, m.id
-FROM metatypes AS m;
 INSERT INTO catalog_types (catalog, title, parent, root, level)
 VALUES (NEW.id, CONCAT('root-', NEW.id), NULL, TRUE, 0);
 RETURN NEW;

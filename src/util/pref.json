@@ -188,11 +188,7 @@
     "entities": {
         "catalogs": {
             "def": "def",
-            "create": false,
-            "update": false,
-            "delete": false,
             "getOne": false,
-            "list": true,
             "paginateByMax": 0,
             "fields": {
                 "id": {

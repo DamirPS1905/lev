@@ -143,9 +143,6 @@ CREATE FUNCTION public.catalogs_after_insert_fnc() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 	BEGIN
-INSERT INTO public.catalog_metatypes (catalog, metatype)
-SELECT NEW.id, m.id
-FROM metatypes AS m;
 INSERT INTO catalog_types (catalog, title, parent, root, level)
 VALUES (NEW.id, CONCAT('root-', NEW.id), NULL, TRUE, 0);
 RETURN NEW;
@@ -3574,7 +3571,7 @@ SELECT pg_catalog.setval('public.catalog_properties_id_seq', 8, true);
 -- Name: catalogs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.catalogs_id_seq', 1, true);
+SELECT pg_catalog.setval('public.catalogs_id_seq', 2, true);
 
 
 --
@@ -3672,7 +3669,7 @@ SELECT pg_catalog.setval('public.rates_sources_id_seq', 1, true);
 -- Name: relations_time; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.relations_time', 6, true);
+SELECT pg_catalog.setval('public.relations_time', 38, true);
 
 
 --
