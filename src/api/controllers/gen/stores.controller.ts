@@ -73,7 +73,9 @@ export class GenStoresController {
 				}
 			}
 			await this.validateUpdate(entity, actor, id, updateDto, em, fm);
-			return await this.storesService.update(entity, updateDto, em);
+			const result =  await this.storesService.update(entity, updateDto, em);
+			await this.afterUpdate(entity, actor, id, updateDto, em, fm);
+			return result;
 		});
 	}
 	

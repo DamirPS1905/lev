@@ -2057,6 +2057,7 @@ COPY public.instance_types (id, title) FROM stdin;
 
 COPY public.instance_versions (company, catalog, instance_type, instance, version, deleted) FROM stdin;
 1	1	9	1	1	f
+1	0	7	1	2	f
 \.
 
 
@@ -3709,7 +3710,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 -- Name: versions_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.versions_seq', 1, true);
+SELECT pg_catalog.setval('public.versions_seq', 2, true);
 
 
 --

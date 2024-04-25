@@ -82,7 +82,9 @@ export class GenUnitsController {
 				throw new HttpException('Entity not found', HttpStatus.NOT_FOUND);
 			}
 			await this.validateUpdate(entity, actor, group, id, updateDto, em, fm);
-			return await this.unitsService.update(entity, updateDto, em);
+			const result =  await this.unitsService.update(entity, updateDto, em);
+			await this.afterUpdate(entity, actor, group, id, updateDto, em, fm);
+			return result;
 		});
 	}
 	

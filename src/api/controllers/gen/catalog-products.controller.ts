@@ -152,7 +152,9 @@ export class GenCatalogProductsController {
 				}
 			}
 			await this.validateUpdate(entity, actor, catalog, id, updateDto, em, fm);
-			return await this.catalogProductsService.update(entity, updateDto, em);
+			const result =  await this.catalogProductsService.update(entity, updateDto, em);
+			await this.afterUpdate(entity, actor, catalog, id, updateDto, em, fm);
+			return result;
 		});
 	}
 	

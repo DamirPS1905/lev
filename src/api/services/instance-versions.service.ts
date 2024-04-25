@@ -8,7 +8,7 @@ export class InstanceVersionsService extends GenInstanceVersionsService {
 	
 	async newByCompanyAndVersion(company: number, version: bigint, limit: number, emt: EntityManager = null) {
 		return await this.getEm(emt).createQueryBuilder(InstanceVersions, 'v')
-		  .select([`v."version"`, 'v.instance_type as type', 'v.instance', 'v.deleted'])
+		  .select([`v.version`, 'v.instance_type as type', 'v.instance', 'v.deleted'])
 		  .where({'v.company': company, 'v.version': { $gt: version} })
 		  .orderBy({"version": "ASC"})
 		  .limit(limit)

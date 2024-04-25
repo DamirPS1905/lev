@@ -32,6 +32,15 @@ export class CatalogProductsController extends GenCatalogProductsController {
 		return await super.findOne(actor, catalog, id);
 	}
 	
+	@Get(':id/model')
+	@ApiOperation({summary: "Получение полной модели определенного товара"})
+	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})
+	@ApiParam({name: 'id', description: 'ID товара'})
+	async getModel(@AuthInfo() actor: Actors, @Param('catalog', ParseIntPipe) catalog: number, @Param('id', ParseBigIntPipe) id: bigint) {
+		const product = await super.findOne(actor, catalog, id);
+		return this.catalogProductsService.fullModel(product);
+	}
+	
 	@Post()
 	@ApiOperation({summary: "Создание товара"})
 	@ApiParam({name: 'catalog', description: 'ID текущего каталога'})

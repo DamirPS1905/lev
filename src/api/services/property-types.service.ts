@@ -25,6 +25,34 @@ export class PropertyTypesService extends GenPropertyTypesService {
 		super(em, fm);
 	}
 	
+	async reshapeValues(raw){
+		const result = [];
+		let tmp = null, prop = null, propType = null, mul = null;
+		for(let p of raw){
+			if(prop!==p.property){
+				if(tmp!==null){
+					result.push({
+						property: prop,
+						value: await this.short(propType, mul? tmp: tmp[0])
+					});
+				}
+				tmp = [p.value];
+				prop = p.property;
+				mul = p.multiple;
+				propType = p.type;
+			}else{
+				tmp.push(p.value);
+			}
+		}
+		if(tmp!==null){
+			result.push({
+				property: prop,
+				value: await this.short(propType, mul? tmp: tmp[0])
+			});
+		}
+		return result;
+	}
+	
   //@Cron('* * * * * *')
 	async processPropertyTypes(){
 		const conn = this.em.fork().getConnection(),

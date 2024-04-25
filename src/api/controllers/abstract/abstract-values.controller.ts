@@ -30,7 +30,6 @@ export abstract class AbstractValuesController<P, S extends IMetatypeVauesServic
 		let tmp = null, prop = null, propType = null, mul = null;
 		const result = [],
 					raw = (await this.valuesService.readValuesByInstance(instance));
-		console.log(raw);
 		for(let p of raw){
 			if(prop!==p.property){
 				if(tmp!==null){

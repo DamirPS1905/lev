@@ -60,7 +60,9 @@ export class GenCatalogsController {
 				}
 			}
 			await this.validateUpdate(entity, actor, id, updateDto, em, fm);
-			return await this.catalogsService.update(entity, updateDto, em);
+			const result =  await this.catalogsService.update(entity, updateDto, em);
+			await this.afterUpdate(entity, actor, id, updateDto, em, fm);
+			return result;
 		});
 	}
 	

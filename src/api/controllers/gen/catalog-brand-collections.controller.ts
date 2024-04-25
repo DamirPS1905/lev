@@ -119,7 +119,9 @@ export class GenCatalogBrandCollectionsController {
 				}
 			}
 			await this.validateUpdate(entity, actor, catalog, brand, id, updateDto, em, fm);
-			return await this.catalogBrandCollectionsService.update(entity, updateDto, em);
+			const result =  await this.catalogBrandCollectionsService.update(entity, updateDto, em);
+			await this.afterUpdate(entity, actor, catalog, brand, id, updateDto, em, fm);
+			return result;
 		});
 	}
 	
