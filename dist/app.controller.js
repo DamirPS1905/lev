@@ -12,32 +12,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
-const app_service_1 = require("./app.service");
 let AppController = class AppController {
-    constructor(appService) {
-        this.appService = appService;
-    }
-    getHello() {
-        return this.appService.getDate();
+    check() {
+        return new Date();
     }
 };
 exports.AppController = AppController;
 __decorate([
     (0, swagger_1.ApiOperation)({
-        summary: 'Возвращает текущее время сервера. Время не должно отличаться от клиентского более чем на 5 минут с учетом часового пояса.',
+        summary: 'Проверка состояния сервера',
     }),
     (0, swagger_1.ApiResponse)({
         status: 200,
         description: 'Текущее время сервера',
     }),
-    (0, common_1.Get)('date'),
+    (0, common_1.Get)('check'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Date)
-], AppController.prototype, "getHello", null);
+], AppController.prototype, "check", null);
 exports.AppController = AppController = __decorate([
     (0, swagger_1.ApiTags)('Base'),
-    (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [app_service_1.AppService])
+    (0, common_1.Controller)()
 ], AppController);
 //# sourceMappingURL=app.controller.js.map

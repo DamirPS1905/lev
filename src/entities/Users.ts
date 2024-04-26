@@ -1,6 +1,7 @@
 import { Entity, type Hidden, ManyToOne, OneToOne, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 import { Actors } from './Actors';
 import { Companies } from './Companies';
+import { SystemRoles } from '@/web_auth/interfaces';
 
 @Entity()
 export class Users {
@@ -32,15 +33,12 @@ export class Users {
   @Property({ type: 'string' })
   email: string;
 
-  @Property({ type: 'string' })
-  password: string;
+  @Property({ type: 'string', hidden: true, nullable: true })
+  refresh_token?: string;
 
-  @Property({ type: 'string', hidden: true })
-  refresh_token: string;
-
-  @Property({ type: 'string', hidden: true })
+  @Property({ type: 'string', hidden: true, default: SystemRoles.User })
   role: string;
 
-  @Property({ type: 'boolean', hidden: true })
+  @Property({ type: 'boolean', hidden: true, default: true })
   is_active: boolean;
 }
