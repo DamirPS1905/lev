@@ -43,5 +43,4 @@ tmp/
 temp/
 images/
 src/test.ts
-src/mikro-orm.config.ts
 im.json
