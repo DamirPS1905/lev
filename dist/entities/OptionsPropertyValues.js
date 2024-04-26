@@ -12,24 +12,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OptionsPropertyValues = void 0;
 const core_1 = require("@mikro-orm/core");
 const CatalogProperties_1 = require("./CatalogProperties");
+const PropertyValues_1 = require("./PropertyValues");
 let OptionsPropertyValues = class OptionsPropertyValues {
 };
 exports.OptionsPropertyValues = OptionsPropertyValues;
 __decorate([
-    (0, core_1.PrimaryKey)(),
-    __metadata("design:type", Number)
-], OptionsPropertyValues.prototype, "id", void 0);
-__decorate([
-    (0, core_1.OneToOne)({ entity: () => CatalogProperties_1.CatalogProperties, fieldName: 'property', deleteRule: 'cascade', unique: 'options_property_values_property_hash_uind' }),
+    (0, core_1.ManyToOne)({ entity: () => CatalogProperties_1.CatalogProperties, fieldName: 'property', deleteRule: 'cascade', unique: 'options_property_values_property_hash_uind' }),
     __metadata("design:type", CatalogProperties_1.CatalogProperties)
 ], OptionsPropertyValues.prototype, "property", void 0);
 __decorate([
-    (0, core_1.Property)({ columnType: 'jsonb' }),
-    __metadata("design:type", Object)
+    (0, core_1.OneToOne)({ entity: () => PropertyValues_1.PropertyValues, fieldName: 'value', deleteRule: 'cascade', primary: true }),
+    __metadata("design:type", PropertyValues_1.PropertyValues)
 ], OptionsPropertyValues.prototype, "value", void 0);
 __decorate([
-    (0, core_1.Property)({ length: 48, nullable: true }),
-    __metadata("design:type", String)
+    (0, core_1.Property)({ type: 'string', length: 48, nullable: true, hidden: true }),
+    __metadata("design:type", Object)
 ], OptionsPropertyValues.prototype, "hash", void 0);
 exports.OptionsPropertyValues = OptionsPropertyValues = __decorate([
     (0, core_1.Entity)()

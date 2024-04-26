@@ -4,7 +4,6 @@ import { Companies } from './Companies';
 
 @Entity()
 export class Users {
-
   @PrimaryKey()
   id!: number;
 
@@ -24,4 +23,24 @@ export class Users {
   @ManyToOne({ entity: () => Companies, fieldName: 'company' })
   company!: Companies;
 
+  @Property({ type: 'string', nullable: true })
+  first_name?: string;
+
+  @Property({ type: 'string', nullable: true })
+  last_name?: string;
+
+  @Property({ type: 'string' })
+  email: string;
+
+  @Property({ type: 'string' })
+  password: string;
+
+  @Property({ type: 'string', hidden: true })
+  refresh_token: string;
+
+  @Property({ type: 'string', hidden: true })
+  role: string;
+
+  @Property({ type: 'boolean', hidden: true })
+  is_active: boolean;
 }

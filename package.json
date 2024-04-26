@@ -21,6 +21,7 @@
       "typeorm": "typeorm-ts-node-commonjs"
    },
    "dependencies": {
+      "@babel/types": "^7.24.0",
       "@mikro-orm/cli": "^6.2.3",
       "@mikro-orm/core": "^6.2.3",
       "@mikro-orm/entity-generator": "^6.2.3",
@@ -84,7 +85,7 @@
       "ts-loader": "^9.4.3",
       "ts-node": "10.9.1",
       "tsconfig-paths": "^4.2.0",
-      "typescript": "^4.8.2",
+      "typescript": "^5.4.5",
       "webpack": "^5.91.0",
       "webpack-node-externals": "^3.0.0"
    },

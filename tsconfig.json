@@ -7,25 +7,10 @@
       "target": "es6",
       "module": "commonjs",
       "moduleResolution": "node",
-      "baseUrl": "./",
-      "outDir": "./build",
+      "outDir": "./dist",
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
       "sourceMap": true,
-      "esModuleInterop": true,
-      "paths": {
-         "@": [
-            "src/"
-         ],
-         "@/*": [
-            "src/*"
-         ],
-         "@common": [
-            "libs/common/src"
-         ],
-         "@common/*": [
-            "libs/common/src/*"
-         ],
-      }
+      "esModuleInterop": true
    }
 }

@@ -6,28 +6,20 @@
  * in api/controllers/rates-sources.controller
  * in a proper way.
  */
-import { AuthInfo } from './../../../decorators/auth.decorator';
-import { Actors } from './../../../entities/Actors';
-import { CreateRatesSourceDto } from './../../dtos/create-rates-source.dto';
-import { UpdateRatesSourceDto } from './../../dtos/update-rates-source.dto';
-import { RatesSourcesService } from './../../services/rates-sources.service';
-import { FsPatch } from './../../services/special/files.service';
-import { EntityManager } from '@mikro-orm/postgresql';
 import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { Actors } from './../../../entities/Actors';
+import { RatesSourcesService } from './../../services/rates-sources.service';
 
 @ApiHeader({ name: 'X-API-KEY', required: true, description: 'Ваш идентефикатор апи' })
 @UseGuards(AuthGuard('api-key'))
 @ApiTags('Rates sources')
 @Controller('rates-source')
 export class GenRatesSourcesController {
-	constructor(
-		protected readonly ratesSourcesService: RatesSourcesService,
-	) { }
-	
-	async findAll(actor: Actors) {
-		return await this.ratesSourcesService.findAll();
-	}
-	
+  constructor(protected readonly ratesSourcesService: RatesSourcesService) {}
+
+  async findAll(actor: Actors) {
+    return await this.ratesSourcesService.findAll();
+  }
 }

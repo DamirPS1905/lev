@@ -10,9 +10,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CatalogBrands = void 0;
-const core_1 = require("@mikro-orm/core");
+const BrandPropertyValues_1 = require("./BrandPropertyValues");
+const CatalogBrandCollections_1 = require("./CatalogBrandCollections");
+const CatalogProducts_1 = require("./CatalogProducts");
 const Catalogs_1 = require("./Catalogs");
+const core_1 = require("@mikro-orm/core");
 let CatalogBrands = class CatalogBrands {
+    constructor() {
+        // gen - begin
+        this.catalogProductsByBrand = new core_1.Collection(this);
+        this.brandPropertyValuesByInstance = new core_1.Collection(this);
+        this.catalogBrandCollectionsByBrand = new core_1.Collection(this);
+        // gen - end
+    }
 };
 exports.CatalogBrands = CatalogBrands;
 __decorate([
@@ -20,7 +30,7 @@ __decorate([
     __metadata("design:type", Number)
 ], CatalogBrands.prototype, "id", void 0);
 __decorate([
-    (0, core_1.OneToOne)({ entity: () => Catalogs_1.Catalogs, fieldName: 'catalog', unique: 'catalog_brands_catalog_title_uind' }),
+    (0, core_1.ManyToOne)({ entity: () => Catalogs_1.Catalogs, fieldName: 'catalog', unique: 'catalog_brands_catalog_title_uind' }),
     __metadata("design:type", Catalogs_1.Catalogs)
 ], CatalogBrands.prototype, "catalog", void 0);
 __decorate([
@@ -35,6 +45,18 @@ __decorate([
     (0, core_1.Property)({ nullable: true }),
     __metadata("design:type", String)
 ], CatalogBrands.prototype, "image", void 0);
+__decorate([
+    (0, core_1.OneToMany)({ entity: () => CatalogProducts_1.CatalogProducts, mappedBy: 'brand', hidden: true }),
+    __metadata("design:type", Object)
+], CatalogBrands.prototype, "catalogProductsByBrand", void 0);
+__decorate([
+    (0, core_1.OneToMany)({ entity: () => BrandPropertyValues_1.BrandPropertyValues, mappedBy: 'instance', hidden: true }),
+    __metadata("design:type", Object)
+], CatalogBrands.prototype, "brandPropertyValuesByInstance", void 0);
+__decorate([
+    (0, core_1.OneToMany)({ entity: () => CatalogBrandCollections_1.CatalogBrandCollections, mappedBy: 'brand', hidden: true }),
+    __metadata("design:type", Object)
+], CatalogBrands.prototype, "catalogBrandCollectionsByBrand", void 0);
 exports.CatalogBrands = CatalogBrands = __decorate([
     (0, core_1.Entity)()
 ], CatalogBrands);

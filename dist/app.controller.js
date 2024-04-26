@@ -8,39 +8,35 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const app_service_1 = require("./app.service");
 let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
     }
     getHello() {
-        return this.appService.getHello();
-    }
-    getCatalog(params) {
-        return this.appService.getCatalog(params.catalog);
+        return this.appService.getDate();
     }
 };
 exports.AppController = AppController;
 __decorate([
-    (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Возвращает текущее время сервера. Время не должно отличаться от клиентского более чем на 5 минут с учетом часового пояса.',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Текущее время сервера',
+    }),
+    (0, common_1.Get)('date'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", String)
+    __metadata("design:returntype", Date)
 ], AppController.prototype, "getHello", null);
-__decorate([
-    (0, common_1.Get)('/catalog/:catalog'),
-    __param(0, (0, common_1.Param)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Object)
-], AppController.prototype, "getCatalog", null);
 exports.AppController = AppController = __decorate([
+    (0, swagger_1.ApiTags)('Base'),
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService])
 ], AppController);

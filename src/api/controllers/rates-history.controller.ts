@@ -1,22 +1,15 @@
-import {
-  DefaultValuePipe,
-  Get,
-  Param,
-  ParseIntPipe,
-  Query,
-} from '@nestjs/common';
+import { DefaultValuePipe, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { AuthInfo } from './../../decorators/auth.decorator';
 import { Actors } from './../../entities/Actors';
-import { GenRatesHistoryController } from './gen/rates-history.controller';
 
-export class RatesHistoryController extends GenRatesHistoryController {
+export class RatesHistoryController {
   @Get('all')
   async findAll(
     @AuthInfo() actor: Actors,
     @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
     @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
   ) {
-    return await super.findAll(actor, offset, limit);
+    // return await super.findAll(actor, offset, limit);
   }
 
   @Get(':from-:to-:source-:date')
@@ -27,6 +20,6 @@ export class RatesHistoryController extends GenRatesHistoryController {
     @Param('source', ParseIntPipe) source: number,
     @Param('date') date: string,
   ) {
-    return await super.findOne(actor, from, to, source, date);
+    // return await super.findOne(actor, from, to, source, date);
   }
 }

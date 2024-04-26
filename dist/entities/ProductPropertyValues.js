@@ -21,12 +21,16 @@ __decorate([
     __metadata("design:type", CatalogProducts_1.CatalogProducts)
 ], ProductPropertyValues.prototype, "product", void 0);
 __decorate([
-    (0, core_1.ManyToOne)({ entity: () => CatalogProperties_1.CatalogProperties, fieldName: 'property', primary: true }),
+    (0, core_1.ManyToOne)({ entity: () => CatalogProperties_1.CatalogProperties, fieldName: 'property', deleteRule: 'cascade', primary: true }),
     __metadata("design:type", CatalogProperties_1.CatalogProperties)
 ], ProductPropertyValues.prototype, "property", void 0);
 __decorate([
-    (0, core_1.Property)({ columnType: 'jsonb' }),
-    __metadata("design:type", Object)
+    (0, core_1.PrimaryKey)({ columnType: 'smallint' }),
+    __metadata("design:type", Number)
+], ProductPropertyValues.prototype, "order", void 0);
+__decorate([
+    (0, core_1.Property)(),
+    __metadata("design:type", typeof BigInt === "function" ? BigInt : Object)
 ], ProductPropertyValues.prototype, "value", void 0);
 exports.ProductPropertyValues = ProductPropertyValues = __decorate([
     (0, core_1.Entity)()

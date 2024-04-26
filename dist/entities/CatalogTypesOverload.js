@@ -16,9 +16,9 @@ let CatalogTypesOverload = class CatalogTypesOverload {
 };
 exports.CatalogTypesOverload = CatalogTypesOverload;
 __decorate([
-    (0, core_1.ManyToOne)({ entity: () => CatalogTypes_1.CatalogTypes, fieldName: 'prent', deleteRule: 'cascade', primary: true }),
+    (0, core_1.ManyToOne)({ entity: () => CatalogTypes_1.CatalogTypes, fieldName: 'parent', deleteRule: 'cascade', primary: true }),
     __metadata("design:type", CatalogTypes_1.CatalogTypes)
-], CatalogTypesOverload.prototype, "prent", void 0);
+], CatalogTypesOverload.prototype, "parent", void 0);
 __decorate([
     (0, core_1.ManyToOne)({ entity: () => CatalogTypes_1.CatalogTypes, fieldName: 'child', deleteRule: 'cascade', primary: true }),
     __metadata("design:type", CatalogTypes_1.CatalogTypes)
